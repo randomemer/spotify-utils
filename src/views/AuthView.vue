@@ -4,7 +4,14 @@ import { stringifyQuery } from "vue-router";
 
 export default defineComponent({
   created() {
-    const scopes = ["user-read-email", "user-read-private"];
+    const scopes = [
+      "user-read-email",
+      "user-read-private",
+      "playlist-read-private",
+      "playlist-read-collaborative",
+      "playlist-modify-private",
+      "playlist-modify-public",
+    ];
     const client_id = import.meta.env.VITE_CLIENT_ID;
     const client_secret = import.meta.env.VITE_CLIENT_SECRET;
 

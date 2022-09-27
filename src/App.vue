@@ -18,6 +18,11 @@ import { RouterLink, RouterView } from "vue-router";
 </template>
 
 <style>
+@font-face {
+  font-family: "Gotham", sans-serif;
+  src: url("@/assets/gotham.otf");
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -36,6 +41,7 @@ html {
 body {
   background-color: #191414;
   color: white;
+  font-family: "Gotham";
   line-height: 1;
 }
 
@@ -71,5 +77,27 @@ nav {
   text-decoration: none;
   cursor: pointer;
   color: #1db954;
+}
+
+.heading-primary,
+.heading-secondary,
+.heading-tertiary {
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.heading-primary {
+  font-size: 5.2rem;
+  line-height: 1.05;
+}
+
+.heading-secondary {
+  font-size: 4.4rem;
+  line-height: 1.2;
+}
+
+.heading-tertiary {
+  font-size: 3rem;
+  line-height: 1.2;
 }
 </style>
