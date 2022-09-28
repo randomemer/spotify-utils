@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import ListItem from "@/components/ListItem.vue";
+import ListItem from "./ListItem.vue";
 import { IonIcon } from "@ionic/vue";
 import { addOutline, closeOutline } from "ionicons/icons";
 
@@ -18,7 +18,11 @@ export default defineComponent({
   },
   methods: {
     toggleModal() {
-      (this.$refs.modal as HTMLElement).classList.toggle("show-modal");
+      this.isModalOpen = !this.isModalOpen;
+      // reset state
+      this.playlists = [];
+      this.playlistUrl = "";
+      this.playlistName = "";
     },
     async getPlaylistTracks(playlist: any): Promise<string[] | undefined> {
       try {
@@ -106,9 +110,9 @@ export default defineComponent({
           );
           console.log(response);
         }
+
+        console.log(newPlaylist.external_urls.spotify);
       } catch (error) {
-        // https://open.spotify.com/playlist/2Wpm5d9dng1VLAxN88vzTM?si=15d75fb3e4124d2d
-        // https://open.spotify.com/playlist/37i9dQZF1DWWY64wDtewQt?si=c8911da53bb746e9
         console.error(error);
       }
     },
@@ -121,7 +125,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="modal" ref="modal">
+  <div class="modal" :class="{ 'show-modal': isModalOpen }">
     <div class="modal-content">
       <span class="close-button" v-on:click="toggleModal"
         ><ion-icon :icon="closeOutline"></ion-icon
