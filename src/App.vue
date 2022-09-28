@@ -71,6 +71,12 @@ nav {
   font-size: 2rem;
 }
 
+button {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
 .nav-link:link,
 .nav-link:visited {
   display: inline-block;
@@ -99,5 +105,16 @@ nav {
 .heading-tertiary {
   font-size: 3rem;
   line-height: 1.2;
+}
+
+input {
+  border: none;
+  font-family: inherit;
+  color: inherit;
+}
+
+*:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.4rem rgba(29, 185, 84, 0.5);
 }
 </style>

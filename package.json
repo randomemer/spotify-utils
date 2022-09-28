@@ -10,6 +10,8 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@ionic/vue": "^6.2.8",
+    "ionicons": "^6.0.3",
     "query-string": "^7.1.1",
     "vue": "^3.2.38",
     "vue-cookies": "^1.8.1",
@@ -19,6 +21,7 @@
     "@rushstack/eslint-patch": "^1.1.4",
     "@types/node": "^16.11.56",
     "@vitejs/plugin-vue": "^3.0.3",
+    "@vitejs/plugin-vue-jsx": "^2.0.1",
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^11.0.0",
     "@vue/tsconfig": "^0.1.3",

@@ -1,75 +1,98 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-
-// async function getPlaylists(): any {
-
-// }
+import MergePlaylistDialog from "@/components/MergePlaylistDialog.vue";
 
 export default defineComponent({
-  data(): { [key: string]: any } {
+  data() {
     return {
-      user: null,
-      playlists: [],
+      user: {} as any,
+      userImage: "",
+      access_token: this.$cookies.get("access_token"),
     };
   },
-  created() {
-    // Get a new access token
-    console.log(this.$cookies.get("refresh_token"));
+  methods: {
+    async fetchUserProfile() {
+      try {
+        const response = await fetch("https://api.spotify.com/v1/me", {
+          headers: {
+            Authorization: `Bearer ${this.$cookies.get("access_token")}`,
+          },
+        });
+        const body = await response.json();
+        // console.log(body);
+        this.user = body;
+        const [image] = body.images;
+        this.userImage = image.url;
+      } catch (error) {
+        console.warn(error);
+      }
+    },
+    async getNewAccessToken() {
+      try {
+        const client_id = import.meta.env.VITE_CLIENT_ID;
+        const client_secret = import.meta.env.VITE_CLIENT_SECRET;
 
-    // Fetch User deatils
-    fetch("https://api.spotify.com/v1/me", {
-      headers: { Authorization: `Bearer ${this.$cookies.get("access_token")}` },
-    }).then(async (response) => {
-      const body = await response.json();
-      console.log(body);
-      this.$data.user = body;
-    });
+        const response = await fetch("https://accounts.spotify.com/api/token", {
+          method: "POST",
+          headers: {
+            Authorization: `Basic ${btoa(`${client_id}:${client_secret}`)}`,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({
+            grant_type: "refresh_token",
+            refresh_token: this.$cookies.get("refresh_token"),
+          }),
+        });
 
-    // Fetch user playlists
-    fetch("https://api.spotify.com/v1/me/playlists", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.$cookies.get("access_token")}`,
-      },
-    }).then(async (response) => {
-      const body = await response.json();
-      console.log(body.items);
-      this.$data.playlists = body.items;
-    });
+        const body = await response.json();
+        this.$cookies.set("access_token", body.access_token);
+      } catch (error) {
+        console.warn(error);
+      }
+    },
+    showMergeDialog() {
+      (
+        this.$refs.mergePlaylistDialog as typeof MergePlaylistDialog
+      ).toggleModal();
+    },
   },
+  mounted() {
+    (async () => {
+      await this.getNewAccessToken();
+      await this.fetchUserProfile();
+    })();
+  },
+  components: { MergePlaylistDialog },
 });
 </script>
 
 <template>
-  <div class="container">
+  <main class="container" :key="access_token">
     <div>
       <div class="hello-el">
-        <img :src="user?.images[0].url" class="pfp" />
+        <img :src="userImage" class="pfp" />
         <h2 class="heading-secondary">Hello there, {{ user?.display_name }}</h2>
       </div>
     </div>
 
-    <div class="playlists-section">
-      <h2 class="heading-secondary">Your Playlists</h2>
-      <ul class="playlists">
-        <li v-for="playlist in playlists" :key="playlist.id" class="playlist">
-          <a :href="playlist.external_urls.spotify" target="_blank">
-            <img :src="playlist?.images[0].url" class="playlist-image" />
-          </a>
-
-          <div class="playlist-info-col">
-            <h3 class="playlist-name">{{ playlist?.name ?? "null" }}</h3>
-            <span class="playlist-tracks"
-              >{{ playlist?.tracks.total }} Tracks</span
-            >
-          </div>
-        </li>
-      </ul>
+    <div class="actions-section">
+      <button class="action-button" v-on:click="showMergeDialog">
+        <span>Merge Playlists</span>
+      </button>
     </div>
-  </div>
+  </main>
+
+  <MergePlaylistDialog ref="mergePlaylistDialog" :id="user?.id" />
 </template>
 
 <style scoped>
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 7.2rem 0;
+  gap: 6.4rem;
+}
+
 .hello-el {
   display: flex;
   align-items: center;
@@ -84,6 +107,17 @@ export default defineComponent({
 
 .heading-secondary {
   margin-bottom: 3.2rem;
+}
+
+.actions-section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.action-button {
+  background-color: #1db954;
+  border-radius: 2.5rem;
+  padding: 1.2rem 0;
 }
 
 .playlists-section {
