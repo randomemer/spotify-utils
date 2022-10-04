@@ -1,32 +1,21 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import Spotify from "spotify-web-api-js";
 import MergePlaylistDialog from "@/components/MergePlaylist/MergePlaylistDialog.vue";
+import UserProfileCard from "@/components/UserProfileCard.vue";
+import UserTopArtists from "../components/UserTopArtists.vue";
+import UserTopTracks from "../components/UserTopTracks.vue";
 
 export default defineComponent({
   data() {
     return {
-      user: {} as any,
-      userImage: "",
-      access_token: this.$cookies.get("access_token"),
+      // eslint-disable-next-line no-undef
+      user: {} as SpotifyApi.CurrentUsersProfileResponse,
+      spotify: new Spotify(),
+      access_token: this.$cookies.get("access_token") as string,
     };
   },
   methods: {
-    async fetchUserProfile() {
-      try {
-        const response = await fetch("https://api.spotify.com/v1/me", {
-          headers: {
-            Authorization: `Bearer ${this.$cookies.get("access_token")}`,
-          },
-        });
-        const body = await response.json();
-        // console.log(body);
-        this.user = body;
-        const [image] = body.images;
-        this.userImage = image.url;
-      } catch (error) {
-        console.warn(error);
-      }
-    },
     async getNewAccessToken() {
       try {
         const client_id = import.meta.env.VITE_CLIENT_ID;
@@ -46,6 +35,7 @@ export default defineComponent({
 
         const body = await response.json();
         this.$cookies.set("access_token", body.access_token);
+        this.spotify.setAccessToken(body.access_token);
       } catch (error) {
         console.warn(error);
       }
@@ -57,23 +47,23 @@ export default defineComponent({
     },
   },
   mounted() {
-    (async () => {
-      await this.getNewAccessToken();
-      await this.fetchUserProfile();
-    })();
+    this.getNewAccessToken();
   },
-  components: { MergePlaylistDialog },
+  components: {
+    MergePlaylistDialog,
+    UserProfileCard,
+    UserTopArtists,
+    UserTopTracks,
+  },
 });
 </script>
 
 <template>
   <main class="container" :key="access_token">
-    <div>
-      <div class="hello-el">
-        <img :src="userImage" class="pfp" />
-        <h2 class="heading-secondary">Hello there, {{ user?.display_name }}</h2>
-      </div>
-    </div>
+    <UserProfileCard class="profile-section" />
+
+    <UserTopArtists />
+    <UserTopTracks />
 
     <div class="actions-section">
       <button class="action-button" v-on:click="showMergeDialog">
@@ -87,26 +77,17 @@ export default defineComponent({
 
 <style scoped>
 .container {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   flex-direction: column;
+  row-gap: 6.4rem;
+  column-gap: 5.6rem;
+
   padding: 7.2rem 0;
-  gap: 6.4rem;
 }
 
-.hello-el {
-  display: flex;
-  align-items: center;
-  gap: 5rem;
-}
-
-.pfp {
-  border-radius: 50rem;
-  height: 15rem;
-  width: 15rem;
-}
-
-.heading-secondary {
-  margin-bottom: 3.2rem;
+.profile-section {
+  grid-column: span 2;
 }
 
 .actions-section {

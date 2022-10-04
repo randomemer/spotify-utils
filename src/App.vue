@@ -7,9 +7,11 @@ import { RouterLink, RouterView } from "vue-router";
     <div class="nav-bar">
       <span class="logo-title">Spotify Utilities</span>
       <nav>
-        <RouterLink to="/" class="nav-link">Home</RouterLink>
-        <RouterLink to="/app" class="nav-link">App</RouterLink>
-        <RouterLink to="/auth" class="nav-link">Connect Spotify</RouterLink>
+        <RouterLink to="/" class="nav-link link">Home</RouterLink>
+        <RouterLink to="/app" class="nav-link link">App</RouterLink>
+        <RouterLink to="/auth" class="nav-link link"
+          >Connect Spotify</RouterLink
+        >
       </nav>
     </div>
   </header>
@@ -79,10 +81,16 @@ button {
 
 .nav-link:link,
 .nav-link:visited {
+  font-size: 1.8rem;
+  color: #1db954;
+  text-transform: uppercase;
+}
+
+.link:link,
+.link:visited {
   display: inline-block;
   text-decoration: none;
   cursor: pointer;
-  color: #1db954;
 }
 
 .heading-primary,
