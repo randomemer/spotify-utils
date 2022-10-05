@@ -54,6 +54,6 @@ export default defineComponent({
 <style scoped>
 .chips-container {
   display: flex;
-  gap: 1.6rem;
+  gap: 1.2rem;
 }
 </style>

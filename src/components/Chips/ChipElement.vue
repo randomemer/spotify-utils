@@ -33,19 +33,27 @@ export default defineComponent({
 <style scoped>
 .chip {
   border-radius: 10rem;
-  border-color: white;
-  border-style: solid;
-  border-width: 1px;
+  /* creates an effect where border occupies content space */
+  box-shadow: inset 0px 0px 0px 1px white;
   padding: 0.8rem 1.6rem;
 }
 
+.chip,
+.chip * {
+  transition: all 0.3s;
+}
+
 .chip:hover {
-  background-color: rgba(29, 185, 84, 0.15);
   cursor: pointer;
+}
+
+.chip:hover:not(.chip--active) {
+  background-color: rgba(29, 185, 84, 0.15);
 }
 
 .chip--active {
   background-color: rgba(29, 185, 84, 0.4);
+  box-shadow: none;
 }
 
 .chip-content {

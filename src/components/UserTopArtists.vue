@@ -106,6 +106,10 @@ export default defineComponent({
   padding: 2.4rem;
 }
 
+.card * {
+  transition: all 0.3s;
+}
+
 .artist-list {
   display: flex;
   flex-direction: column;
@@ -119,7 +123,7 @@ export default defineComponent({
 }
 
 .artist-image {
-  --size: 6.4rem;
+  --size: 5rem;
   height: var(--size);
   width: var(--size);
   border-radius: var(--size);
@@ -130,7 +134,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   flex: 1;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .artist-title-row {
@@ -139,14 +143,15 @@ export default defineComponent({
 }
 
 .artist-name {
-  font-size: 2rem;
+  font-size: 1.8rem;
 }
 
 .action-button:link,
 .action-button:visited {
   align-self: flex-end;
+  border-radius: 5px;
   color: #1db954;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   padding: 1.4rem;
 
   display: flex;
@@ -158,7 +163,6 @@ export default defineComponent({
 .action-button:active,
 .action-button:hover {
   background-color: rgba(29, 185, 84, 0.2);
-  border-radius: 5px;
 }
 
 .artist-popularity {
@@ -176,7 +180,7 @@ export default defineComponent({
 .artist-genre {
   font-size: 1.2rem;
   color: #bbbbbb;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 
 .artist-genre:not(:last-child)::after {
