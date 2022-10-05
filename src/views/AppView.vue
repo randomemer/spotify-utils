@@ -72,7 +72,7 @@ export default defineComponent({
     </div>
   </main>
 
-  <MergePlaylistDialog ref="mergePlaylistDialog" :id="user?.id" />
+  <!-- <MergePlaylistDialog ref="mergePlaylistDialog" :id="user?.id" /> -->
 </template>
 
 <style scoped>

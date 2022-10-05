@@ -2,36 +2,44 @@
 import Spotify from "spotify-web-api-js";
 import { defineComponent } from "vue";
 import { IonIcon } from "@ionic/vue";
-import { chevronForward } from "ionicons/icons";
+import { chevronForward, star } from "ionicons/icons";
+import ChipContainer from "./Chips/ChipContainer.vue";
+import { UserTopItemsSort } from "@/types/types";
 
 export default defineComponent({
   components: {
     IonIcon,
+    ChipContainer,
   },
   setup() {
-    return { chevronForward };
+    return { chevronForward, star };
   },
   data() {
     return {
       // eslint-disable-next-line no-undef
       topTracks: {} as SpotifyApi.UsersTopTracksResponse,
       spotify: new Spotify(),
+      timeRange: UserTopItemsSort.Medium,
+      timeRanges: {
+        "All Time": UserTopItemsSort.Long,
+        "6 Months": UserTopItemsSort.Medium,
+        "4 Weeks": UserTopItemsSort.Short,
+      },
     };
   },
   methods: {
-    async getUserTopItems(): Promise<void> {
+    async getUserTopItems(range: UserTopItemsSort): Promise<void> {
       try {
         this.topTracks = await this.spotify.getMyTopTracks({
-          time_range: "medium_term",
+          time_range: range,
         });
-        console.log(this.topTracks.items?.slice(0, 5));
       } catch (error) {
         console.warn(error);
       }
     },
   },
   mounted() {
-    this.getUserTopItems();
+    this.getUserTopItems(this.timeRange);
   },
 });
 </script>
@@ -39,6 +47,12 @@ export default defineComponent({
 <template>
   <div class="card">
     <h3 class="heading-tertiary">Your Top Tracks</h3>
+
+    <ChipContainer
+      :defaultChipValue="timeRange"
+      :chipsData="timeRanges"
+      :callback="getUserTopItems"
+    />
 
     <div class="track-list">
       <div
@@ -53,14 +67,31 @@ export default defineComponent({
         />
 
         <div class="track-right">
-          <span class="track-name">{{ track.name }}</span>
+          <div class="track-title-row">
+            <span class="track-name">{{ track.name }}</span>
+            <div class="track-popularity">
+              <ion-icon :icon="star" />
+              <span class=""> {{ track.popularity }} %</span>
+            </div>
+          </div>
+
+          <div>
+            <span
+              class="track-genre"
+              v-for="artist in track.artists.slice(0, 3)"
+              :key="artist.id"
+            >
+              {{ artist.name }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
 
-    <a class="action-button link" href="#"
-      ><span>View More</span><ion-icon :icon="chevronForward"></ion-icon
-    ></a>
+    <a class="action-button link" href="#" v-if="topTracks.items?.length > 5">
+      <span>View More</span>
+      <ion-icon :icon="chevronForward" />
+    </a>
   </div>
 </template>
 
@@ -72,7 +103,7 @@ export default defineComponent({
 
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 1rem;
-  padding: 1.8rem;
+  padding: 2.4rem;
 }
 
 .track-list {
@@ -92,15 +123,23 @@ export default defineComponent({
   height: var(--size);
   width: var(--size);
   border-radius: var(--size);
+  object-fit: cover;
 }
 
 .track-right {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  gap: 2rem;
+}
+
+.track-title-row {
+  display: flex;
+  justify-content: space-between;
 }
 
 .track-name {
-  font-size: 1.8rem;
+  font-size: 2rem;
 }
 
 .action-button:link,
@@ -120,5 +159,27 @@ export default defineComponent({
 .action-button:hover {
   background-color: rgba(29, 185, 84, 0.2);
   border-radius: 5px;
+}
+
+.track-popularity {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  font-size: 1.5rem;
+}
+
+.track-popularity ion-icon {
+  color: #1db954;
+  font-size: 2rem;
+}
+
+.track-genre {
+  font-size: 1.2rem;
+  color: #bbbbbb;
+  text-transform: uppercase;
+}
+
+.track-genre:not(:last-child)::after {
+  content: " | ";
 }
 </style>

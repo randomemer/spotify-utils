@@ -88,6 +88,7 @@ export default defineComponent({
   border-radius: 50rem;
   height: 15rem;
   width: 15rem;
+  object-fit: cover;
 }
 
 .user-data-field {
