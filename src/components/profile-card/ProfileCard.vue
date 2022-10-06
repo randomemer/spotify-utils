@@ -48,7 +48,7 @@ export default defineComponent({
     />
 
     <div class="card-right">
-      <h2 class="display-name heading-secondary">{{ user?.display_name }}</h2>
+      <h2 class="display-name">{{ user?.display_name }}</h2>
 
       <div class="user-data-field">
         <ion-icon :icon="earth" class="user-data-field-icon"></ion-icon>
@@ -67,15 +67,13 @@ export default defineComponent({
 <style scoped>
 .card {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 5rem;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 1.8rem;
+  gap: 2.4rem;
 }
 
 .display-name {
-  margin-bottom: 1rem;
+  font-size: 2.4rem;
 }
 
 .card-right {
@@ -85,9 +83,10 @@ export default defineComponent({
 }
 
 .pfp {
-  border-radius: 50rem;
-  height: 15rem;
-  width: 15rem;
+  --size: 12rem;
+  border-radius: var(--size);
+  height: var(--size);
+  width: var(--size);
   object-fit: cover;
 }
 

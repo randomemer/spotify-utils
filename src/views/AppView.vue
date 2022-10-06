@@ -1,10 +1,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import Spotify from "spotify-web-api-js";
-import MergePlaylistDialog from "@/components/MergePlaylist/MergePlaylistDialog.vue";
-import UserProfileCard from "@/components/UserProfileCard.vue";
-import UserTopArtists from "../components/UserTopArtists.vue";
-import UserTopTracks from "../components/UserTopTracks.vue";
+import NavBar from "../components/NavBar.vue";
 
 export default defineComponent({
   data() {
@@ -40,54 +37,39 @@ export default defineComponent({
         console.warn(error);
       }
     },
-    showMergeDialog() {
-      (
-        this.$refs.mergePlaylistDialog as typeof MergePlaylistDialog
-      ).toggleModal();
-    },
   },
   mounted() {
     this.getNewAccessToken();
   },
   components: {
-    MergePlaylistDialog,
-    UserProfileCard,
-    UserTopArtists,
-    UserTopTracks,
+    NavBar,
   },
 });
 </script>
 
 <template>
-  <main class="container" :key="access_token">
-    <UserProfileCard class="profile-section" />
-
-    <UserTopArtists />
-    <UserTopTracks />
-
-    <div class="actions-section">
-      <button class="action-button" v-on:click="showMergeDialog">
-        <span>Merge Playlists</span>
-      </button>
-    </div>
-  </main>
-
-  <!-- <MergePlaylistDialog ref="mergePlaylistDialog" :id="user?.id" /> -->
+  <div class="app-container">
+    <NavBar />
+    <RouterView class="app-main" />
+  </div>
 </template>
 
 <style scoped>
-.container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  flex-direction: column;
-  row-gap: 6.4rem;
-  column-gap: 5.6rem;
+.app-container {
+  position: fixed;
+  height: 100%;
+  width: 100%;
 
-  padding: 7.2rem 0;
+  display: flex;
+  align-items: stretch;
+  /* justify-items: stretch; */
 }
 
-.profile-section {
-  grid-column: span 2;
+.app-main {
+  padding: 6.4rem;
+  overflow-y: scroll;
+  flex: 1;
+  scrollbar-color: red yellow;
 }
 
 .actions-section {

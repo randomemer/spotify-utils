@@ -1,21 +1,8 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
+import { RouterView } from "vue-router";
 </script>
 
 <template>
-  <header>
-    <div class="nav-bar">
-      <span class="logo-title">Spotify Utilities</span>
-      <nav>
-        <RouterLink to="/" class="nav-link link">Home</RouterLink>
-        <RouterLink to="/app" class="nav-link link">App</RouterLink>
-        <RouterLink to="/auth" class="nav-link link"
-          >Connect Spotify</RouterLink
-        >
-      </nav>
-    </div>
-  </header>
-
   <RouterView />
 </template>
 
@@ -58,32 +45,10 @@ body {
   font-size: 3rem;
 }
 
-.nav-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 3.5rem 0;
-  margin: 0 5rem;
-}
-
-nav {
-  display: flex;
-  justify-content: space-between;
-  gap: 5rem;
-  font-size: 2rem;
-}
-
 button {
   border: none;
   cursor: pointer;
   font-family: inherit;
-}
-
-.nav-link:link,
-.nav-link:visited {
-  font-size: 1.8rem;
-  color: #1db954;
-  text-transform: uppercase;
 }
 
 .link:link,
@@ -123,6 +88,6 @@ input {
 
 *:focus {
   outline: none;
-  box-shadow: 0 0 0 0.4rem rgba(29, 185, 84, 0.5);
+  /* box-shadow: 0 0 0 0.4rem rgba(29, 185, 84, 0.5); */
 }
 </style>
