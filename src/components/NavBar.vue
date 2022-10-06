@@ -1,13 +1,10 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineAsyncComponent, defineComponent } from "vue";
 import { IonIcon } from "@ionic/vue";
 import * as ionicons from "ionicons/icons";
-import ProfileCard from "./profile-card/ProfileCard.vue";
+import ProfileCardSkeleton from "./profile-card/ProfileCardSkeleton.vue";
 
 export default defineComponent({
-  setup() {
-    return { IonIcon };
-  },
   data() {
     return {
       appNavItems: [
@@ -38,7 +35,13 @@ export default defineComponent({
       ],
     };
   },
-  components: { ProfileCard },
+  components: {
+    IonIcon,
+    ProfileCardSkeleton,
+    ProfileCard: defineAsyncComponent(
+      () => import("./profile-card/ProfileCard.vue")
+    ),
+  },
 });
 </script>
 
@@ -46,7 +49,14 @@ export default defineComponent({
   <nav class="nav-sidebar">
     <span class="logo-title">Spotify Utilities</span>
 
-    <ProfileCard />
+    <Suspense>
+      <template #default>
+        <ProfileCard />
+      </template>
+      <template #fallback>
+        <ProfileCardSkeleton></ProfileCardSkeleton>
+      </template>
+    </Suspense>
 
     <ul class="nav-links">
       <li v-for="(value, _, i) in appNavItems" :key="i">
@@ -104,7 +114,7 @@ export default defineComponent({
   display: inline-block;
   text-decoration: none;
   cursor: pointer;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   color: #bbbbbb;
 
   display: flex;

@@ -1,41 +1,25 @@
-<script lang="ts">
+<script setup lang="ts">
 import Spotify from "spotify-web-api-js";
-import { defineComponent } from "vue";
 import { IonIcon } from "@ionic/vue";
 import { earth, people } from "ionicons/icons";
+import { inject } from "vue";
+import type { VueCookies } from "vue-cookies";
 
-export default defineComponent({
-  components: { IonIcon },
-  setup() {
-    return { earth, people };
-  },
-  data() {
-    return {
-      // eslint-disable-next-line no-undef
-      user: {} as SpotifyApi.CurrentUsersProfileResponse,
-      spotify: new Spotify(),
-    };
-  },
-  computed: {
-    country() {
-      const countryName = new Intl.DisplayNames(["en"], { type: "region" });
-      return this.user.country ? countryName.of(this.user.country) : "";
-    },
-  },
-  methods: {
-    async fetchUserProfile(): Promise<void> {
-      try {
-        this.user = await this.spotify.getMe();
-      } catch (error) {
-        console.warn(error);
-      }
-    },
-  },
-  mounted() {
-    this.spotify.setAccessToken(this.$cookies.get("access_token"));
-    this.fetchUserProfile();
-  },
-});
+const wait = () => new Promise((resolve) => setTimeout(resolve, 10000));
+
+await wait();
+
+const $cookies = inject<VueCookies>("$cookies");
+if (!$cookies) throw Error("Couldn't fetch cookies");
+
+const spotify = new Spotify();
+spotify.setAccessToken($cookies.get("access_token"));
+
+const user = await spotify.getMe();
+const country = () => {
+  const countryName = new Intl.DisplayNames(["en"], { type: "region" });
+  return user.country ? countryName.of(user.country) : "";
+};
 </script>
 
 <template>
@@ -47,12 +31,12 @@ export default defineComponent({
       "
     />
 
-    <div class="card-right">
+    <div class="card-content">
       <h2 class="display-name">{{ user?.display_name }}</h2>
 
       <div class="user-data-field">
         <ion-icon :icon="earth" class="user-data-field-icon"></ion-icon>
-        <span class="user-data-field-text"> {{ country }}</span>
+        <span class="user-data-field-text"> {{ country() }}</span>
       </div>
       <div class="user-data-field">
         <ion-icon :icon="people" class="user-data-field-icon"></ion-icon>
@@ -73,17 +57,18 @@ export default defineComponent({
 }
 
 .display-name {
-  font-size: 2.4rem;
+  font-size: 2rem;
 }
 
-.card-right {
+.card-content {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 1.2rem;
 }
 
 .pfp {
-  --size: 12rem;
+  --size: 10rem;
   border-radius: var(--size);
   height: var(--size);
   width: var(--size);
@@ -97,11 +82,11 @@ export default defineComponent({
 }
 
 .user-data-field-icon {
-  font-size: 2.4rem;
+  font-size: 2rem;
   color: #1db954;
 }
 
 .user-data-field-text {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
 }
 </style>
