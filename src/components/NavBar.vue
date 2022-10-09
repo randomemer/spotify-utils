@@ -9,28 +9,38 @@ export default defineComponent({
     return {
       appNavItems: [
         {
-          icon: {
-            outline: ionicons.gridOutline,
-            filled: ionicons.grid,
-          },
-          name: "Dashboard",
-          route: "/app/dashboard",
+          sectionName: "Main",
+          links: [
+            {
+              icon: {
+                outline: ionicons.gridOutline,
+                filled: ionicons.grid,
+              },
+              name: "Dashboard",
+              route: "/app/dashboard",
+            },
+            {
+              icon: {
+                outline: ionicons.logOutOutline,
+                filled: ionicons.logOut,
+              },
+              name: "Logout",
+              route: "/app/logout",
+            },
+          ],
         },
         {
-          icon: {
-            outline: ionicons.constructOutline,
-            filled: ionicons.construct,
-          },
-          name: "Utilities",
-          route: "/app/utilities",
-        },
-        {
-          icon: {
-            outline: ionicons.logOutOutline,
-            filled: ionicons.logOut,
-          },
-          name: "Logout",
-          route: "/app/logout",
+          sectionName: "Insights",
+          links: [
+            {
+              icon: {
+                outline: ionicons.timeOutline,
+                filled: ionicons.time,
+              },
+              name: "History",
+              route: "/app/history",
+            },
+          ],
         },
       ],
     };
@@ -46,9 +56,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <nav class="nav-sidebar">
+  <aside class="sidebar">
     <span class="logo-title">Spotify Utilities</span>
 
+    <!-- Profile Card -->
     <Suspense>
       <template #default>
         <ProfileCard />
@@ -58,32 +69,44 @@ export default defineComponent({
       </template>
     </Suspense>
 
-    <ul class="nav-links">
-      <li v-for="(value, _, i) in appNavItems" :key="i">
-        <router-link
-          class="nav-link"
-          :to="value.route"
-          :class="{
-            'nav-link--active': $router.currentRoute.value.path === value.route,
-          }"
-        >
-          <ion-icon
-            :icon="
-              $router.currentRoute.value.path === value.route
-                ? value.icon.filled
-                : value.icon.outline
-            "
-          />
-          <span>{{ value.name }}</span>
-        </router-link>
-      </li>
-    </ul>
-  </nav>
+    <!-- Tabs area -->
+    <nav class="nav-links-area">
+      <div class="link-section" v-for="(section, _, i) in appNavItems" :key="i">
+        <span class="link-section-name">{{ section.sectionName }}</span>
+        <ul class="nav-links">
+          <li v-for="(value, _, i) in section.links" :key="i">
+            <router-link
+              class="nav-link"
+              :to="value.route"
+              :class="{
+                'nav-link--active':
+                  $router.currentRoute.value.path === value.route,
+              }"
+            >
+              <ion-icon
+                class="route-icon"
+                :icon="
+                  $router.currentRoute.value.path === value.route
+                    ? value.icon.filled
+                    : value.icon.outline
+                "
+              />
+              <span>{{ value.name }}</span>
+            </router-link>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
 </template>
 
 <style scoped>
-.nav-sidebar {
-  width: 15%;
+.logo-title {
+  font-size: 3rem;
+  text-align: center;
+}
+
+.sidebar {
   height: 100%;
   padding: 2.4rem;
   background-color: rgba(255, 255, 255, 0.1);
@@ -94,12 +117,27 @@ export default defineComponent({
   align-items: center;
 }
 
-.nav-sidebar * {
+.sidebar * {
   transition: all 0.1s;
 }
 
-.logo-title {
-  font-size: 3rem;
+.nav-links-area {
+  display: flex;
+  align-self: stretch;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.link-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.link-section-name {
+  text-transform: uppercase;
+  font-size: 1.4rem;
+  color: #bbb;
+  margin-bottom: 1.8rem;
 }
 
 .nav-links {
@@ -107,7 +145,8 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   list-style: none;
-  gap: 3.6rem;
+  gap: 1.6rem;
+  margin-left: 1.6rem;
 }
 
 .nav-link {
@@ -115,7 +154,7 @@ export default defineComponent({
   text-decoration: none;
   cursor: pointer;
   font-size: 1.6rem;
-  color: #bbbbbb;
+  color: white;
 
   display: flex;
   align-items: center;
@@ -124,5 +163,9 @@ export default defineComponent({
 
 .nav-link--active {
   color: #1db954;
+}
+
+.route-icon {
+  font-size: 2.2rem;
 }
 </style>

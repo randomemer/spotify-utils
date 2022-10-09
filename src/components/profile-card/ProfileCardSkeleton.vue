@@ -12,12 +12,11 @@
 .skeleton {
   background-color: gray;
   border-radius: 5px;
-  animation: pulse-background 1s infinite;
+  animation: pulse-background 2s infinite;
 }
 
 .card {
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 2.4rem;
 }
@@ -25,7 +24,7 @@
 .display-name {
   content: " ";
   height: 2rem;
-  width: 16rem;
+  width: 100%;
 }
 
 .card-right {
@@ -33,10 +32,11 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 1.2rem;
+  width: 100%;
 }
 
 .pfp {
-  --size: 10rem;
+  --size: 6.4rem;
   border-radius: var(--size);
   height: var(--size);
   width: var(--size);
@@ -48,6 +48,7 @@
   align-items: center;
   gap: 1.2rem;
   width: 10rem;
+  /* width: 75%; */
   height: 1.5rem;
 }
 
@@ -57,7 +58,7 @@
   }
 
   50% {
-    background-color: rgba(128, 128, 128, 0.501);
+    background-color: rgba(128, 128, 128, 0.5);
   }
 
   100% {

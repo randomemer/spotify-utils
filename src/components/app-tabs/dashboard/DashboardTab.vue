@@ -1,16 +1,19 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import UserTopArtists from "../../components/UserTopArtists.vue";
-import UserTopTracks from "../../components/UserTopTracks.vue";
+import UserTopArtists from "./UserTopArtists.vue";
+import UserTopTracks from "./UserTopTracks.vue";
+import TopGenres from "./top-genres/TopGenres.vue";
 
 export default defineComponent({
-  components: { UserTopArtists, UserTopTracks },
+  components: { UserTopArtists, UserTopTracks, TopGenres },
 });
 </script>
 
 <template>
   <main class="app-main">
-    <!-- <UserProfileCard class="profile-section" /> -->
+    <Suspense>
+      <TopGenres />
+    </Suspense>
 
     <UserTopArtists />
     <UserTopTracks />

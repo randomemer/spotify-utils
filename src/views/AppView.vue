@@ -1,14 +1,11 @@
 <script lang="ts">
+import app from "@/main";
 import { defineComponent } from "vue";
-import Spotify from "spotify-web-api-js";
 import NavBar from "../components/NavBar.vue";
 
 export default defineComponent({
   data() {
     return {
-      // eslint-disable-next-line no-undef
-      user: {} as SpotifyApi.CurrentUsersProfileResponse,
-      spotify: new Spotify(),
       access_token: this.$cookies.get("access_token") as string,
     };
   },
@@ -32,7 +29,7 @@ export default defineComponent({
 
         const body = await response.json();
         this.$cookies.set("access_token", body.access_token);
-        this.spotify.setAccessToken(body.access_token);
+        app.config.globalProperties.access_token = body.access_token;
       } catch (error) {
         console.warn(error);
       }
@@ -60,9 +57,9 @@ export default defineComponent({
   height: 100%;
   width: 100%;
 
-  display: flex;
+  display: grid;
+  grid-template-columns: 15fr 85fr;
   align-items: stretch;
-  /* justify-items: stretch; */
 }
 
 .app-main {

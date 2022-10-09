@@ -3,7 +3,7 @@ import Spotify from "spotify-web-api-js";
 import { defineComponent } from "vue";
 import { IonIcon } from "@ionic/vue";
 import { chevronForward, star } from "ionicons/icons";
-import ChipContainer from "./Chips/ChipContainer.vue";
+import ChipContainer from "../../Chips/ChipContainer.vue";
 import { UserTopItemsSort } from "@/types/types";
 
 export default defineComponent({
@@ -17,7 +17,7 @@ export default defineComponent({
   data() {
     return {
       // eslint-disable-next-line no-undef
-      topArtists: {} as SpotifyApi.UsersTopArtistsResponse,
+      topTracks: {} as SpotifyApi.UsersTopTracksResponse,
       spotify: new Spotify(),
       timeRange: UserTopItemsSort.Medium,
       timeRanges: {
@@ -30,7 +30,7 @@ export default defineComponent({
   methods: {
     async getUserTopItems(range: UserTopItemsSort): Promise<void> {
       try {
-        this.topArtists = await this.spotify.getMyTopArtists({
+        this.topTracks = await this.spotify.getMyTopTracks({
           time_range: range,
         });
       } catch (error) {
@@ -39,6 +39,7 @@ export default defineComponent({
     },
   },
   mounted() {
+    this.spotify.setAccessToken(this.$cookies.get("access_token"));
     this.getUserTopItems(this.timeRange);
   },
 });
@@ -46,7 +47,7 @@ export default defineComponent({
 
 <template>
   <div class="card">
-    <h3 class="heading-tertiary">Your Top Artists</h3>
+    <h3 class="heading-tertiary">Your Top Tracks</h3>
 
     <ChipContainer
       :defaultChipValue="timeRange"
@@ -54,41 +55,41 @@ export default defineComponent({
       :callback="getUserTopItems"
     />
 
-    <div class="artist-list">
+    <div class="track-list">
       <div
-        class="artist-list-item"
-        v-for="artist in topArtists.items?.slice(0, 5)"
-        :key="artist.id"
+        class="track-list-item"
+        v-for="track in topTracks.items?.slice(0, 5)"
+        :key="track.id"
       >
         <img
-          class="artist-image"
-          alt="Artist Image"
-          :src="artist.images[0].url"
+          class="track-image"
+          alt="Track Image"
+          :src="track.album.images[0].url"
         />
 
-        <div class="artist-right">
-          <div class="artist-title-row">
-            <span class="artist-name">{{ artist.name }}</span>
-            <div class="artist-popularity">
+        <div class="track-right">
+          <div class="track-title-row">
+            <span class="track-name">{{ track.name }}</span>
+            <div class="track-popularity">
               <ion-icon :icon="star" />
-              <span class=""> {{ artist.popularity }} %</span>
+              <span class=""> {{ track.popularity }} %</span>
             </div>
           </div>
 
           <div>
             <span
-              class="artist-genre"
-              v-for="genre in artist.genres.slice(0, 3)"
-              :key="genre"
+              class="track-genre"
+              v-for="artist in track.artists.slice(0, 3)"
+              :key="artist.id"
             >
-              {{ genre }}
+              {{ artist.name }}
             </span>
           </div>
         </div>
       </div>
     </div>
 
-    <a class="action-button link" href="#" v-if="topArtists.items?.length > 5">
+    <a class="action-button link" href="#" v-if="topTracks.items?.length > 5">
       <span>View More</span>
       <ion-icon :icon="chevronForward" />
     </a>
@@ -110,19 +111,19 @@ export default defineComponent({
   transition: all 0.3s;
 }
 
-.artist-list {
+.track-list {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.artist-list-item {
+.track-list-item {
   display: flex;
   align-items: center;
   gap: 2rem;
 }
 
-.artist-image {
+.track-image {
   --size: 5rem;
   height: var(--size);
   width: var(--size);
@@ -130,19 +131,19 @@ export default defineComponent({
   object-fit: cover;
 }
 
-.artist-right {
+.track-right {
   display: flex;
   flex-direction: column;
   flex: 1;
   gap: 1rem;
 }
 
-.artist-title-row {
+.track-title-row {
   display: flex;
   justify-content: space-between;
 }
 
-.artist-name {
+.track-name {
   font-size: 1.8rem;
 }
 
@@ -165,25 +166,25 @@ export default defineComponent({
   background-color: rgba(29, 185, 84, 0.2);
 }
 
-.artist-popularity {
+.track-popularity {
   display: flex;
   gap: 1rem;
   align-items: center;
   font-size: 1.5rem;
 }
 
-.artist-popularity ion-icon {
+.track-popularity ion-icon {
   color: #1db954;
   font-size: 2rem;
 }
 
-.artist-genre {
+.track-genre {
   font-size: 1.2rem;
   color: #bbbbbb;
   text-transform: capitalize;
 }
 
-.artist-genre:not(:last-child)::after {
+.track-genre:not(:last-child)::after {
   content: " | ";
 }
 </style>

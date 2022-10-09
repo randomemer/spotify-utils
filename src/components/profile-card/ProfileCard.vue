@@ -5,15 +5,14 @@ import { earth, people } from "ionicons/icons";
 import { inject } from "vue";
 import type { VueCookies } from "vue-cookies";
 
-const wait = () => new Promise((resolve) => setTimeout(resolve, 10000));
-
-await wait();
-
 const $cookies = inject<VueCookies>("$cookies");
 if (!$cookies) throw Error("Couldn't fetch cookies");
 
 const spotify = new Spotify();
 spotify.setAccessToken($cookies.get("access_token"));
+
+// const wait = () => new Promise((res) => setTimeout(res, 10000));
+// await wait();
 
 const user = await spotify.getMe();
 const country = () => {
@@ -38,11 +37,12 @@ const country = () => {
         <ion-icon :icon="earth" class="user-data-field-icon"></ion-icon>
         <span class="user-data-field-text"> {{ country() }}</span>
       </div>
+
       <div class="user-data-field">
         <ion-icon :icon="people" class="user-data-field-icon"></ion-icon>
-        <span class="user-data-field-text"
-          >{{ user.followers?.total }} Followers</span
-        >
+        <span class="user-data-field-text">
+          {{ user.followers?.total }} Followers
+        </span>
       </div>
     </div>
   </div>
@@ -51,13 +51,12 @@ const country = () => {
 <style scoped>
 .card {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 2.4rem;
 }
 
 .display-name {
-  font-size: 2rem;
+  font-size: 1.8rem;
 }
 
 .card-content {
@@ -68,7 +67,7 @@ const country = () => {
 }
 
 .pfp {
-  --size: 10rem;
+  --size: 6.4rem;
   border-radius: var(--size);
   height: var(--size);
   width: var(--size);
@@ -82,11 +81,12 @@ const country = () => {
 }
 
 .user-data-field-icon {
-  font-size: 2rem;
+  font-size: 1.8rem;
   color: #1db954;
 }
 
 .user-data-field-text {
   font-size: 1.4rem;
+  color: #bbbbbb;
 }
 </style>

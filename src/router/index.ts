@@ -1,13 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import AuthView from "../views/AuthView.vue";
+import AppView from "../views/AppView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   scrollBehavior(to) {
-    // Change title of the page accordingly
-    // document.title = to.name;
-
     // Smooth scrolling for sections of page
     if (to.hash) {
       const element = document.querySelector(to.hash);
@@ -30,19 +28,32 @@ const router = createRouter({
     {
       path: "/app",
       name: "app",
-      component: () => import("../views/AppView.vue"),
+      component: AppView,
       children: [
         {
-          path: "dashboard",
-          component: () => import("../components/app-tabs/DashboardTab.vue"),
+          path: "",
+          redirect() {
+            console.log("redirected");
+            return {
+              path: "app/dashboard",
+            };
+          },
         },
         {
-          path: "utilities",
-          component: () => import("../components/app-tabs/DashboardTab.vue"),
+          path: "dashboard",
+          component: () =>
+            import("../components/app-tabs/dashboard/DashboardTab.vue"),
+        },
+        {
+          path: "history",
+          component: () =>
+            import("../components/app-tabs/history/HistoryTab.vue"),
         },
         {
           path: "logout",
-          component: () => import("../components/app-tabs/DashboardTab.vue"),
+          redirect() {
+            return { path: "home" };
+          },
         },
       ],
     },
