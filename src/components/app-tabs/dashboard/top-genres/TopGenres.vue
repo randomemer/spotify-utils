@@ -1,11 +1,27 @@
 <script setup lang="ts">
-import { inject } from "vue";
+import { inject, ref } from "vue";
 import type { VueCookies } from "vue-cookies";
 import Spotify from "spotify-web-api-js";
 import { UserTopItemsSort } from "@/types/types";
 import { getAllTopTracks, convertRemToPixels } from "@/utilities/functions";
-import VueApexCharts from "vue3-apexcharts";
-import type { ApexOptions } from "apexcharts";
+// import DonutChart from "../../../DonutChart";
+import { Doughnut } from "vue-chartjs";
+import {
+  Chart,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  CategoryScale,
+} from "chart.js";
+import type {
+  Plugin,
+  ChartData,
+  ChartOptions,
+  DoughnutControllerChartOptions,
+} from "chart.js";
+
+Chart.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
 const $cookies = inject<VueCookies>("$cookies");
 if (!$cookies) throw new Error("Couldn't find cookies");
@@ -49,74 +65,56 @@ tracks.forEach((track) => {
 const sortedGenres = Array.from(genres).sort(
   (genreA, genreB) => genreB[1] - genreA[1]
 );
-const total = sortedGenres.reduce((prev, cur) => prev + cur[1], 0);
-// Create a conic gradient using the data
-// prettier-ignore
-// eslint-disable-next-line prettier/prettier
-const materialColours = ["#f44336", "#00bcd4", "#9c27b0", "#03a9f4", "#4caf50", "#e91e63", "#3f51b5", "#ffc107", "#673ab7", "#009688"];
-let coloured = 0;
-const coloursCount = Math.min(10, sortedGenres.length);
-const topGenres: {
-  genre: string;
-  value: string;
-  color: string;
-  gradient: string;
-}[] = [];
-for (let i = 0; i < coloursCount; i++) {
-  const percent = (sortedGenres[i][1] / total) * 100;
-  topGenres.push({
-    genre: sortedGenres[i][0],
-    value: percent.toFixed(2),
-    color: materialColours[i],
-    gradient: `${materialColours[i]} ${coloured}% ${coloured + percent}%`,
-  });
-  coloured += percent;
-}
-if (sortedGenres.length > 10) {
-  topGenres.push({
-    genre: "other",
-    value: (100 - coloured).toFixed(2),
-    color: "#795548",
-    gradient: `#795548 ${coloured}% 100%`,
-  });
-}
-const pieChart = `conic-gradient(${topGenres
-  .map((genre) => genre.gradient)
-  .join(", ")})`;
+const genreSum = sortedGenres.reduce((prev, cur) => prev + cur[1], 0);
 
-const donutOptions: ApexOptions = {
-  chart: {
-    type: "donut",
-    fontFamily: "Gotham, sans-serif",
-    foreColor: "#ffffff ",
-  },
-  dataLabels: { enabled: false },
-  series: [
-    ...sortedGenres.slice(0, 10).map((genre) => genre[1]),
-    sortedGenres.slice(10).reduce((prev, cur) => prev + cur[1], 0),
-  ],
+// prettier-ignore
+const materialColours = ["#f44336", "#00bcd4", "#9c27b0", "#03a9f4", "#4caf50", "#e91e63", "#3f51b5", "#ffc107", "#673ab7", "#009688", "#bbbbbb"];
+
+const data: any = {
   labels: [...sortedGenres.slice(0, 10).map((genre) => genre[0]), "other"],
-  tooltip: {
-    custom: function ({ series, seriesIndex, dataPointIndex }) {
-      return (
-        '<div class="arrow_box">' +
-        "<span>" +
-        series[seriesIndex][dataPointIndex] +
-        "</span>" +
-        "</div>"
-      );
+  datasets: [
+    {
+      backgroundColor: materialColours,
+      data: [
+        ...sortedGenres.slice(0, 10).map((genre) => genre[1]),
+        sortedGenres.slice(10).reduce((prev, cur) => prev + cur[1], 0),
+      ],
     },
-  },
-  plotOptions: { pie: { donut: { size: "28px" } } },
-  legend: {
-    // tooltipHoverFormatter: function (legendName, opts) {
-    //   return "";
-    // },
-    fontSize: `${convertRemToPixels(1.4)}px`,
-  },
+  ],
 };
 
-console.log(donutOptions);
+const chartOptions: any = {
+  radius: convertRemToPixels(12.8),
+  cutout: "60%",
+  responsive: true,
+  plugins: {
+    tooltip: {
+      displayColors: false,
+      bodyFont: {
+        family: "Gotham, sans-serif",
+        size: convertRemToPixels(1.2),
+      },
+      callbacks: {
+        label: function (context) {
+          const dataPoint = context.dataset.data[context.dataIndex];
+          const percent = ((dataPoint / genreSum) * 100).toFixed(2);
+          return `${context.label} : ${percent}%`;
+        },
+      },
+    },
+    legend: {
+      position: "right",
+      labels: {
+        boxWidth: convertRemToPixels(1.4),
+        color: "white",
+        font: {
+          family: "Gotham, sans-serif",
+          size: convertRemToPixels(1.4),
+        },
+      },
+    },
+  },
+};
 </script>
 
 <template>
@@ -127,26 +125,9 @@ console.log(donutOptions);
       You've listened to {{ sortedGenres.length }} different genres.
     </p>
 
-    <VueApexCharts
-      class="apex-donut-chart"
-      :options="donutOptions"
-      :series="donutOptions.series"
-    />
-
-    <!-- <div class="data-area">
-      <div class="pie-chart" :style="{ background: pieChart }"></div>
-
-      <ul class="legend">
-        <li class="genre" v-for="(genre, index) in topGenres" :key="index">
-          <span
-            class="genre-colour"
-            :style="{ backgroundColor: genre.color }"
-          ></span>
-          <span>{{ genre.value }} % </span>
-          <span>{{ genre.genre }}</span>
-        </li>
-      </ul>
-    </div> -->
+    <div class="donut-chart">
+      <Doughnut :chart-data="data" :chart-options="chartOptions" ref="donut" />
+    </div>
   </div>
 </template>
 
@@ -171,27 +152,31 @@ console.log(donutOptions);
   gap: 4.8rem;
 }
 
-/* .apex-donut-chart {
-  width: 12.6rem;
-  height: 9.6rem;
-} */
-
 .summary {
   font-size: 1.6rem;
 }
 
-.pie-chart {
-  --diameter: 18rem;
-  height: var(--diameter);
-  width: var(--diameter);
-  border-radius: 50%;
+.chatjs {
+  display: fixed;
+}
+
+:deep(.donut-chart) {
+  /* position: relative; */
+  /* height: 10rem; */
+}
+
+:deep(.donut-tooltip) {
+  /* background-color: v-bind(tooltipColor); */
+  text-transform: capitalize;
+  font-size: 1.2rem;
+  padding: 0.8rem;
+  display: block;
 }
 
 .legend {
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 2.4rem;
-  /* grid-template-rows: repeat(6, 1fr); */
   align-items: center;
   list-style: none;
 }

@@ -69,19 +69,10 @@ export default defineComponent({
   scrollbar-color: red yellow;
 }
 
-.actions-section {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-}
-
 .action-button {
   background-color: #1db954;
   border-radius: 2.5rem;
   padding: 1.2rem 0;
-}
-
-.playlists-section {
-  padding: 4.2rem 0;
 }
 
 .playlists {

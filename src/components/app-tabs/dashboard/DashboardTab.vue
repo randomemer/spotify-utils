@@ -3,16 +3,22 @@ import { defineComponent } from "vue";
 import UserTopArtists from "./UserTopArtists.vue";
 import UserTopTracks from "./UserTopTracks.vue";
 import TopGenres from "./top-genres/TopGenres.vue";
+import TopGenresSkeleton from "./top-genres/TopGenresSkeleton.vue";
 
 export default defineComponent({
-  components: { UserTopArtists, UserTopTracks, TopGenres },
+  components: { UserTopArtists, UserTopTracks, TopGenres, TopGenresSkeleton },
 });
 </script>
 
 <template>
   <main class="app-main">
     <Suspense>
-      <TopGenres />
+      <template #default>
+        <TopGenres />
+      </template>
+      <template #fallback>
+        <TopGenresSkeleton />
+      </template>
     </Suspense>
 
     <UserTopArtists />
@@ -26,9 +32,5 @@ export default defineComponent({
   grid-template-columns: repeat(2, 1fr);
   flex-direction: column;
   gap: 4.8rem;
-}
-
-.profile-section {
-  grid-column: span 2;
 }
 </style>
