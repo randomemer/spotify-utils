@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { inject, ref } from "vue";
+import { inject } from "vue";
 import type { VueCookies } from "vue-cookies";
 import Spotify from "spotify-web-api-js";
 import { UserTopItemsSort } from "@/types/types";
 import { getAllTopTracks, convertRemToPixels } from "@/utilities/functions";
-// import DonutChart from "../../../DonutChart";
 import { Doughnut } from "vue-chartjs";
 import {
   Chart,
@@ -14,12 +13,8 @@ import {
   ArcElement,
   CategoryScale,
 } from "chart.js";
-import type {
-  Plugin,
-  ChartData,
-  ChartOptions,
-  DoughnutControllerChartOptions,
-} from "chart.js";
+
+const start = Date.now();
 
 Chart.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
@@ -40,8 +35,7 @@ tracks.forEach((track) => {
   });
 });
 
-// Get artist data in batches of size 50 in accordance with
-// Spotify API rate limits
+// Get artist data in batches of size 50 in accordance with Spotify API rate limits
 // eslint-disable-next-line no-undef
 const knownArtists = new Map<string, SpotifyApi.ArtistObjectFull>();
 const artistsArr = Array.from(unknownArtists);
@@ -87,6 +81,7 @@ const chartOptions: any = {
   radius: convertRemToPixels(12.8),
   cutout: "60%",
   responsive: true,
+  maintainAspectRatio: false,
   plugins: {
     tooltip: {
       displayColors: false,
@@ -95,9 +90,9 @@ const chartOptions: any = {
         size: convertRemToPixels(1.2),
       },
       callbacks: {
-        label: function (context) {
+        label: function (context: any) {
           const dataPoint = context.dataset.data[context.dataIndex];
-          const percent = ((dataPoint / genreSum) * 100).toFixed(2);
+          const percent: string = ((dataPoint / genreSum) * 100).toFixed(2);
           return `${context.label} : ${percent}%`;
         },
       },
@@ -115,6 +110,7 @@ const chartOptions: any = {
     },
   },
 };
+console.log(((Date.now() - start) / 1000).toFixed(3));
 </script>
 
 <template>
@@ -125,8 +121,12 @@ const chartOptions: any = {
       You've listened to {{ sortedGenres.length }} different genres.
     </p>
 
-    <div class="donut-chart">
-      <Doughnut :chart-data="data" :chart-options="chartOptions" ref="donut" />
+    <div class="donut-chart-container">
+      <Doughnut
+        :chart-data="data"
+        :chart-options="chartOptions"
+        chart-id="genres-donut"
+      />
     </div>
   </div>
 </template>
@@ -136,11 +136,8 @@ const chartOptions: any = {
   display: flex;
   flex-direction: column;
   gap: 2.4rem;
-
-  grid-column: span 2;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 2.4rem;
+  /* grid-column: span 2; */
+  /* grid-column: 75fr; */
 }
 
 .card * {
@@ -160,10 +157,14 @@ const chartOptions: any = {
   display: fixed;
 }
 
-:deep(.donut-chart) {
-  /* position: relative; */
-  /* height: 10rem; */
-}
+/* .donut-chart-container {
+  display: flex;
+  justify-content: space-between;
+} */
+
+/* :deep(#genres-donut) {
+  background-color: grey;
+} */
 
 :deep(.donut-tooltip) {
   /* background-color: v-bind(tooltipColor); */

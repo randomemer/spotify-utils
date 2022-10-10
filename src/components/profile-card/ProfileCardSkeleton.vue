@@ -9,12 +9,6 @@
 </template>
 
 <style scoped>
-.skeleton {
-  background-color: gray;
-  border-radius: 5px;
-  animation: pulse-background 2s infinite;
-}
-
 .card {
   display: flex;
   align-items: center;
@@ -50,19 +44,5 @@
   width: 10rem;
   /* width: 75%; */
   height: 1.5rem;
-}
-
-@keyframes pulse-background {
-  0% {
-    background-color: gray;
-  }
-
-  50% {
-    background-color: rgba(128, 128, 128, 0.5);
-  }
-
-  100% {
-    background-color: gray;
-  }
 }
 </style>

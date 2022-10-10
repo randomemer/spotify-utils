@@ -23,20 +23,7 @@ let history = ref(
 );
 console.log(history.value);
 
-watch(history, async () => {
-  console.log(history.value.cursors);
-  // console.log(newPage);
-  // const response = await fetch(history.value.next, {
-  //   headers: {
-  //     Authorization: `Bearer ${$cookies.get("access_token")}`,
-  //     "Content-Type": "application/json",
-  //   },
-  // });
-  // history.value =
-  //   // eslint-disable-next-line no-undef
-  //   (await response.json()) as SpotifyApi.UsersRecentlyPlayedTracksResponse;
-  // console.log(history.value.cursors);
-});
+watch(history, async () => {});
 
 const dateFormat = (timestamp: number) =>
   `${new Date(timestamp).toDateString()}`;
@@ -48,7 +35,7 @@ const previousPage = async () => {
   curPage.value = Math.max(1, curPage.value - 1);
   history.value = await spotify.getMyRecentlyPlayedTracks({
     limit: 20,
-    before: Number(history.value.cursors.after),
+    after: Number(history.value.cursors.after),
   });
 
   // router.push({

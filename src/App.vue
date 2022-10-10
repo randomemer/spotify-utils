@@ -19,6 +19,11 @@ import { RouterView } from "vue-router";
   --green: #1db954;
 }
 
+*:focus {
+  outline: none;
+  /* box-shadow: 0 0 0 0.4rem rgba(29, 185, 84, 0.5); */
+}
+
 html {
   /* font-size: 10px; */
   font-size: 62.5%;
@@ -43,6 +48,12 @@ body {
 
 .logo-title {
   font-size: 3rem;
+}
+
+input {
+  border: none;
+  font-family: inherit;
+  color: inherit;
 }
 
 button {
@@ -80,14 +91,23 @@ button {
   line-height: 1.2;
 }
 
-input {
-  border: none;
-  font-family: inherit;
-  color: inherit;
+.skeleton {
+  background-color: gray;
+  border-radius: 5px;
+  animation: pulse-background 1.5s infinite;
 }
 
-*:focus {
-  outline: none;
-  /* box-shadow: 0 0 0 0.4rem rgba(29, 185, 84, 0.5); */
+@keyframes pulse-background {
+  0% {
+    background-color: gray;
+  }
+
+  50% {
+    background-color: rgba(128, 128, 128, 0.5);
+  }
+
+  100% {
+    background-color: gray;
+  }
 }
 </style>
