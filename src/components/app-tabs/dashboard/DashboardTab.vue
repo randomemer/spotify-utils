@@ -23,13 +23,16 @@ export default defineComponent({
     <Suspense>
       <template #default>
         <TopGenres />
-        <!-- <TopGenresSkeleton /> -->
       </template>
       <template #fallback>
         <TopGenresSkeleton />
       </template>
     </Suspense>
-    <ActivityCard />
+    <Suspense>
+      <template #default>
+        <ActivityCard />
+      </template>
+    </Suspense>
 
     <!-- Second Row -->
     <UserTopArtists />

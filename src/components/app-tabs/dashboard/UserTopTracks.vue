@@ -3,16 +3,16 @@ import Spotify from "spotify-web-api-js";
 import { defineComponent } from "vue";
 import { IonIcon } from "@ionic/vue";
 import { chevronForward, star } from "ionicons/icons";
-import ChipContainer from "../../Chips/ChipContainer.vue";
 import { UserTopItemsSort } from "@/types/types";
+import DropdownMenu from "../../menu-select/DropdownMenu.vue";
 
 export default defineComponent({
   components: {
     IonIcon,
-    ChipContainer,
+    DropdownMenu,
   },
   setup() {
-    return { chevronForward, star };
+    return { chevronForward, star, UserTopItemsSort };
   },
   data() {
     return {
@@ -47,13 +47,20 @@ export default defineComponent({
 
 <template>
   <div class="card">
-    <h3 class="heading-tertiary">Your Top Tracks</h3>
-
-    <ChipContainer
-      :defaultChipValue="timeRange"
-      :chipsData="timeRanges"
-      :callback="getUserTopItems"
-    />
+    <div class="card-title-row">
+      <h3 class="heading-tertiary">Your Top Tracks</h3>
+      <DropdownMenu
+        class="time-period-dropdown"
+        name="select-track-period"
+        v-on:value-change="getUserTopItems"
+        :default-value="UserTopItemsSort.Medium"
+        :options="[
+          { label: 'All Time', value: UserTopItemsSort.Long },
+          { label: '6 Months', value: UserTopItemsSort.Medium },
+          { label: '4 Weeks', value: UserTopItemsSort.Short },
+        ]"
+      />
+    </div>
 
     <div class="track-list">
       <div
@@ -109,6 +116,17 @@ export default defineComponent({
 
 .card * {
   transition: all 0.3s;
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.time-period-dropdown {
+  float: right;
+  font-size: 1.4rem;
 }
 
 .track-list {

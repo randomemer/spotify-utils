@@ -14,8 +14,6 @@ import {
   CategoryScale,
 } from "chart.js";
 
-const start = Date.now();
-
 Chart.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
 const $cookies = inject<VueCookies>("$cookies");
@@ -110,7 +108,6 @@ const chartOptions: any = {
     },
   },
 };
-console.log(((Date.now() - start) / 1000).toFixed(3));
 </script>
 
 <template>
