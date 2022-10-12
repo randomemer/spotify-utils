@@ -1,10 +1,10 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import UserTopArtists from "./UserTopArtists.vue";
-import UserTopTracks from "./UserTopTracks.vue";
-import TopGenres from "./top-genres/TopGenres.vue";
-import TopGenresSkeleton from "./top-genres/TopGenresSkeleton.vue";
-import ActivityCard from "./ActivityCard.vue";
+import UserTopArtists from "@/components/dashboard/UserTopArtists.vue";
+import UserTopTracks from "@/components/dashboard/UserTopTracks.vue";
+import TopGenres from "@/components/dashboard/top-genres/TopGenres.vue";
+import TopGenresSkeleton from "@/components/dashboard/top-genres/TopGenresSkeleton.vue";
+import ActivityCard from "@/components/dashboard/ActivityCard.vue";
 
 export default defineComponent({
   components: {

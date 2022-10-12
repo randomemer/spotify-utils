@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
-import AuthView from "../views/AuthView.vue";
-import AppView from "../views/AppView.vue";
+import HomeView from "@/views/HomeView.vue";
+import AuthView from "@/views/AuthView.vue";
+import AppView from "@/views/AppView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -41,13 +41,11 @@ const router = createRouter({
         },
         {
           path: "dashboard",
-          component: () =>
-            import("../components/app-tabs/dashboard/DashboardTab.vue"),
+          component: () => import("@/views/app/DashboardTab.vue"),
         },
         {
           path: "history",
-          component: () =>
-            import("../components/app-tabs/history/HistoryTab.vue"),
+          component: () => import("@/views/app/HistoryTab.vue"),
         },
         {
           path: "logout",

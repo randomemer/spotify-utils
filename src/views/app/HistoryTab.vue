@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import HistoryTable from "./HistoryTable.vue";
+import HistoryTable from "@/components/history/HistoryTable.vue";
 </script>
 
 <template>
