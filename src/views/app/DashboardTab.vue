@@ -18,7 +18,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <main class="app-main">
+  <main class="dashboard">
     <!-- First Row -->
     <Suspense>
       <template #default>
@@ -41,7 +41,7 @@ export default defineComponent({
 </template>
 
 <style scoped>
-.app-main {
+.dashboard {
   display: grid;
   grid-template-columns: repeat(2, 50fr);
   flex-direction: column;

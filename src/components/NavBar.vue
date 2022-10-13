@@ -30,7 +30,7 @@ export default defineComponent({
           ],
         },
         {
-          sectionName: "Insights",
+          sectionName: "Utilities",
           links: [
             {
               icon: {
@@ -39,6 +39,14 @@ export default defineComponent({
               },
               name: "History",
               route: "/app/history",
+            },
+            {
+              icon: {
+                outline: ionicons.searchOutline,
+                filled: ionicons.search,
+              },
+              name: "Recommendations",
+              route: "/app/recommends",
             },
           ],
         },

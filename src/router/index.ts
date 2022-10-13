@@ -48,6 +48,10 @@ const router = createRouter({
           component: () => import("@/views/app/HistoryTab.vue"),
         },
         {
+          path: "recommends",
+          component: () => import("@/views/app/RecommendsTab.vue"),
+        },
+        {
           path: "logout",
           redirect() {
             return { path: "home" };

@@ -3,3 +3,5 @@ export enum UserTopItemsSort {
   Medium = "medium_term",
   Short = "short_term",
 }
+
+export type SpotifySearchFilter = "track" | "artist" | "genre";

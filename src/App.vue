@@ -7,11 +7,6 @@ import { RouterView } from "vue-router";
 </template>
 
 <style>
-@font-face {
-  font-family: "Gotham", sans-serif;
-  src: url("@/assets/gotham.otf");
-}
-
 * {
   padding: 0;
   margin: 0;
@@ -35,7 +30,7 @@ html {
 body {
   background-color: #191414;
   color: white;
-  font-family: "Gotham";
+  font-family: "Lexend Deca", sans-serif;
   line-height: 1;
 }
 

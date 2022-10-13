@@ -84,7 +84,7 @@ const chartOptions: any = {
     tooltip: {
       displayColors: false,
       bodyFont: {
-        family: "Gotham, sans-serif",
+        family: "Lexend Deca, sans-serif",
         size: convertRemToPixels(1.2),
       },
       callbacks: {
@@ -101,7 +101,7 @@ const chartOptions: any = {
         boxWidth: convertRemToPixels(1.4),
         color: "white",
         font: {
-          family: "Gotham, sans-serif",
+          family: "Lexend Deca, sans-serif",
           size: convertRemToPixels(1.4),
         },
       },

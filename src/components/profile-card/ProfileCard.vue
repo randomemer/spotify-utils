@@ -26,7 +26,7 @@ const country = () => {
     <img
       class="pfp"
       :src="
-        (user.images && user.images[0].url) || 'src/assets/default-pfp.jpeg'
+        (user.images && user.images[0]?.url) || '/src/assets/default-pfp.jpeg'
       "
     />
 
