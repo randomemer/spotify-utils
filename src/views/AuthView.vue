@@ -58,7 +58,7 @@ export default defineComponent({
           response_type: "code",
           client_id: import.meta.env.VITE_CLIENT_ID,
           scope: scopes.join(" "),
-          state: this.$cookies.get("state"),
+          // state: this.$cookies.get("state"),
           redirect_uri: `${location.origin}/auth`,
         }
       )}`;

@@ -14,14 +14,14 @@ export default defineComponent({
     return {
       spotify: new Spotify(),
       // eslint-disable-next-line no-undef
-      searchResults: {} as SpotifyApi.SearchResponse,
+      searchResults: undefined as SpotifyApi.SearchResponse | undefined,
       results: [] as any[] | undefined,
       searchFilter: "track" as SpotifySearchFilter,
       seeds: {
         seed_tracks: new Map(),
         seed_artists: new Map(),
         seed_genres: new Map(),
-      } as { [key: string]: Map<string, object> },
+      } as { [key: string]: Map<string, any> },
       // eslint-disable-next-line no-undef
       recommendedTracks: {} as SpotifyApi.RecommendationsFromSeedsResponse,
     };
@@ -57,6 +57,8 @@ export default defineComponent({
       }
     },
     async generate() {
+      this.searchResults = undefined;
+
       try {
         this.recommendedTracks = await this.spotify.getRecommendations({
           seed_artists: [...this.seeds.seed_artists.keys()],
@@ -70,11 +72,20 @@ export default defineComponent({
     addSeed(item: any) {
       const property = `seed_${this.searchFilter}s`;
       this.seeds[property].set(item.id, item);
-      console.log(this.seedsArr);
+      console.log(this.seeds);
     },
-    removeSeed(item: any) {
+    removeSeed(event: Event, item: any) {
       const property = `seed_${this.searchFilter}s`;
-      this.seeds[property].delete(item.id);
+      const target = event.target as HTMLElement;
+
+      const chip = target.closest(".seed-chip");
+      chip?.classList.add("delete");
+
+      const listener = () => {
+        this.seeds[property].delete(item.id);
+      };
+
+      chip?.ownerDocument.addEventListener("animationend", listener, false);
     },
   },
   components: { TrackItem, IonIcon },
@@ -95,11 +106,13 @@ export default defineComponent({
 
     <!-- Chips -->
     <div class="chips-container">
-      <div class="seed-chip" v-for="(seed, i) in seedsArr" :key="i">
-        <span> {{ seed.name }}</span>
-        <button class="remove-chip-button" @click="removeSeed(seed)">
-          <IonIcon :icon="close" />
-        </button>
+      <div v-for="seed in seedsArr" :key="seed.id">
+        <a class="seed-chip" :href="seed.external_urls.spotify" target="_blank">
+          <span> {{ seed.name }}</span>
+          <button class="remove-chip-button" @click="removeSeed($event, seed)">
+            <IonIcon :icon="close" />
+          </button>
+        </a>
       </div>
       <button
         class="generate-button"
@@ -112,7 +125,7 @@ export default defineComponent({
     </div>
 
     <!-- Search Results -->
-    <ul class="search-results-container">
+    <ul class="search-results-container" v-if="searchResults">
       <li class="result-item" v-for="(item, i) in results" :key="i">
         <TrackItem :track="item" />
         <button type="button" class="add-button" @click="addSeed(item)">
@@ -120,6 +133,14 @@ export default defineComponent({
         </button>
       </li>
     </ul>
+
+    <div class="recommends-container" v-if="recommendedTracks">
+      <TrackItem
+        v-for="track in recommendedTracks.tracks"
+        :key="track.id"
+        :track="(track as any)"
+      />
+    </div>
   </main>
 </template>
 
@@ -159,11 +180,17 @@ export default defineComponent({
 
 .chips-container {
   display: flex;
-  gap: 1.8rem;
+  flex-flow: row wrap;
+  transition: width 0.3s;
+  /* gap: 1.8rem; */
   margin-bottom: 3.6rem;
 }
 
-.seed-chip {
+.seed-chip:visited,
+.seed-chip:link {
+  text-decoration: none;
+  color: inherit;
+
   background-color: rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
@@ -171,6 +198,12 @@ export default defineComponent({
   font-size: 1.4rem;
   padding: 0.8rem 1.6rem;
   border-radius: 50rem;
+  overflow: hidden;
+  margin-right: 1.8rem;
+}
+
+.seed-chip.delete {
+  animation: zoom forwards 0.7s ease-out 1;
 }
 
 .remove-chip-button {
@@ -183,8 +216,6 @@ export default defineComponent({
   color: inherit;
   display: flex;
   align-items: center;
-  /* text-align: center;
-  vertical-align: middle; */
 }
 
 .remove-chip-button:hover,
@@ -196,5 +227,31 @@ export default defineComponent({
   background: none;
   color: #1db954;
   font-size: 2.4rem;
+}
+
+@keyframes zoom {
+  0% {
+    transform: scale(1);
+    /* flex: 0 1 auto; */
+    opacity: 1;
+    transform-origin: 50% 50%;
+  }
+  50% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    /* flex: 0 1 0; */
+    width: 0;
+    transform: scale(0);
+    opacity: 0;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.recommends-container {
+  display: flex;
+  flex-direction: column;
 }
 </style>

@@ -62,6 +62,7 @@ button {
   display: inline-block;
   text-decoration: none;
   cursor: pointer;
+  color: inherit;
 }
 
 .heading-primary,
