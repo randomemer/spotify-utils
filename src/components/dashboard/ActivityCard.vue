@@ -11,10 +11,8 @@ spotify.setAccessToken($cookies.get("access_token"));
 // const devices = await spotify.getAvailableGenreSeeds();
 // console.log(devices);
 
-// const recommends = await spotify.getRecommendations({
-//   seed_genres: [],
-// });
-// console.log(recommends);
+// const kitty = await spotify.getArtist("0pWwt5vGNzezEhfAcc420Y");
+// console.log(kitty);
 </script>
 
 <template>

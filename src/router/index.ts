@@ -54,7 +54,7 @@ const router = createRouter({
         {
           path: "logout",
           redirect() {
-            return { path: "home" };
+            return { path: "/home" };
           },
         },
       ],

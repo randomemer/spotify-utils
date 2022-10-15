@@ -5,3 +5,8 @@ export enum UserTopItemsSort {
 }
 
 export type SpotifySearchFilter = "track" | "artist" | "genre";
+
+export type AccountsCookie = {
+  user: SpotifyApi.CurrentUsersProfileResponse;
+  refresh_token: string;
+}[];

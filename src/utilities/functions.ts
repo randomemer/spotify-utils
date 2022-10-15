@@ -27,3 +27,7 @@ export async function getAllTopTracks(
 export function convertRemToPixels(rem: number) {
   return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
+
+export function getUserProfileImage(user: SpotifyApi.UserProfileResponse) {
+  return (user.images && user.images[0]?.url) || "../assets/default-pfp.jpeg";
+}
