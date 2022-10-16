@@ -31,3 +31,7 @@ export function convertRemToPixels(rem: number) {
 export function getUserProfileImage(user: SpotifyApi.UserProfileResponse) {
   return (user.images && user.images[0]?.url) || "../assets/default-pfp.jpeg";
 }
+
+export function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

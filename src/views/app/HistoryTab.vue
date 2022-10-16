@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import HistoryTable from "@/components/history/HistoryTable.vue";
+import HistoryTableSkeleton from "@/components/history/HistoryTableSkeleton.vue";
 </script>
 
 <template>
@@ -7,7 +8,12 @@ import HistoryTable from "@/components/history/HistoryTable.vue";
     <h2 class="heading-secondary">Listening History</h2>
 
     <Suspense>
-      <HistoryTable />
+      <template #default>
+        <HistoryTable />
+      </template>
+      <template #fallback>
+        <HistoryTableSkeleton />
+      </template>
     </Suspense>
   </main>
 </template>

@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { delay } from "@/utilities/functions";
+import { IonIcon } from "@ionic/vue";
+import { chevronBack, chevronForward } from "ionicons/icons";
 import Spotify from "spotify-web-api-js";
 import { inject, ref, watch } from "vue";
 import type { VueCookies } from "vue-cookies";
-import { IonIcon } from "@ionic/vue";
-import { chevronBack, chevronForward } from "ionicons/icons";
 import { useRoute, useRouter } from "vue-router";
+import type { RecentlyPlayedTracks } from "@/types/types";
 
 const $cookies = inject<VueCookies>("$cookies");
 const route = useRoute();
@@ -17,9 +19,9 @@ spotify.setAccessToken($cookies.get("access_token"));
 let curPage = ref(Number(route.params.page) || 1);
 
 let history = ref(
-  await spotify.getMyRecentlyPlayedTracks({
+  (await spotify.getMyRecentlyPlayedTracks({
     limit: pageItemsCount,
-  })
+  })) as RecentlyPlayedTracks
 );
 console.log(history.value);
 
@@ -30,13 +32,13 @@ const dateFormat = (timestamp: number) =>
 const timeFormat = (timestamp: number) =>
   `${new Date(timestamp).toLocaleTimeString()}`;
 
-// const router = useRouter();
+const router = useRouter();
 const previousPage = async () => {
   curPage.value = Math.max(1, curPage.value - 1);
-  history.value = await spotify.getMyRecentlyPlayedTracks({
+  history.value = (await spotify.getMyRecentlyPlayedTracks({
     limit: 20,
     after: Number(history.value.cursors.after),
-  });
+  })) as RecentlyPlayedTracks;
 
   // router.push({
   //   path: window.location.pathname,
@@ -45,10 +47,10 @@ const previousPage = async () => {
 };
 const nextPage = async () => {
   curPage.value++;
-  history.value = await spotify.getMyRecentlyPlayedTracks({
+  history.value = (await spotify.getMyRecentlyPlayedTracks({
     limit: pageItemsCount,
     before: Number(history.value.cursors.before),
-  });
+  })) as RecentlyPlayedTracks;
 
   // router.push({
   //   path: window.location.pathname,
@@ -57,13 +59,15 @@ const nextPage = async () => {
   //   },
   // });
 };
+
+await delay(5 * 1000);
 </script>
 
 <template>
   <table class="history-table" cellspacing="0">
     <!-- Table Header -->
     <thead>
-      <th>#</th>
+      <th class="track-number">#</th>
       <th>Track</th>
       <!-- <th>Genre</th> -->
       <th>Popularity</th>
@@ -71,19 +75,22 @@ const nextPage = async () => {
     </thead>
     <!-- Table Rows -->
     <tbody>
-      <tr v-for="(item, index) in history.items" :key="item.track.id">
-        <td>{{ index + 1 }}</td>
-        <td class="track">
-          <img class="track-image" :src="item.track.album.images[0].url" />
-          <div class="track-info">
-            <span>{{ item.track.name }}</span>
-            <ul class="track-artists">
-              <li v-for="artist in item.track.artists" :key="artist.id">
-                {{ artist.name }}
-              </li>
-            </ul>
-          </div>
-          <!-- <iframe
+      <tr v-for="({ track, played_at }, index) in history.items" :key="index">
+        <td class="track-number">
+          {{ index + 1 }}
+        </td>
+        <td>
+          <div class="track">
+            <img class="track-image" :src="track.album.images[0].url" />
+            <div class="track-info">
+              <span>{{ track.name }}</span>
+              <ul class="track-artists">
+                <li v-for="artist in track.artists" :key="artist.id">
+                  {{ artist.name }}
+                </li>
+              </ul>
+            </div>
+            <!-- <iframe
             style="border-radius: 12px"
             src="https://open.spotify.com/embed/track/4EyPadLFhtWojU7mkT5hqT?utm_source=generator&theme=0"
             width="100%"
@@ -93,12 +100,23 @@ const nextPage = async () => {
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
             loading="lazy"
           ></iframe> -->
+          </div>
         </td>
-        <td>{{ item.track.popularity }}</td>
+        <td>
+          <div class="track-popularity">
+            <div class="bar-track">
+              <div
+                class="bar-fill"
+                :style="{ width: `${Number(track.popularity)}%` }"
+              ></div>
+            </div>
+            <span>{{ track.popularity }}%</span>
+          </div>
+        </td>
         <td>
           <div class="track-played-at">
-            <span>{{ timeFormat(Date.parse(item.played_at)) }}</span>
-            <span>{{ dateFormat(Date.parse(item.played_at)) }}</span>
+            <span>{{ timeFormat(Date.parse(played_at)) }}</span>
+            <span>{{ dateFormat(Date.parse(played_at)) }}</span>
           </div>
         </td>
       </tr>
@@ -106,8 +124,8 @@ const nextPage = async () => {
     <!-- Table Footer -->
     <tfoot>
       <tr>
-        <td colspan="4">
-          <div class="table-footer">
+        <td class="table-footer">
+          <div>
             <div class="button-group">
               <button
                 class="data-nav-button"
@@ -131,24 +149,51 @@ const nextPage = async () => {
 
 <style scoped>
 .history-table {
+  display: grid;
+  align-items: center;
+  justify-content: stretch;
+  grid-template-columns: auto 1fr auto auto;
   background-color: rgba(255, 255, 255, 0.1);
-  width: 100%;
+  min-width: 100%;
   border-radius: 10px;
-  /* padding: 3rem; */
+  border-collapse: collapse;
+  grid-row-gap: 1.6rem;
+  /* grid-column-gap: 2rem; */
+  /* padding: 2rem; */
+  /* column-rule: 1px solid aqua; */
+  overflow-y: hidden;
+}
+
+.history-table thead,
+.history-table tbody,
+.history-table tfoot,
+.history-table tr {
+  display: contents;
 }
 
 .history-table th {
-  font-size: 1.6rem;
+  position: sticky;
+  top: 0;
+  background-color: rgba(64, 64, 64);
   text-transform: uppercase;
-  color: #bbb;
+  color: #1db954;
   padding: 1.2rem 0;
+  text-align: left;
   border-bottom: 1px solid grey;
 }
 
-.history-table tbody td {
-  text-align: center;
+.history-table th,
+.history-table td {
   font-size: 1.6rem;
-  margin: 1.2rem 0;
+  padding-left: 1.1rem;
+  padding-right: 1.1rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+tr td:nth-child(:first-child),
+tr td:nth-child(:last-child) {
+  background-color: rgba(255, 255, 255, 0.085);
 }
 
 .button-group {
@@ -156,16 +201,19 @@ const nextPage = async () => {
   align-self: flex-end;
 }
 
-.history-table tfoot td {
-  padding: 2.4rem;
+.history-table .track-number {
+  padding-left: 2.4rem;
+  padding-right: 2.4rem;
+  text-align: center;
 }
 
 .table-footer {
+  padding: 1.2rem 1.8rem;
+  border-top: 1px solid grey;
+  grid-column: span 4;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  /* gap: ; */
-  width: 100%;
 }
 
 .track {
@@ -186,7 +234,7 @@ const nextPage = async () => {
   display: flex;
   flex-direction: column;
   text-align: start;
-  gap: 1rem;
+  gap: 10px;
 }
 
 .track-artists {
@@ -200,9 +248,16 @@ const nextPage = async () => {
   content: ", ";
 }
 
+.track-popularity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .track-played-at {
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
 .data-nav-button {
@@ -214,5 +269,20 @@ const nextPage = async () => {
   border-radius: 5px;
   color: #1db954;
   font-size: 1.8rem;
+}
+
+.bar-track {
+  width: 10rem;
+  height: 1.4rem;
+  background-color: black;
+  border-radius: 10rem;
+}
+
+.bar-fill {
+  height: 1.4rem;
+  border-radius: 10rem;
+  background-color: #1db954;
+
+  transition: width 0.3s;
 }
 </style>

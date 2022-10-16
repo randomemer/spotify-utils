@@ -18,6 +18,7 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
+      alias: "/home",
       component: HomeView,
     },
     {
@@ -54,6 +55,7 @@ const router = createRouter({
         {
           path: "logout",
           redirect() {
+            window.$cookies.remove("current_user");
             return { path: "/home" };
           },
         },

@@ -2,7 +2,7 @@
 import { defineComponent } from "vue";
 import { stringifyQuery } from "vue-router";
 import Spotify from "spotify-web-api-js";
-import type { AccountsCookie } from "@/types/types";
+import type { AccountCookie } from "@/types/types";
 import { getUserProfileImage } from "@/utilities/functions";
 
 const scopes = [
@@ -33,7 +33,7 @@ const client_secret = import.meta.env.VITE_CLIENT_SECRET;
 export default defineComponent({
   data() {
     return {
-      accounts: [] as AccountsCookie,
+      accounts: [] as AccountCookie[],
     };
   },
   setup() {
@@ -56,15 +56,15 @@ export default defineComponent({
       return await response.json();
     },
     // eslint-disable-next-line no-undef
-    loginUser(account: SpotifyApi.UserProfileResponse) {
-      this.$cookies.set("current_user", account);
+    loginUser(account: AccountCookie) {
+      this.$cookies.set("current_user", JSON.stringify(account));
       this.$router.replace("/app");
     },
   },
   beforeCreate() {
     const code = this.$route.query.code;
     const accountsJSON = this.$cookies.get("accounts");
-    const accounts: AccountsCookie =
+    const accounts: AccountCookie[] =
       (accountsJSON && JSON.parse(accountsJSON)) || [];
 
     if (code) {

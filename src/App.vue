@@ -106,4 +106,9 @@ button {
     background-color: gray;
   }
 }
+
+ion-icon {
+  display: flex;
+  align-items: center;
+}
 </style>

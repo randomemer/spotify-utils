@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { inject } from "vue";
-import type { VueCookies } from "vue-cookies";
-import Spotify from "spotify-web-api-js";
 import { UserTopItemsSort } from "@/types/types";
-import { getAllTopTracks, convertRemToPixels } from "@/utilities/functions";
-import { Doughnut } from "vue-chartjs";
+import { convertRemToPixels, getAllTopTracks } from "@/utilities/functions";
 import {
-  Chart,
-  Title,
-  Tooltip,
-  Legend,
   ArcElement,
   CategoryScale,
+  Chart,
+  Legend,
+  Title,
+  Tooltip,
 } from "chart.js";
+import Spotify from "spotify-web-api-js";
+import { inject } from "vue";
+import { Doughnut } from "vue-chartjs";
+import type { VueCookies } from "vue-cookies";
 
 Chart.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 

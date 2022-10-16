@@ -3,18 +3,15 @@ import app from "@/main";
 import { defineComponent } from "vue";
 import NavBar from "@/components/NavBar.vue";
 
+const client_id = import.meta.env.VITE_CLIENT_ID;
+const client_secret = import.meta.env.VITE_CLIENT_SECRET;
+
 export default defineComponent({
-  data() {
-    return {
-      access_token: this.$cookies.get("access_token") as string,
-    };
-  },
   methods: {
     async getNewAccessToken() {
       try {
-        const client_id = import.meta.env.VITE_CLIENT_ID;
-        const client_secret = import.meta.env.VITE_CLIENT_SECRET;
-
+        const account = this.$cookies.get("current_user");
+        console.log(account);
         const response = await fetch("https://accounts.spotify.com/api/token", {
           method: "POST",
           headers: {
@@ -23,7 +20,7 @@ export default defineComponent({
           },
           body: new URLSearchParams({
             grant_type: "refresh_token",
-            refresh_token: this.$cookies.get("refresh_token"),
+            refresh_token: account.refresh_token,
           }),
         });
 
@@ -35,7 +32,7 @@ export default defineComponent({
       }
     },
   },
-  mounted() {
+  created() {
     this.getNewAccessToken();
   },
   components: {
