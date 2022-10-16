@@ -10,14 +10,15 @@ const randomCount = (start: number, end: number) => _.random(start, end);
 </script>
 
 <template>
-  <table class="history-table" cellspacing="0">
+  <table class="history-table">
     <!-- Table Header -->
     <thead>
-      <th class="track-number">#</th>
-      <th>Track</th>
-      <!-- <th>Genre</th> -->
-      <th>Popularity</th>
-      <th>Time</th>
+      <tr>
+        <th class="track-number">#</th>
+        <th>Track</th>
+        <th>Popularity</th>
+        <th>Time</th>
+      </tr>
     </thead>
     <!-- Table Rows -->
     <tbody>
@@ -54,8 +55,8 @@ const randomCount = (start: number, end: number) => _.random(start, end);
     <!-- Table Footer -->
     <tfoot>
       <tr>
-        <td colspan="4">
-          <div class="table-footer">
+        <td class="table-footer">
+          <div>
             <div class="button-group">
               <button class="data-nav-button">
                 <ion-icon :icon="chevronBack"></ion-icon>
@@ -75,23 +76,54 @@ const randomCount = (start: number, end: number) => _.random(start, end);
 
 <style scoped>
 .history-table {
+  display: grid;
+  align-items: center;
+  justify-content: stretch;
+  grid-template-columns: auto 1fr auto auto;
   background-color: rgba(255, 255, 255, 0.1);
-  width: 100%;
+  min-width: 100%;
   border-radius: 10px;
+  grid-row-gap: 1.6rem;
+  /* overflow-y: hidden; */
+  --table-padding: 3rem;
+}
+
+.history-table thead,
+.history-table tbody,
+.history-table tfoot,
+.history-table tr {
+  display: contents;
 }
 
 .history-table th {
-  font-size: 1.6rem;
   text-transform: uppercase;
-  color: #bbb;
-  padding: 1.2rem 0;
+  color: #1db954;
+  padding: 1.6rem 0;
   text-align: left;
+  font-weight: 500;
+  letter-spacing: 1px;
   border-bottom: 1px solid grey;
 }
 
-.history-table tbody td {
+.history-table td,
+.history-table th {
   font-size: 1.6rem;
-  margin: 1.2rem 0;
+  padding-left: 1.1rem;
+  padding-right: 1.1rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Left padding for table */
+.history-table td:first-child,
+.history-table th:first-child {
+  padding-left: var(--table-padding);
+}
+
+/* Right padding for table */
+.history-table td:last-child,
+.history-table th:last-child {
+  padding-right: var(--table-padding);
 }
 
 .button-group {
@@ -99,26 +131,31 @@ const randomCount = (start: number, end: number) => _.random(start, end);
   align-self: flex-end;
 }
 
-.history-table tfoot td {
-  padding: 2.4rem;
+.history-table .track-number {
+  padding-left: 2.4rem;
+  padding-right: 2.4rem;
+  text-align: center;
 }
 
 .table-footer {
+  padding: 1.6rem 0;
+  border-top: 1px solid grey;
+  grid-column: span 4;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  width: 100%;
-}
-
-.history-table .track-number {
-  padding: 0 2rem;
-  text-align: center;
 }
 
 .track {
   display: flex;
   align-items: center;
   gap: 2rem;
+}
+
+.history-table .track-number {
+  padding-left: 2.4rem;
+  padding-right: 2.4rem;
+  text-align: center;
 }
 
 .track-image {
@@ -133,7 +170,7 @@ const randomCount = (start: number, end: number) => _.random(start, end);
   display: flex;
   flex-direction: column;
   text-align: start;
-  gap: 1rem;
+  gap: 10px;
 }
 
 .track-artists {

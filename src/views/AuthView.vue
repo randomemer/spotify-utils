@@ -37,10 +37,7 @@ export default defineComponent({
     };
   },
   setup() {
-    return { getUserProfileImage };
-  },
-  methods: {
-    async retrieveSpotifyTokens(code: string) {
+    async function retrieveSpotifyTokens(code: string) {
       const response = await fetch("https://accounts.spotify.com/api/token", {
         method: "POST",
         headers: {
@@ -54,7 +51,11 @@ export default defineComponent({
         }),
       });
       return await response.json();
-    },
+    }
+
+    return { getUserProfileImage, retrieveSpotifyTokens };
+  },
+  methods: {
     // eslint-disable-next-line no-undef
     loginUser(account: AccountCookie) {
       this.$cookies.set("current_user", JSON.stringify(account));

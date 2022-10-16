@@ -1,77 +1,83 @@
 <script setup lang="ts">
-import { delay } from "@/utilities/functions";
 import { IonIcon } from "@ionic/vue";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import Spotify from "spotify-web-api-js";
 import { inject, ref, watch } from "vue";
 import type { VueCookies } from "vue-cookies";
-import { useRoute, useRouter } from "vue-router";
 import type { RecentlyPlayedTracks } from "@/types/types";
 
 const $cookies = inject<VueCookies>("$cookies");
-const route = useRoute();
 const spotify = new Spotify();
 const pageItemsCount = 20;
 
 if (!$cookies) throw Error("Couldn't fetch cookies");
 spotify.setAccessToken($cookies.get("access_token"));
 
-let curPage = ref(Number(route.params.page) || 1);
+// Functions
+async function checkNextPage(currentPage: RecentlyPlayedTracks) {
+  const next = await spotify.getMyRecentlyPlayedTracks({
+    limit: pageItemsCount,
+    before: Number(currentPage.cursors.before),
+  });
+  console.log(next);
+  return Boolean(next?.items.length > 0);
+}
 
-let history = ref(
+// Refs
+const curPage = ref(1);
+const isLoading = ref(false);
+const history = ref(
   (await spotify.getMyRecentlyPlayedTracks({
     limit: pageItemsCount,
   })) as RecentlyPlayedTracks
 );
+const hasNext = ref(await checkNextPage(history.value));
 console.log(history.value);
 
-watch(history, async () => {});
+watch(curPage, async (cur, prev) => {
+  isLoading.value = true;
+
+  if (cur - prev === 1) {
+    history.value = (await spotify.getMyRecentlyPlayedTracks({
+      limit: pageItemsCount,
+      before: Number(history.value.cursors.before),
+    })) as RecentlyPlayedTracks;
+  } else if (cur - prev === -1) {
+    history.value = (await spotify.getMyRecentlyPlayedTracks({
+      limit: 20,
+      after: Number(history.value.cursors.after),
+    })) as RecentlyPlayedTracks;
+  }
+
+  hasNext.value = await checkNextPage(history.value);
+  isLoading.value = false;
+});
 
 const dateFormat = (timestamp: number) =>
   `${new Date(timestamp).toDateString()}`;
 const timeFormat = (timestamp: number) =>
   `${new Date(timestamp).toLocaleTimeString()}`;
 
-const router = useRouter();
-const previousPage = async () => {
+const previous = () => {
+  if (isLoading.value) return;
   curPage.value = Math.max(1, curPage.value - 1);
-  history.value = (await spotify.getMyRecentlyPlayedTracks({
-    limit: 20,
-    after: Number(history.value.cursors.after),
-  })) as RecentlyPlayedTracks;
-
-  // router.push({
-  //   path: window.location.pathname,
-  //   query: { page: curPage.value },
-  // });
 };
-const nextPage = async () => {
+const next = () => {
+  if (isLoading.value) return;
   curPage.value++;
-  history.value = (await spotify.getMyRecentlyPlayedTracks({
-    limit: pageItemsCount,
-    before: Number(history.value.cursors.before),
-  })) as RecentlyPlayedTracks;
-
-  // router.push({
-  //   path: window.location.pathname,
-  //   query: {
-  //     page: ++curPage.value,
-  //   },
-  // });
 };
-
-await delay(5 * 1000);
 </script>
 
 <template>
-  <table class="history-table" cellspacing="0">
+  <table class="history-table">
     <!-- Table Header -->
     <thead>
-      <th class="track-number">#</th>
-      <th>Track</th>
-      <!-- <th>Genre</th> -->
-      <th>Popularity</th>
-      <th>Time</th>
+      <tr>
+        <th class="track-number">#</th>
+        <th>Track</th>
+        <th>Popularity</th>
+        <th>Time</th>
+      </tr>
     </thead>
     <!-- Table Rows -->
     <tbody>
@@ -81,12 +87,26 @@ await delay(5 * 1000);
         </td>
         <td>
           <div class="track">
-            <img class="track-image" :src="track.album.images[0].url" />
+            <a class="link" :href="track.external_urls.spotify" target="_blank">
+              <img class="track-image" :src="track.album.images[0].url" />
+            </a>
             <div class="track-info">
-              <span>{{ track.name }}</span>
+              <a class="track-name link" :href="track.external_urls.spotify">{{
+                track.name
+              }}</a>
               <ul class="track-artists">
-                <li v-for="artist in track.artists" :key="artist.id">
-                  {{ artist.name }}
+                <li
+                  class="track-artisit"
+                  v-for="artist in track.artists"
+                  :key="artist.id"
+                >
+                  <a
+                    :href="artist.external_urls.spotify"
+                    class="link"
+                    target="_blank"
+                  >
+                    {{ artist.name }}
+                  </a>
                 </li>
               </ul>
             </div>
@@ -129,14 +149,17 @@ await delay(5 * 1000);
             <div class="button-group">
               <button
                 class="data-nav-button"
-                v-on:click="previousPage"
-                v-if="curPage !== 1"
+                @click="previous"
+                :disabled="curPage === 1 && !isLoading"
               >
                 <ion-icon :icon="chevronBack"></ion-icon>
-                <span>Previous</span>
               </button>
-              <button class="data-nav-button" v-on:click="nextPage">
-                <span>Next</span>
+              <span class="page-index">{{ curPage }}</span>
+              <button
+                class="data-nav-button"
+                @click="next"
+                :disabled="!hasNext && !isLoading"
+              >
                 <ion-icon :icon="chevronForward"></ion-icon>
               </button>
             </div>
@@ -158,10 +181,8 @@ await delay(5 * 1000);
   border-radius: 10px;
   border-collapse: collapse;
   grid-row-gap: 1.6rem;
-  /* grid-column-gap: 2rem; */
-  /* padding: 2rem; */
-  /* column-rule: 1px solid aqua; */
-  overflow-y: hidden;
+  /* overflow-y: hidden; */
+  --table-padding: 3rem;
 }
 
 .history-table thead,
@@ -172,13 +193,15 @@ await delay(5 * 1000);
 }
 
 .history-table th {
-  position: sticky;
-  top: 0;
-  background-color: rgba(64, 64, 64);
+  /* position: sticky; */
+  /* top: 0; */
+  /* background-color: rgba(64, 64, 64); */
   text-transform: uppercase;
   color: #1db954;
-  padding: 1.2rem 0;
+  padding: 1.6rem 0;
   text-align: left;
+  font-weight: 500;
+  letter-spacing: 1px;
   border-bottom: 1px solid grey;
 }
 
@@ -191,14 +214,22 @@ await delay(5 * 1000);
   white-space: nowrap;
 }
 
-tr td:nth-child(:first-child),
-tr td:nth-child(:last-child) {
-  background-color: rgba(255, 255, 255, 0.085);
+/* Left padding for table */
+.history-table td:first-child,
+.history-table th:first-child {
+  padding-left: var(--table-padding);
+}
+
+/* Right padding for table */
+.history-table td:last-child,
+.history-table th:last-child {
+  padding-right: var(--table-padding);
 }
 
 .button-group {
   display: flex;
-  align-self: flex-end;
+  align-items: stretch;
+  gap: 1.8rem;
 }
 
 .history-table .track-number {
@@ -208,12 +239,12 @@ tr td:nth-child(:last-child) {
 }
 
 .table-footer {
-  padding: 1.2rem 1.8rem;
+  padding: 1.6rem 0;
   border-top: 1px solid grey;
   grid-column: span 4;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .track {
@@ -264,11 +295,30 @@ tr td:nth-child(:last-child) {
   background: none;
   display: flex;
   align-items: center;
-  /* gap: 5px; */
-  padding: 0.8rem 1.6rem;
+  text-transform: uppercase;
+  padding: 0.5rem;
   border-radius: 5px;
   color: #1db954;
+  font-size: 2.4rem;
+  transition: background 0.3s ease-out;
+  cursor: auto;
+}
+
+.data-nav-button:disabled {
+  color: #bbb;
+}
+
+.data-nav-button:not(:disabled):hover,
+.data-nav-button:not(:disabled):active {
+  background-color: rgba(29, 185, 84, 0.1);
+  cursor: pointer;
+}
+
+.page-index {
   font-size: 1.8rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
 }
 
 .bar-track {
@@ -284,5 +334,6 @@ tr td:nth-child(:last-child) {
   background-color: #1db954;
 
   transition: width 0.3s;
+  width: 0;
 }
 </style>
