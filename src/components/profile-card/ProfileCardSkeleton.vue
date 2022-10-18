@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <img class="pfp skeleton" />
+    <div class="pfp skeleton"></div>
     <div class="card-right">
       <h2 class="display-name skeleton"></h2>
       <div class="user-data-field skeleton"></div>

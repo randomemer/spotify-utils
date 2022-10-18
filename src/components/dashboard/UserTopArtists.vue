@@ -68,15 +68,23 @@ export default defineComponent({
         v-for="artist in topArtists.items?.slice(0, 5)"
         :key="artist.id"
       >
-        <img
-          class="artist-image"
-          alt="Artist Image"
-          :src="artist.images[0].url"
-        />
+        <a :href="artist.external_urls.spotify" target="_blank">
+          <img
+            class="artist-image"
+            alt="Artist Image"
+            :src="artist.images[0].url"
+          />
+        </a>
 
         <div class="artist-right">
           <div class="artist-title-row">
-            <span class="artist-name">{{ artist.name }}</span>
+            <a
+              class="artist-name link"
+              target="_blank"
+              :href="artist.external_urls.spotify"
+            >
+              {{ artist.name }}
+            </a>
             <div class="artist-popularity">
               <ion-icon :icon="star" />
               <span class=""> {{ artist.popularity }} %</span>

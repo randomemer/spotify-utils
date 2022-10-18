@@ -7,7 +7,9 @@ import { RouterView } from "vue-router";
 </template>
 
 <style>
-* {
+*,
+*::before,
+*::after {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
@@ -43,6 +45,27 @@ body {
 
 .logo-title {
   font-size: 3rem;
+}
+
+select {
+  /* A reset of styles, including removing the default dropdown arrow */
+  appearance: none;
+  /* Additional resets for further consistency */
+  background-color: transparent;
+  border: none;
+  padding: 0 1em 0 0;
+  margin: 0;
+  width: 100%;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: inherit;
+  line-height: inherit;
+  /* ...existing styles */
+  outline: none;
+}
+
+select::-ms-expand {
+  display: none;
 }
 
 input {

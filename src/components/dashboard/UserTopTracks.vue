@@ -68,15 +68,23 @@ export default defineComponent({
         v-for="track in topTracks.items?.slice(0, 5)"
         :key="track.id"
       >
-        <img
-          class="track-image"
-          alt="Track Image"
-          :src="track.album.images[0].url"
-        />
+        <a :href="track.external_urls.spotify" target="_blank">
+          <img
+            class="track-image"
+            alt="Track Image"
+            :src="track.album.images[0].url"
+          />
+        </a>
 
         <div class="track-right">
           <div class="track-title-row">
-            <span class="track-name">{{ track.name }}</span>
+            <a
+              class="track-name link"
+              :href="track.external_urls.spotify"
+              target="_blank"
+            >
+              {{ track.name }}
+            </a>
             <div class="track-popularity">
               <ion-icon :icon="star" />
               <span class=""> {{ track.popularity }} %</span>
