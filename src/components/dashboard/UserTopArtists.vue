@@ -4,7 +4,7 @@ import { defineComponent } from "vue";
 import { IonIcon } from "@ionic/vue";
 import { chevronForward, star } from "ionicons/icons";
 import { UserTopItemsSort } from "@/types/types";
-import DropdownMenu from "@/components/menu-select/DropdownMenu.vue";
+import DropdownMenu from "@/components/DropdownMenu.vue";
 
 export default defineComponent({
   components: {

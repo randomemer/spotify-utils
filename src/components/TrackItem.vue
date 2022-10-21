@@ -61,6 +61,7 @@ export default defineComponent({
 .track-artists {
   display: flex;
   list-style: none;
+  flex-wrap: wrap;
   color: #bbb;
   font-size: 1.4rem;
 }

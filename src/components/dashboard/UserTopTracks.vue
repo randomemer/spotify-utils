@@ -4,12 +4,14 @@ import { defineComponent } from "vue";
 import { IonIcon } from "@ionic/vue";
 import { chevronForward, star } from "ionicons/icons";
 import { UserTopItemsSort } from "@/types/types";
-import DropdownMenu from "@/components/menu-select/DropdownMenu.vue";
+import DropdownMenu from "@/components/DropdownMenu.vue";
+import NetworkImage from "../NetworkImage.vue";
 
 export default defineComponent({
   components: {
     IonIcon,
     DropdownMenu,
+    NetworkImage,
   },
   setup() {
     return { chevronForward, star, UserTopItemsSort };
@@ -69,7 +71,12 @@ export default defineComponent({
         :key="track.id"
       >
         <a :href="track.external_urls.spotify" target="_blank">
-          <img
+          <!-- <img
+            class="track-image"
+            alt="Track Image"
+            :src="track.album.images[0].url"
+          /> -->
+          <NetworkImage
             class="track-image"
             alt="Track Image"
             :src="track.album.images[0].url"

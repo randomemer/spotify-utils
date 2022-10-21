@@ -4,11 +4,14 @@ import Spotify from "spotify-web-api-js";
 import type { SpotifySearchFilter } from "@/types/types";
 import TrackItem from "@/components/TrackItem.vue";
 import { IonIcon } from "@ionic/vue";
-import { addCircle, close } from "ionicons/icons";
+import { addCircle, close, musicalNote } from "ionicons/icons";
+import TabBar from "@/components/TabBar.vue";
+import ArtistItem from "@/components/ArtistItem.vue";
+import _ from "lodash";
 
 export default defineComponent({
   setup() {
-    return { addCircle, close };
+    return { addCircle, close, musicalNote };
   },
   data() {
     return {
@@ -18,9 +21,9 @@ export default defineComponent({
       results: [] as any[] | undefined,
       searchFilter: "track" as SpotifySearchFilter,
       seeds: {
-        seed_tracks: new Map(),
-        seed_artists: new Map(),
-        seed_genres: new Map(),
+        track: new Map(),
+        artist: new Map(),
+        genre: new Map(),
       } as { [key: string]: Map<string, any> },
       // eslint-disable-next-line no-undef
       recommendedTracks: {} as SpotifyApi.RecommendationsFromSeedsResponse,
@@ -28,7 +31,13 @@ export default defineComponent({
   },
   computed: {
     seedsArr() {
-      return Object.values(this.seeds).flatMap((set) => [...set.values()]);
+      return Object.entries(this.seeds).flatMap(([seedType, seeds]) => {
+        const arr = [];
+        for (const seed of seeds.values()) {
+          arr.push({ seed, type: seedType });
+        }
+        return arr;
+      });
     },
   },
   mounted() {
@@ -43,12 +52,11 @@ export default defineComponent({
           // Search for tracks or genres
           this.searchResults = await this.spotify.search(
             searchInput.value,
-            [this.searchFilter],
+            ["track", "artist"],
             { limit: 20 }
           );
-          console.log(this.searchFilter, this.searchResults);
+          console.log(this.searchResults);
           this.results = this.searchResults[`${this.searchFilter}s`]?.items;
-          console.log(this.results);
         } else {
           // Search for genres
         }
@@ -70,25 +78,35 @@ export default defineComponent({
       }
     },
     addSeed(item: any) {
-      const property = `seed_${this.searchFilter}s`;
+      const property = this.searchFilter;
       this.seeds[property].set(item.id, item);
-      console.log(this.seeds);
     },
     removeSeed(event: Event, item: any) {
-      const property = `seed_${this.searchFilter}s`;
-      const target = event.target as HTMLElement;
+      const property = this.searchFilter;
 
-      const chip = target.closest(".seed-chip");
-      chip?.classList.add("delete");
+      for (const [k, v] of this.seeds[property].entries()) {
+        if (v === item) {
+          this.seeds[property].delete(k);
+          break;
+        }
+      }
 
-      const listener = () => {
-        this.seeds[property].delete(item.id);
-      };
+      // const target = event.target as HTMLElement;
+      // const chip = target.closest(".seed-chip");
+      // chip?.classList.add("delete");
 
-      chip?.ownerDocument.addEventListener("animationend", listener, false);
+      // const listener = () => {
+      //   this.seeds[property].delete(item.id);
+      // };
+
+      // chip?.ownerDocument.addEventListener("animationend", listener, false);
+    },
+    onTabChange(event: SpotifySearchFilter) {
+      this.searchFilter = event;
+      this.results = this.searchResults[`${event}s`]?.items;
     },
   },
-  components: { TrackItem, IonIcon },
+  components: { TrackItem, IonIcon, TabBar, ArtistItem },
 });
 </script>
 
@@ -96,57 +114,96 @@ export default defineComponent({
   <main>
     <h3 class="heading-secondary">Generate Recommendations</h3>
 
-    <!-- Input Area -->
-    <input
-      class="search-field"
-      type="text"
-      placeholder="Search"
-      @keydown.enter="searchItems"
-    />
+    <div class="grid">
+      <div class="search-pane">
+        <!-- Input Area -->
+        <input
+          class="search-field"
+          type="search"
+          placeholder="Search"
+          @keydown.enter="searchItems"
+        />
 
-    <!-- Chips -->
-    <div class="chips-container">
-      <div v-for="seed in seedsArr" :key="seed.id">
-        <a class="seed-chip" :href="seed.external_urls.spotify" target="_blank">
-          <span> {{ seed.name }}</span>
-          <button class="remove-chip-button" @click="removeSeed($event, seed)">
-            <IonIcon :icon="close" />
-          </button>
-        </a>
+        <!-- Tabs -->
+        <TabBar
+          class="tabbar"
+          :tabs="[
+            { value: 'track', label: 'Tracks' },
+            { value: 'artist', label: 'Artists' },
+            { value: 'genre', label: 'Genres' },
+          ]"
+          v-on:tab-change="onTabChange"
+        />
+
+        <!-- Search Results -->
+        <ul class="search-results-container" v-if="searchResults">
+          <li class="result-item" v-for="(item, i) in results" :key="i">
+            <TrackItem :track="item" v-if="searchFilter === 'track'" />
+            <ArtistItem :artist="item" v-else-if="searchFilter === 'artist'" />
+
+            <button type="button" class="add-button" @click="addSeed(item)">
+              <ion-icon :icon="addCircle" />
+            </button>
+          </li>
+        </ul>
       </div>
-      <button
-        class="generate-button"
-        type="button"
-        @click="generate"
-        v-if="seedsArr.length > 0"
-      >
-        Generate
-      </button>
+
+      <div class="seeds-cart">
+        <h3>Selected Seeds</h3>
+
+        <ul v-if="seedsArr.length">
+          <li v-for="seed in seedsArr" :key="seed.seed">
+            <TrackItem :track="seed.seed" v-if="seed.type === 'track'" />
+            <button
+              class="remove-seed-button"
+              @click="removeSeed($event, seed.seed)"
+            >
+              <ion-icon :icon="close" />
+            </button>
+          </li>
+        </ul>
+        <div class="empty-seeds" v-else>
+          <ion-icon :icon="musicalNote" />
+          <span>Select upto 5 tracks, artists or genres</span>
+        </div>
+
+        <button
+          class="generate-button"
+          type="button"
+          @click="generate"
+          v-if="seedsArr.length"
+        >
+          Generate
+        </button>
+      </div>
     </div>
 
-    <!-- Search Results -->
-    <ul class="search-results-container" v-if="searchResults">
-      <li class="result-item" v-for="(item, i) in results" :key="i">
-        <TrackItem :track="item" />
-        <button type="button" class="add-button" @click="addSeed(item)">
-          <ion-icon :icon="addCircle" />
-        </button>
-      </li>
-    </ul>
-
-    <div class="recommends-container" v-if="recommendedTracks">
+    <!-- <div class="recommends-container" v-if="recommendedTracks">
       <TrackItem
         v-for="track in recommendedTracks.tracks"
         :key="track.id"
         :track="(track as any)"
       />
-    </div>
+    </div> -->
   </main>
 </template>
 
 <style scoped>
 .heading-secondary {
   margin-bottom: 4.8rem;
+}
+
+.grid {
+  display: grid;
+  gap: 4.8rem;
+  grid-template-columns: 60fr 40fr;
+  align-items: flex-start;
+}
+
+.search-pane {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 .search-results-container {
@@ -163,8 +220,11 @@ export default defineComponent({
   color: white;
   background-color: rgba(255, 255, 255, 0.2);
   padding: 0.8rem 1.6rem;
-  width: 50%;
   margin-bottom: 3.6rem;
+}
+
+.tabbar {
+  margin-bottom: 4.8rem;
 }
 
 .result-item {
@@ -178,55 +238,31 @@ export default defineComponent({
   border-radius: 50rem;
 }
 
-.chips-container {
-  display: flex;
-  flex-flow: row wrap;
-  transition: width 0.3s;
-  /* gap: 1.8rem; */
-  margin-bottom: 3.6rem;
-}
-
-.seed-chip:visited,
-.seed-chip:link {
-  text-decoration: none;
-  color: inherit;
-
-  background-color: rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 1.4rem;
-  padding: 0.8rem 1.6rem;
-  border-radius: 50rem;
-  overflow: hidden;
-  margin-right: 1.8rem;
-}
-
 .seed-chip.delete {
   animation: zoom forwards 0.7s ease-out 1;
 }
 
-.remove-chip-button {
-  display: inline-block;
-  font-size: 1.4rem;
+.remove-seed-button {
+  align-self: center;
+  font-size: 3rem;
   border-radius: 50rem;
   background: none;
   cursor: pointer;
-  font: inherit;
-  color: inherit;
+  color: red;
   display: flex;
   align-items: center;
 }
 
-.remove-chip-button:hover,
-.remove-chip-button:active {
-  background-color: rgba(255, 255, 255, 0.2);
+.remove-seed-button:hover,
+.remove-seed-button:active {
+  /* background-color: rgba(255, 255, 255, 0.2); */
+  color: rgba(255, 0, 0, 0.6);
 }
 
 .add-button {
   background: none;
   color: #1db954;
-  font-size: 2.4rem;
+  font-size: 3.6rem;
 }
 
 @keyframes zoom {
@@ -253,5 +289,50 @@ export default defineComponent({
 .recommends-container {
   display: flex;
   flex-direction: column;
+}
+
+.seeds-cart {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 2.4rem;
+}
+
+.seeds-cart h3 {
+  font-size: 2.4rem;
+  font-weight: 600;
+}
+
+.seeds-cart ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+.seeds-cart ul li {
+  display: flex;
+  justify-content: space-between;
+}
+
+.empty-seeds {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  align-items: center;
+  gap: 3rem;
+  margin: 3rem 0;
+}
+
+.empty-seeds ion-icon {
+  font-size: 7.2rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.empty-seeds span {
+  font-size: 1.6rem;
 }
 </style>

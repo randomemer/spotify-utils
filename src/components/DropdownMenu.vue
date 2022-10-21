@@ -5,6 +5,11 @@ import { calendarClear, chevronDown } from "ionicons/icons";
 
 export default defineComponent({
   components: { IonIcon },
+  data() {
+    return {
+      isMenuOpen: false,
+    };
+  },
   props: {
     name: { type: String, required: true },
     defaultValue: String,
@@ -49,13 +54,6 @@ export default defineComponent({
           this.selectOptions.appendChild(listItem);
         });
     },
-    onCustomSelectClick() {
-      this.selectOptions.classList.toggle("hidden");
-      // this.selectStyled.classList.toggle("active");
-    },
-    onOptionSelected() {
-      console.log();
-    },
   },
   emits: ["value-change"],
   created() {
@@ -78,7 +76,7 @@ export default defineComponent({
 <template>
   <div
     class="select-container"
-    @click="onCustomSelectClick"
+    @click="isMenuOpen = !isMenuOpen"
     ref="selectContainer"
   >
     <label :for="($.vnode.key as string)">
@@ -102,15 +100,23 @@ export default defineComponent({
 
     <div class="select-styled" ref="selectStyled">Select Period</div>
 
-    <ul class="select-options hidden" ref="selectOptions"></ul>
+    <ul
+      :class="{ 'select-options': true, hidden: !isMenuOpen }"
+      ref="selectOptions"
+    ></ul>
 
-    <ion-icon :icon="chevronDown" class="icon" />
+    <ion-icon
+      :icon="chevronDown"
+      class="dropdown-icon"
+      :style="{ transform: `rotate(${isMenuOpen ? 180 : 0}deg)` }"
+    />
   </div>
 </template>
 
 <style>
-.icon {
+.dropdown-icon {
   font-size: 1.6rem;
+  transition: all 0.3s ease-in;
 }
 
 .select-container {
@@ -161,11 +167,13 @@ export default defineComponent({
   list-style: none;
   border-radius: 5px;
   background-color: #555;
+  transform-origin: 50% 0;
 }
 
 .hidden {
   opacity: 0;
   visibility: hidden;
+  transform: scaleY(0);
 }
 
 .select-options li {
