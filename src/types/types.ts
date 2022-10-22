@@ -6,6 +6,11 @@ export enum UserTopItemsSort {
 
 export type SpotifySearchFilter = "track" | "artist" | "genre";
 
+export type Seed = {
+  seed: SpotifyApi.TrackObjectFull | SpotifyApi.ArtistObjectFull | string;
+  type: SpotifySearchFilter;
+};
+
 export type AccountCookie = {
   user: SpotifyApi.CurrentUsersProfileResponse;
   refresh_token: string;

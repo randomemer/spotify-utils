@@ -30,16 +30,12 @@ const router = createRouter({
       path: "/app",
       name: "app",
       component: AppView,
+      redirect() {
+        return {
+          path: "/app/dashboard",
+        };
+      },
       children: [
-        {
-          path: "",
-          redirect() {
-            console.log("redirected");
-            return {
-              path: "app/dashboard",
-            };
-          },
-        },
         {
           path: "dashboard",
           component: () => import("@/views/app/DashboardTab.vue"),
@@ -50,7 +46,14 @@ const router = createRouter({
         },
         {
           path: "recommends",
-          component: () => import("@/views/app/RecommendsTab.vue"),
+          component: () => {
+            return import("@/views/app/RecommendsTab.vue");
+          },
+        },
+        {
+          path: "recommends/:id",
+          component: () =>
+            import("@/components/recommends/GeneratedRecommends.vue"),
         },
         {
           path: "logout",

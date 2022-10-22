@@ -97,7 +97,7 @@ const randomCount = (start: number, end: number) => _.random(start, end);
 
 .history-table th {
   text-transform: uppercase;
-  color: #1db954;
+  color: var(--primary-font-color);
   padding: 1.6rem 0;
   text-align: left;
   font-weight: 500;

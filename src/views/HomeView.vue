@@ -1,7 +1,3 @@
-<script setup lang="ts">
-console.log(location.origin);
-</script>
-
 <template>
   <header>
     <div class="nav-bar">

@@ -82,7 +82,7 @@ const country = () => {
 
 .user-data-field-icon {
   font-size: 1.8rem;
-  color: #1db954;
+  color: var(--primary-font-color);
 }
 
 .user-data-field-text {

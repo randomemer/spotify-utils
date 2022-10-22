@@ -2,6 +2,7 @@
 import app from "@/main";
 import { defineComponent } from "vue";
 import NavBar from "@/components/NavBar.vue";
+import type { AccountCookie } from "@/types/types";
 
 const client_id = import.meta.env.VITE_CLIENT_ID;
 const client_secret = import.meta.env.VITE_CLIENT_SECRET;
@@ -10,7 +11,7 @@ export default defineComponent({
   methods: {
     async getNewAccessToken() {
       try {
-        const account = this.$cookies.get("current_user");
+        const account: AccountCookie = this.$cookies.get("current_user");
         console.log(account);
         const response = await fetch("https://accounts.spotify.com/api/token", {
           method: "POST",

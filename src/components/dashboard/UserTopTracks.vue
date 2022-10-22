@@ -184,7 +184,7 @@ export default defineComponent({
 .action-button:visited {
   align-self: flex-end;
   border-radius: 5px;
-  color: #1db954;
+  color: var(--primary-font-color);
   font-size: 1.2rem;
   padding: 1.4rem;
 
@@ -196,7 +196,7 @@ export default defineComponent({
 
 .action-button:active,
 .action-button:hover {
-  background-color: rgba(29, 185, 84, 0.2);
+  background-color: var(--splash-color);
 }
 
 .track-popularity {
@@ -207,7 +207,7 @@ export default defineComponent({
 }
 
 .track-popularity ion-icon {
-  color: #1db954;
+  color: var(--primary-font-color);
   font-size: 2rem;
 }
 

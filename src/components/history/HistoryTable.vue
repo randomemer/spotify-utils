@@ -197,7 +197,7 @@ const next = () => {
   /* top: 0; */
   /* background-color: rgba(64, 64, 64); */
   text-transform: uppercase;
-  color: #1db954;
+  color: var(--primary-font-color);
   padding: 1.6rem 0;
   text-align: left;
   font-weight: 500;
@@ -298,7 +298,7 @@ const next = () => {
   text-transform: uppercase;
   padding: 0.5rem;
   border-radius: 5px;
-  color: #1db954;
+  color: var(--primary-font-color);
   font-size: 2.4rem;
   transition: background 0.3s ease-out;
   cursor: auto;
@@ -310,7 +310,7 @@ const next = () => {
 
 .data-nav-button:not(:disabled):hover,
 .data-nav-button:not(:disabled):active {
-  background-color: rgba(29, 185, 84, 0.1);
+  background-color: var(--splash-color);
   cursor: pointer;
 }
 
@@ -331,7 +331,7 @@ const next = () => {
 .bar-fill {
   height: 1.4rem;
   border-radius: 10rem;
-  background-color: #1db954;
+  background-color: var(--primary-color);
 
   transition: width 0.3s;
   width: 0;

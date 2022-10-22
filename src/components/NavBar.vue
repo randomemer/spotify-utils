@@ -5,6 +5,13 @@ import * as ionicons from "ionicons/icons";
 import ProfileCardSkeleton from "./profile-card/ProfileCardSkeleton.vue";
 
 export default defineComponent({
+  components: {
+    IonIcon,
+    ProfileCardSkeleton,
+    ProfileCard: defineAsyncComponent(
+      () => import("./profile-card/ProfileCard.vue")
+    ),
+  },
   data() {
     return {
       appNavItems: [
@@ -53,12 +60,10 @@ export default defineComponent({
       ],
     };
   },
-  components: {
-    IonIcon,
-    ProfileCardSkeleton,
-    ProfileCard: defineAsyncComponent(
-      () => import("./profile-card/ProfileCard.vue")
-    ),
+  methods: {
+    isActiveLink(route: string): boolean {
+      return this.$router.currentRoute.value.path.includes(route);
+    },
   },
 });
 </script>
@@ -87,14 +92,13 @@ export default defineComponent({
               class="nav-link"
               :to="value.route"
               :class="{
-                'nav-link--active':
-                  $router.currentRoute.value.path === value.route,
+                'nav-link--active': isActiveLink(value.route),
               }"
             >
               <ion-icon
                 class="route-icon"
                 :icon="
-                  $router.currentRoute.value.path === value.route
+                  isActiveLink(value.route)
                     ? value.icon.filled
                     : value.icon.outline
                 "
@@ -109,6 +113,8 @@ export default defineComponent({
 </template>
 
 <style scoped>
+@import "@/assets/general.css";
+
 .logo-title {
   font-size: 3rem;
   text-align: center;
@@ -170,7 +176,8 @@ export default defineComponent({
 }
 
 .nav-link--active {
-  color: #1db954;
+  /* color: var(--primary-color); */
+  color: var(--primary-font-color);
 }
 
 .route-icon {

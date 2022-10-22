@@ -2,17 +2,19 @@
 import ArtistItem from "@/components/ArtistItem.vue";
 import TabBar from "@/components/TabBar.vue";
 import TrackItem from "@/components/TrackItem.vue";
-import type { SpotifySearchFilter } from "@/types/types";
+import type { AccountCookie, Seed, SpotifySearchFilter } from "@/types/types";
 import { IonIcon } from "@ionic/vue";
-import { addCircle, close, musicalNote } from "ionicons/icons";
+import { add, close, musicalNote } from "ionicons/icons";
 import MiniSearch from "minisearch";
 import Spotify from "spotify-web-api-js";
 import { defineComponent } from "vue";
+import { db } from "@/main";
+import { collection, addDoc } from "firebase/firestore";
 
 export default defineComponent({
   components: { TrackItem, IonIcon, TabBar, ArtistItem },
   setup() {
-    return { addCircle, close, musicalNote };
+    return { add, close, musicalNote };
   },
   mounted() {
     const token = this.$cookies.get("access_token");
@@ -20,13 +22,9 @@ export default defineComponent({
     (async () => {
       const { genres } = await this.spotify.getAvailableGenreSeeds();
       this.availableGenres = genres;
-
       this.miniSearch.addAll(
         genres.map((genre, i) => ({ id: i, genre: genre }))
       );
-
-      // console.log(genres);
-      console.log(this.miniSearch.search("p"));
     })();
   },
   data() {
@@ -56,11 +54,11 @@ export default defineComponent({
     };
   },
   computed: {
-    seedsArr() {
+    seedsArr(): Seed[] {
       return Object.entries(this.seeds).flatMap(([seedType, seeds]) => {
         const arr = [];
         for (const seed of seeds.values()) {
-          arr.push({ seed, type: seedType });
+          arr.push({ seed, type: seedType } as Seed);
         }
         return arr;
       });
@@ -88,25 +86,39 @@ export default defineComponent({
     },
     async generate() {
       try {
-        this.recommendedTracks = await this.spotify.getRecommendations({
-          seed_artists: [...this.seeds.seed_artists.keys()],
-          seed_tracks: [...this.seeds.seed_tracks.keys()],
+        // Get Reccomendations
+        const recommendations = await this.spotify.getRecommendations({
+          seed_artists: [...this.seeds.artist.keys()],
+          seed_tracks: [...this.seeds.track.keys()],
+          seed_genres: [...this.seeds.genre.keys()],
+          limit: 100,
         });
-        console.log(this.recommendedTracks);
+        console.log(recommendations);
+
+        // Save to firestore
+        const dbCollection = collection(db, "generated-recommends");
+        const account: AccountCookie = this.$cookies.get("current_user");
+        const saved = await addDoc(dbCollection, {
+          spotify_user: account.user,
+          data: recommendations,
+        });
+        console.log(saved.id);
+
+        // Redirect to generated playlist page
+        // this.$router.push("/");
       } catch (error) {
         console.error(error);
       }
     },
     addSeed(item: any) {
       const property = this.searchFilter;
+      console.log(item);
       this.seeds[property].set(item.id || item, item);
     },
-    removeSeed(event: Event, item: any) {
-      const property = this.searchFilter;
-
-      for (const [k, v] of this.seeds[property].entries()) {
-        if (v === item) {
-          this.seeds[property].delete(k);
+    removeSeed(event: Event, item: Seed) {
+      for (const [k, v] of this.seeds[item.type].entries()) {
+        if (v === item.seed) {
+          this.seeds[item.type].delete(k);
           break;
         }
       }
@@ -125,7 +137,6 @@ export default defineComponent({
       this.searchFilter = event;
       if (this.searchResults) {
         const results = this.searchResults[`${event}s`];
-        console.log("cahnged tab : ", results);
         if (this.searchFilter === "genre") {
           this.results = results === undefined ? this.availableGenres : results;
         } else {
@@ -184,7 +195,7 @@ export default defineComponent({
             </div>
 
             <button type="button" class="add-button" @click="addSeed(item)">
-              <ion-icon :icon="addCircle" />
+              <ion-icon :icon="add" />
             </button>
           </li>
         </ul>
@@ -206,7 +217,7 @@ export default defineComponent({
 
             <button
               class="remove-seed-button"
-              @click="removeSeed($event, seed.seed)"
+              @click="removeSeed($event, seed)"
             >
               <ion-icon :icon="close" />
             </button>
@@ -287,7 +298,8 @@ export default defineComponent({
 }
 
 .generate-button {
-  background-color: #1db954;
+  background-color: var(--primary-color);
+  color: var(--font-color);
   padding: 0.8rem 1.6rem;
   border-radius: 50rem;
 }
@@ -302,21 +314,30 @@ export default defineComponent({
   border-radius: 50rem;
   background: none;
   cursor: pointer;
-  color: red;
+  color: #e91e63;
   display: flex;
   align-items: center;
 }
 
 .remove-seed-button:hover,
 .remove-seed-button:active {
-  /* background-color: rgba(255, 255, 255, 0.2); */
-  color: rgba(255, 0, 0, 0.6);
+  color: rgba(233, 30, 98, 0.6);
 }
 
 .add-button {
-  background: none;
-  color: #1db954;
-  font-size: 3.6rem;
+  background: var(--primary-color);
+  color: var(--font-color);
+  --size: 3.6rem;
+  align-self: center;
+  font-size: 2.4rem;
+  height: var(--size);
+  width: var(--size);
+  border-radius: var(--size);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 @keyframes zoom {

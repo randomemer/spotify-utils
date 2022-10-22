@@ -12,6 +12,7 @@
   "dependencies": {
     "@ionic/vue": "^6.2.8",
     "chart.js": "^3.9.1",
+    "firebase": "^9.12.1",
     "ionicons": "^6.0.3",
     "lodash": "^4.17.21",
     "minisearch": "^5.0.0",

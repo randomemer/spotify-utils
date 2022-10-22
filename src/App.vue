@@ -7,13 +7,14 @@ import { RouterView } from "vue-router";
 </template>
 
 <style>
+@import "@/assets/general.css";
+
 *,
 *::before,
 *::after {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  --green: #1db954;
 }
 
 *:focus {
@@ -30,8 +31,8 @@ html {
 }
 
 body {
-  background-color: #191414;
-  color: white;
+  background-color: var(--background-color);
+  color: var(--font-color);
   font-family: "Lexend Deca", sans-serif;
   line-height: 1;
 }
