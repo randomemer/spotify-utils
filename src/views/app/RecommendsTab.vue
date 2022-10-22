@@ -1,23 +1,49 @@
 <script lang="ts">
-import { defineComponent } from "vue";
-import Spotify from "spotify-web-api-js";
-import type { SpotifySearchFilter } from "@/types/types";
+import ArtistItem from "@/components/ArtistItem.vue";
+import TabBar from "@/components/TabBar.vue";
 import TrackItem from "@/components/TrackItem.vue";
+import type { SpotifySearchFilter } from "@/types/types";
 import { IonIcon } from "@ionic/vue";
 import { addCircle, close, musicalNote } from "ionicons/icons";
-import TabBar from "@/components/TabBar.vue";
-import ArtistItem from "@/components/ArtistItem.vue";
-import _ from "lodash";
+import MiniSearch from "minisearch";
+import Spotify from "spotify-web-api-js";
+import { defineComponent } from "vue";
 
 export default defineComponent({
+  components: { TrackItem, IonIcon, TabBar, ArtistItem },
   setup() {
     return { addCircle, close, musicalNote };
   },
+  mounted() {
+    const token = this.$cookies.get("access_token");
+    this.spotify.setAccessToken(token);
+    (async () => {
+      const { genres } = await this.spotify.getAvailableGenreSeeds();
+      this.availableGenres = genres;
+
+      this.miniSearch.addAll(
+        genres.map((genre, i) => ({ id: i, genre: genre }))
+      );
+
+      // console.log(genres);
+      console.log(this.miniSearch.search("p"));
+    })();
+  },
   data() {
     return {
+      miniSearch: new MiniSearch({
+        fields: ["genre"],
+        storeFields: ["genre"],
+        searchOptions: { fuzzy: 0.5, boost: { genre: 2 } },
+      }),
+      availableGenres: [] as string[],
       spotify: new Spotify(),
-      // eslint-disable-next-line no-undef
-      searchResults: undefined as SpotifyApi.SearchResponse | undefined,
+      searchResults: {
+        genres: undefined,
+        tracks: undefined,
+        artists: undefined,
+        // eslint-disable-next-line no-undef
+      } as SpotifyApi.SearchResponse & { genres?: string[] },
       results: [] as any[] | undefined,
       searchFilter: "track" as SpotifySearchFilter,
       seeds: {
@@ -40,33 +66,27 @@ export default defineComponent({
       });
     },
   },
-  mounted() {
-    const token = this.$cookies.get("access_token");
-    this.spotify.setAccessToken(token);
-  },
   methods: {
     async searchItems(event: KeyboardEvent) {
       try {
         const searchInput = event.target as HTMLInputElement;
-        if (this.searchFilter !== "genre") {
-          // Search for tracks or genres
-          this.searchResults = await this.spotify.search(
-            searchInput.value,
-            ["track", "artist"],
-            { limit: 20 }
-          );
-          console.log(this.searchResults);
-          this.results = this.searchResults[`${this.searchFilter}s`]?.items;
-        } else {
-          // Search for genres
-        }
+
+        // Search for tracks or genres
+        this.searchResults = await this.spotify.search(
+          searchInput.value,
+          ["track", "artist"],
+          { limit: 20 }
+        );
+        // Search for genres
+        const genreResults = this.miniSearch.search(searchInput.value);
+        this.searchResults.genres = genreResults.map((match) => match.genre);
+
+        this.results = this.searchResults[`${this.searchFilter}s`]?.items;
       } catch (error) {
         console.error(error);
       }
     },
     async generate() {
-      this.searchResults = undefined;
-
       try {
         this.recommendedTracks = await this.spotify.getRecommendations({
           seed_artists: [...this.seeds.seed_artists.keys()],
@@ -79,7 +99,7 @@ export default defineComponent({
     },
     addSeed(item: any) {
       const property = this.searchFilter;
-      this.seeds[property].set(item.id, item);
+      this.seeds[property].set(item.id || item, item);
     },
     removeSeed(event: Event, item: any) {
       const property = this.searchFilter;
@@ -103,10 +123,28 @@ export default defineComponent({
     },
     onTabChange(event: SpotifySearchFilter) {
       this.searchFilter = event;
-      this.results = this.searchResults[`${event}s`]?.items;
+      if (this.searchResults) {
+        const results = this.searchResults[`${event}s`];
+        console.log("cahnged tab : ", results);
+        if (this.searchFilter === "genre") {
+          this.results = results === undefined ? this.availableGenres : results;
+        } else {
+          this.results = results?.items;
+        }
+      }
+    },
+    onSearchTextChange(event: Event) {
+      const searchInput = event.target as HTMLInputElement;
+      if (searchInput.value === "") {
+        this.searchResults = {
+          tracks: undefined,
+          artists: undefined,
+          genres: this.availableGenres,
+        };
+        this.results = this.searchResults[`${this.searchFilter}s`];
+      }
     },
   },
-  components: { TrackItem, IonIcon, TabBar, ArtistItem },
 });
 </script>
 
@@ -121,6 +159,7 @@ export default defineComponent({
           class="search-field"
           type="search"
           placeholder="Search"
+          @input="onSearchTextChange"
           @keydown.enter="searchItems"
         />
 
@@ -140,6 +179,9 @@ export default defineComponent({
           <li class="result-item" v-for="(item, i) in results" :key="i">
             <TrackItem :track="item" v-if="searchFilter === 'track'" />
             <ArtistItem :artist="item" v-else-if="searchFilter === 'artist'" />
+            <div class="genre-item" v-else>
+              <span>{{ item }}</span>
+            </div>
 
             <button type="button" class="add-button" @click="addSeed(item)">
               <ion-icon :icon="addCircle" />
@@ -154,6 +196,14 @@ export default defineComponent({
         <ul v-if="seedsArr.length">
           <li v-for="seed in seedsArr" :key="seed.seed">
             <TrackItem :track="seed.seed" v-if="seed.type === 'track'" />
+            <ArtistItem
+              :artist="seed.seed"
+              v-else-if="seed.type === 'artist'"
+            />
+            <div class="genre-item" v-else>
+              <span>{{ seed.seed }}</span>
+            </div>
+
             <button
               class="remove-seed-button"
               @click="removeSeed($event, seed.seed)"
@@ -232,6 +282,10 @@ export default defineComponent({
   justify-content: space-between;
 }
 
+.genre-item {
+  font-size: 1.8rem;
+}
+
 .generate-button {
   background-color: #1db954;
   padding: 0.8rem 1.6rem;
@@ -299,6 +353,7 @@ export default defineComponent({
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 1rem;
   padding: 2.4rem;
+  transition: all 0.3s;
 }
 
 .seeds-cart h3 {
