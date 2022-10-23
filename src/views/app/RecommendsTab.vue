@@ -1,7 +1,7 @@
 <script lang="ts">
 import ArtistItem from "@/components/ArtistItem.vue";
 import TabBar from "@/components/TabBar.vue";
-import TrackItem from "@/components/TrackItem.vue";
+import TrackItem from "@/components/track/TrackItem.vue";
 import type { AccountCookie, Seed, SpotifySearchFilter } from "@/types/types";
 import { IonIcon } from "@ionic/vue";
 import { add, close, musicalNote } from "ionicons/icons";

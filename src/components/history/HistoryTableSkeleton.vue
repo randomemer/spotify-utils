@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { IonIcon } from "@ionic/vue";
 import { chevronBack, chevronForward } from "ionicons/icons";
-import _ from "lodash";
-
-const randomLength = (start: number, end: number) =>
-  `${_.random(start, end, true)}rem`;
-
-const randomCount = (start: number, end: number) => _.random(start, end);
+import TrackItemSkeleton from "@/components/track/TrackItemSkeleton.vue";
 </script>
 
 <template>
@@ -24,22 +19,8 @@ const randomCount = (start: number, end: number) => _.random(start, end);
     <tbody>
       <tr v-for="(_, index) in Array(5)" :key="index">
         <td class="track-number">{{ index + 1 }}</td>
-        <td class="track">
-          <div class="track-image skeleton"></div>
-          <div class="track-info">
-            <span
-              class="track-name skeleton"
-              :style="{ height: '1.6rem', width: randomLength(10, 20) }"
-            ></span>
-            <ul class="track-artists">
-              <li
-                class="skeleton"
-                v-for="(artist, i) in Array(randomCount(1, 3))"
-                :key="i"
-                :style="{ height: '1.2rem', width: randomLength(6, 10) }"
-              ></li>
-            </ul>
-          </div>
+        <td>
+          <TrackItemSkeleton />
         </td>
         <td>
           <div class="track-popularity skeleton"></div>
@@ -146,39 +127,10 @@ const randomCount = (start: number, end: number) => _.random(start, end);
   justify-content: flex-end;
 }
 
-.track {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
 .history-table .track-number {
   padding-left: 2.4rem;
   padding-right: 2.4rem;
   text-align: center;
-}
-
-.track-image {
-  --size: 5rem;
-  height: var(--size);
-  width: var(--size);
-  border-radius: var(--size);
-  object-fit: cover;
-}
-
-.track-info {
-  display: flex;
-  flex-direction: column;
-  text-align: start;
-  gap: 10px;
-}
-
-.track-artists {
-  display: flex;
-  list-style: none;
-  gap: 8px;
-  color: #bbb;
-  font-size: 1.4rem;
 }
 
 .track-popularity {

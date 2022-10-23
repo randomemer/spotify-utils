@@ -59,7 +59,7 @@
 
 .cta-button:link,
 .cta-button:visited {
-  background-color: #1db954;
+  background-color: var(--primary-color);
   padding: 1.6rem 3.2rem;
   font-size: 1.8rem;
   border-radius: 100rem;

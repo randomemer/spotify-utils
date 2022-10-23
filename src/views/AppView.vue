@@ -64,45 +64,6 @@ export default defineComponent({
   padding: 6.4rem;
   overflow-y: scroll;
   flex: 1;
-  scrollbar-color: red yellow;
-}
-
-.action-button {
-  background-color: #1db954;
-  border-radius: 2.5rem;
-  padding: 1.2rem 0;
-}
-
-.playlists {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 2.4rem;
-}
-
-.playlist {
-  display: flex;
-  align-items: center;
-  gap: 2.4rem;
-}
-
-.playlist-info-col {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.playlist-image {
-  height: 5rem;
-  width: 5rem;
-  border-radius: 5rem;
-}
-
-.playlist-name {
-  font-size: 2rem;
-}
-
-.playlist-tracks {
-  font-size: 1.6rem;
+  scrollbar-color: rgb(123, 123, 123) rgb(66, 66, 66);
 }
 </style>

@@ -1,0 +1,73 @@
+.tracks-table {
+  display: grid;
+  align-items: center;
+  justify-content: stretch;
+  grid-template-columns: auto 1fr auto;
+  background-color: var(--card-color);
+  border-radius: 10px;
+  border-collapse: collapse;
+  grid-row-gap: 1.6rem;
+  --table-padding: 3rem;
+}
+
+.tracks-table thead,
+.tracks-table tbody,
+.tracks-table tfoot,
+.tracks-table tr {
+  display: contents;
+}
+
+.tracks-table th {
+  /* position: sticky; */
+  /* top: 0; */
+  /* background-color: rgba(64, 64, 64); */
+  text-transform: uppercase;
+  color: var(--primary-font-color);
+  padding: 1.6rem 0;
+  text-align: left;
+  font-weight: 500;
+  letter-spacing: 1px;
+  border-bottom: 1px solid grey;
+}
+
+.tracks-table th,
+.tracks-table td {
+  font-size: 1.6rem;
+  padding-left: 1.1rem;
+  padding-right: 1.1rem;
+  text-overflow: ellipsis;
+  /* white-space: nowrap; */
+}
+
+/* Left padding for table */
+.tracks-table td:first-child,
+.tracks-table th:first-child {
+  padding-left: var(--table-padding);
+}
+
+/* Right padding for table */
+.tracks-table td:last-child,
+.tracks-table th:last-child {
+  padding-right: var(--table-padding);
+}
+
+.tracks-table .track-number {
+  padding-left: 2.4rem;
+  padding-right: 2.4rem;
+  text-align: center;
+}
+
+.table-footer {
+  padding: 1.6rem 0;
+  border-top: 1px solid grey;
+  grid-column: span 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.button-group {
+  display: flex;
+  align-items: stretch;
+  gap: 1.8rem;
+}

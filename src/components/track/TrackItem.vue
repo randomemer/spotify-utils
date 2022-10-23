@@ -31,23 +31,10 @@ export default defineComponent({
 </template>
 
 <style scoped>
-.track-item {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.track-image {
-  --size: 5rem;
-  height: var(--size);
-  width: var(--size);
-  border-radius: var(--size);
-  object-fit: cover;
-}
+@import "./track.css";
 
 .track-info {
-  display: flex;
-  flex-direction: column;
+  align-items: flex-start;
   flex: 1;
   gap: 1rem;
 }
@@ -59,8 +46,6 @@ export default defineComponent({
 }
 
 .track-artists {
-  display: flex;
-  list-style: none;
   flex-wrap: wrap;
   color: #bbb;
   font-size: 1.4rem;
