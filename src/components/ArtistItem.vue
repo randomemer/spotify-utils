@@ -6,7 +6,6 @@ import NetworkImage from "./NetworkImage.vue";
 export default defineComponent({
   props: {
     artist: {
-      // eslint-disable-next-line no-undef
       type: Object as PropType<SpotifyApi.ArtistObjectFull>,
       required: true,
     },

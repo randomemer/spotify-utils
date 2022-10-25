@@ -1,18 +1,29 @@
-<script lang="ts">
-import { defineComponent } from "vue";
-import UserTopArtists from "@/components/dashboard/UserTopArtists.vue";
-import UserTopTracks from "@/components/dashboard/UserTopTracks.vue";
+<script setup lang="ts">
+import { defineAsyncComponent, h, type PropType } from "vue";
+import UserTopArtists from "@/components/dashboard/top-artists/UserTopArtists.vue";
+import UserTopTracks from "@/components/dashboard/top-tracks/UserTopTracks.vue";
 import TopGenres from "@/components/dashboard/top-genres/TopGenres.vue";
 import TopGenresSkeleton from "@/components/dashboard/top-genres/TopGenresSkeleton.vue";
-import ActivityCard from "@/components/dashboard/ActivityCard.vue";
+import ActivityCard from "@/components/dashboard/activity/ActivityCard.vue";
+import ActivityCardSkeleton from "@/components/dashboard/activity/ActivityCardSkeleton.vue";
+import SpotifyWebApi from "spotify-web-api-js";
 
-export default defineComponent({
-  components: {
-    UserTopArtists,
-    UserTopTracks,
-    TopGenres,
-    TopGenresSkeleton,
-    ActivityCard,
+const token = window.$cookies.get("access_token");
+const spotify = new SpotifyWebApi();
+spotify.setAccessToken(token);
+
+const props = defineProps({
+  fetchedUser: { type: Object as PropType<Promise<any>>, required: true },
+});
+
+const AsyncActivityCard = defineAsyncComponent({
+  loadingComponent: ActivityCardSkeleton,
+  loader: async () => {
+    await props.fetchedUser;
+    const history = await spotify.getMyRecentlyPlayedTracks({
+      limit: 50,
+    });
+    return () => h(ActivityCard, { history });
   },
 });
 </script>
@@ -28,11 +39,8 @@ export default defineComponent({
         <TopGenresSkeleton />
       </template>
     </Suspense>
-    <Suspense>
-      <template #default>
-        <ActivityCard />
-      </template>
-    </Suspense>
+
+    <AsyncActivityCard />
 
     <!-- Second Row -->
     <UserTopArtists />

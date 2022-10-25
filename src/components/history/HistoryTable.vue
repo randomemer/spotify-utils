@@ -4,7 +4,6 @@ import { chevronBack, chevronForward } from "ionicons/icons";
 import Spotify from "spotify-web-api-js";
 import { inject, ref, watch } from "vue";
 import type { VueCookies } from "vue-cookies";
-import type { RecentlyPlayedTracks } from "@/types/types";
 
 const $cookies = inject<VueCookies>("$cookies");
 const spotify = new Spotify();

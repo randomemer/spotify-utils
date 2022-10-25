@@ -1,4 +1,4 @@
-import type { UserTopItemsSort } from "@/types/types";
+import type { UserTopItemsSort } from "@/types/enums";
 import Spotify from "spotify-web-api-js";
 
 export async function getAllTopTracks(
@@ -34,4 +34,17 @@ export function getUserProfileImage(user: SpotifyApi.UserProfileResponse) {
 
 export function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function decodeCookie(cookie: string): string {
+  try {
+    const obj = JSON.parse(cookie);
+    return obj;
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      return cookie;
+    } else {
+      return "";
+    }
+  }
 }

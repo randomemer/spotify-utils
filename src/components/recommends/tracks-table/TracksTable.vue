@@ -9,7 +9,7 @@ export default defineComponent({
   props: {
     tracks: {
       required: true,
-      // eslint-disable-next-line no-undef
+
       type: Object as PropType<SpotifyApi.TrackObjectFull[]>,
     },
   },

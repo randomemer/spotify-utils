@@ -1,51 +1,42 @@
-<script lang="ts">
-import app from "@/main";
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import NavBar from "@/components/NavBar.vue";
-import type { AccountCookie } from "@/types/types";
 
 const client_id = import.meta.env.VITE_CLIENT_ID;
 const client_secret = import.meta.env.VITE_CLIENT_SECRET;
 
-export default defineComponent({
-  methods: {
-    async getNewAccessToken() {
-      try {
-        const account: AccountCookie = this.$cookies.get("current_user");
-        console.log(account);
-        const response = await fetch("https://accounts.spotify.com/api/token", {
-          method: "POST",
-          headers: {
-            Authorization: `Basic ${btoa(`${client_id}:${client_secret}`)}`,
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: new URLSearchParams({
-            grant_type: "refresh_token",
-            refresh_token: account.refresh_token,
-          }),
-        });
+async function getNewAccessToken() {
+  try {
+    const account: AccountCookie = window.$cookies.get("current_user");
+    console.log(account);
+    const response = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${btoa(`${client_id}:${client_secret}`)}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        grant_type: "refresh_token",
+        refresh_token: account.refresh_token,
+      }),
+    });
 
-        const body = await response.json();
-        this.$cookies.set("access_token", body.access_token);
-        app.config.globalProperties.access_token = body.access_token;
-      } catch (error) {
-        console.warn(error);
-      }
-    },
-  },
-  created() {
-    this.getNewAccessToken();
-  },
-  components: {
-    NavBar,
-  },
-});
+    const body = await response.json();
+    window.$cookies.set("access_token", body.access_token);
+    // app.config.globalProperties.access_token = body.access_token;
+
+    return body;
+  } catch (error) {
+    console.warn(error);
+  }
+}
+
+const fetchedUser = getNewAccessToken();
 </script>
 
 <template>
   <div class="app-container">
     <NavBar />
-    <RouterView class="app-main" />
+    <RouterView class="app-main" :fetchedUser="fetchedUser" />
   </div>
 </template>
 

@@ -2,17 +2,17 @@
 import ArtistItem from "@/components/ArtistItem.vue";
 import TabBar from "@/components/TabBar.vue";
 import TrackItem from "@/components/track/TrackItem.vue";
-import type { AccountCookie, Seed, SpotifySearchFilter } from "@/types/types";
-import { IonIcon } from "@ionic/vue";
+import { db } from "@/main";
+import { delay } from "@/utilities/functions";
+import { IonIcon, IonSpinner } from "@ionic/vue";
+import { addDoc, collection } from "firebase/firestore";
 import { add, close, musicalNote } from "ionicons/icons";
 import MiniSearch from "minisearch";
 import Spotify from "spotify-web-api-js";
 import { defineComponent } from "vue";
-import { db } from "@/main";
-import { collection, addDoc } from "firebase/firestore";
 
 export default defineComponent({
-  components: { TrackItem, IonIcon, TabBar, ArtistItem },
+  components: { TrackItem, IonIcon, IonSpinner, TabBar, ArtistItem },
   setup() {
     return { add, close, musicalNote };
   },
@@ -40,7 +40,6 @@ export default defineComponent({
         genres: undefined,
         tracks: undefined,
         artists: undefined,
-        // eslint-disable-next-line no-undef
       } as SpotifyApi.SearchResponse & { genres?: string[] },
       results: [] as any[] | undefined,
       searchFilter: "track" as SpotifySearchFilter,
@@ -49,8 +48,8 @@ export default defineComponent({
         artist: new Map(),
         genre: new Map(),
       } as { [key: string]: Map<string, any> },
-      // eslint-disable-next-line no-undef
       recommendedTracks: {} as SpotifyApi.RecommendationsFromSeedsResponse,
+      isGenerating: false,
     };
   },
   computed: {
@@ -85,7 +84,10 @@ export default defineComponent({
       }
     },
     async generate() {
+      if (this.isGenerating === true) return;
+      this.isGenerating = true;
       try {
+        // await delay(5000000000);
         // Get Reccomendations
         const recommendations = await this.spotify.getRecommendations({
           seed_artists: [...this.seeds.artist.keys()],
@@ -105,10 +107,11 @@ export default defineComponent({
         console.log(saved.id);
 
         // Redirect to generated playlist page
-        // this.$router.push("/");
+        this.$router.push(`/app/recommends/${saved.id}`);
       } catch (error) {
         console.error(error);
       }
+      this.isGenerating = false;
     },
     addSeed(item: any) {
       const property = this.searchFilter;
@@ -232,20 +235,14 @@ export default defineComponent({
           class="generate-button"
           type="button"
           @click="generate"
+          :class="{ loading: isGenerating }"
           v-if="seedsArr.length"
         >
-          Generate
+          <ion-spinner v-if="isGenerating"></ion-spinner>
+          <span>{{ isGenerating ? "Generating" : "Generate" }}</span>
         </button>
       </div>
     </div>
-
-    <!-- <div class="recommends-container" v-if="recommendedTracks">
-      <TrackItem
-        v-for="track in recommendedTracks.tracks"
-        :key="track.id"
-        :track="(track as any)"
-      />
-    </div> -->
   </main>
 </template>
 
@@ -302,6 +299,30 @@ export default defineComponent({
   color: var(--font-color);
   padding: 0.8rem 1.6rem;
   border-radius: 50rem;
+  font-size: 1.6rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+@keyframes loading-bg {
+  0% {
+    background-color: var(--primary-color);
+  }
+
+  50% {
+    background-color: rgba(115, 0, 153, 0.5);
+  }
+
+  100% {
+    background-color: var(--primary-color);
+  }
+}
+
+.generate-button.loading {
+  animation: loading-bg 1.5s infinite;
 }
 
 .seed-chip.delete {

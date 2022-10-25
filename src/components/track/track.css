@@ -1,7 +1,7 @@
 .track-item {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.8rem;
 }
 
 .track-image {

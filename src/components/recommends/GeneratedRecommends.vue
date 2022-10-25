@@ -14,6 +14,7 @@ import SeedsSource from "./seeds-source/SeedsSource.vue";
 import SeedsSourceSkeleton from "./seeds-source/SeedsSourceSkeleton.vue";
 import TracksTable from "./tracks-table/TracksTable.vue";
 import TracksTableSkeleton from "./tracks-table/TracksTableSkeleton.vue";
+import Cookies from "js-cookie";
 
 const spotify = new Spotify();
 const $cookies = window.$cookies;
@@ -37,7 +38,7 @@ export default defineComponent({
       loadingComponent: SeedsSourceSkeleton,
       loader: async () => {
         const rec = await recommendation;
-        // eslint-disable-next-line no-undef
+
         const seeds: SpotifyApi.RecommendationsSeedObject[] | undefined =
           rec.data()?.data.seeds;
         console.log(seeds);

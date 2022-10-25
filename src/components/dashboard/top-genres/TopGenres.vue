@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UserTopItemsSort } from "@/types/types";
+import { UserTopItemsSort } from "@/types/enums";
 import { convertRemToPixels, getAllTopTracks } from "@/utilities/functions";
 import {
   ArcElement,
@@ -34,7 +34,7 @@ tracks.forEach((track) => {
 });
 
 // Get artist data in batches of size 50 in accordance with Spotify API rate limits
-// eslint-disable-next-line no-undef
+
 const knownArtists = new Map<string, SpotifyApi.ArtistObjectFull>();
 const artistsArr = Array.from(unknownArtists);
 do {

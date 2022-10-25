@@ -2,7 +2,6 @@
 import { defineComponent } from "vue";
 import { stringifyQuery } from "vue-router";
 import Spotify from "spotify-web-api-js";
-import type { AccountCookie } from "@/types/types";
 import { getUserProfileImage } from "@/utilities/functions";
 
 const scopes = [
@@ -56,7 +55,6 @@ export default defineComponent({
     return { getUserProfileImage, retrieveSpotifyTokens };
   },
   methods: {
-    // eslint-disable-next-line no-undef
     loginUser(account: AccountCookie) {
       this.$cookies.set("current_user", JSON.stringify(account));
       this.$router.replace("/app");

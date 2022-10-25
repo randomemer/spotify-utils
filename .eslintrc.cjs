@@ -20,4 +20,12 @@ module.exports = {
       },
     ],
   },
+  overrides: [
+    {
+      files: ["*.ts", "*.vue"],
+      rules: {
+        "no-undef": "off",
+      },
+    },
+  ],
 };
