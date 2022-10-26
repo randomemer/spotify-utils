@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { defineAsyncComponent, h, type PropType } from "vue";
-import UserTopArtists from "@/components/dashboard/top-artists/UserTopArtists.vue";
-import UserTopTracks from "@/components/dashboard/top-tracks/UserTopTracks.vue";
-import TopGenres from "@/components/dashboard/top-genres/TopGenres.vue";
-import TopGenresSkeleton from "@/components/dashboard/top-genres/TopGenresSkeleton.vue";
 import ActivityCard from "@/components/dashboard/activity/ActivityCard.vue";
 import ActivityCardSkeleton from "@/components/dashboard/activity/ActivityCardSkeleton.vue";
+import TopArtists from "@/components/dashboard/top-artists/TopArtists.vue";
+import TopArtistsSkeleton from "@/components/dashboard/top-artists/TopArtistsSkeleton.vue";
+import TopGenres, {
+  getTopGenres,
+} from "@/components/dashboard/top-genres/TopGenres.vue";
+import TopGenresSkeleton from "@/components/dashboard/top-genres/TopGenresSkeleton.vue";
+import TopTracksSkeleton from "@/components/dashboard/top-tracks/TopTracks.Skeleton.vue";
+import TopTracks from "@/components/dashboard/top-tracks/TopTracks.vue";
+// import { delay } from "@/utilities/functions";
 import SpotifyWebApi from "spotify-web-api-js";
+import { defineAsyncComponent, h, type PropType } from "vue";
 
 const token = window.$cookies.get("access_token");
 const spotify = new SpotifyWebApi();
@@ -14,6 +19,18 @@ spotify.setAccessToken(token);
 
 const props = defineProps({
   fetchedUser: { type: Object as PropType<Promise<any>>, required: true },
+});
+
+const AsyncGenresCard = defineAsyncComponent({
+  loadingComponent: TopGenresSkeleton,
+  loader: async () => {
+    await props.fetchedUser;
+    const genres = await getTopGenres(token);
+    if (!genres) {
+      throw Error("Couldn't get top genres");
+    }
+    return () => h(TopGenres, { genres });
+  },
 });
 
 const AsyncActivityCard = defineAsyncComponent({
@@ -26,25 +43,35 @@ const AsyncActivityCard = defineAsyncComponent({
     return () => h(ActivityCard, { history });
   },
 });
+
+const AsyncTopTracksCard = defineAsyncComponent({
+  loadingComponent: TopTracksSkeleton,
+  loader: async () => {
+    await props.fetchedUser;
+    const tracks = await spotify.getMyTopTracks();
+    return () => h(TopTracks, { tracks });
+  },
+});
+
+const AsyncTopArtistsCard = defineAsyncComponent({
+  loadingComponent: TopArtistsSkeleton,
+  loader: async () => {
+    await props.fetchedUser;
+    const artists = await spotify.getMyTopArtists();
+    return () => h(TopArtists, { artists });
+  },
+});
 </script>
 
 <template>
   <main class="dashboard">
     <!-- First Row -->
-    <Suspense>
-      <template #default>
-        <TopGenres />
-      </template>
-      <template #fallback>
-        <TopGenresSkeleton />
-      </template>
-    </Suspense>
-
+    <AsyncGenresCard />
     <AsyncActivityCard />
 
     <!-- Second Row -->
-    <UserTopArtists />
-    <UserTopTracks />
+    <AsyncTopArtistsCard />
+    <AsyncTopTracksCard />
   </main>
 </template>
 

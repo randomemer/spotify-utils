@@ -1,0 +1,35 @@
+# spotify utils
+
+# tools used : 
+- vue.js
+- vite 
+- firebase
+- chart.js
+
+# app pipeline : 
+1. user connects this service with their spotify account
+2. app retrieves account data usign spotify API
+3. processes user data and provides a summary through a dashboard
+
+# about vue : 
+- is a popular web framework used to build modern sites
+- builds on top of html, css and JS and provides a component-based model to build UI
+- has an in built router for handling content rendering for routes
+- provides a concept called components which are reusable chunks of html, css and JS
+
+# about vite :
+- a build tool to provide a seamless development experience
+- provides a development server that supports hot module replacement for faster development
+- A build command that bundles your code for production
+
+# dashboard : 
+- gives a summary of the user's music taste and recent activity
+- calculates favourite genres from user's top tracks
+
+# history : 
+- shows the listening history of the user on spotify
+
+# recommedations :
+- provides an interface for the user to generate recommendations with the help of spotify API
+- user can select seeds (existing tracks, artist and genres) and shape their own recommedations
+- saves the recommendations to firebase so the user can view them again
