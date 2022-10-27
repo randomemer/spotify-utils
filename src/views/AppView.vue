@@ -35,7 +35,7 @@ const fetchedUser = getNewAccessToken();
 
 <template>
   <div class="app-container">
-    <NavBar />
+    <NavBar :fetchedUser="fetchedUser" />
     <RouterView class="app-main" :fetchedUser="fetchedUser" />
   </div>
 </template>

@@ -133,6 +133,9 @@ export default defineComponent({
       };
     },
   },
+  methods: {
+    convertRemToPixels,
+  },
 });
 </script>
 
@@ -149,12 +152,17 @@ export default defineComponent({
         :chart-data="chartData"
         :chart-options="chartOptions"
         chart-id="genres-donut"
+        :height="convertRemToPixels(32)"
       />
     </div>
   </div>
 </template>
 
 <style scoped>
+:deep(#genres-donut) {
+  /* height: 32rem !important; */
+}
+
 .card {
   display: flex;
   flex-direction: column;

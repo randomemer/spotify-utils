@@ -9,11 +9,7 @@
 </template>
 
 <style scoped>
-.card {
-  display: flex;
-  align-items: center;
-  gap: 2.4rem;
-}
+@import "./profile-card.css";
 
 .display-name {
   content: " ";
@@ -29,18 +25,7 @@
   /* width: 100%; */
 }
 
-.pfp {
-  --size: 6.4rem;
-  border-radius: var(--size);
-  height: var(--size);
-  width: var(--size);
-  object-fit: cover;
-}
-
 .user-data-field {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
   width: 10rem;
   /* width: 75%; */
   height: 1.5rem;

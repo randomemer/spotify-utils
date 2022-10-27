@@ -33,49 +33,54 @@ export default {
     },
   },
   data() {
+    const axisStyle = {
+      title: {
+        display: true,
+        font: {
+          family: "Lexend Deca, sans-serif",
+          size: convertRemToPixels(1.6),
+        },
+        color: "white",
+      },
+      ticks: {
+        padding: 15,
+        font: {
+          family: "Lexend Deca, sans-serif",
+          size: convertRemToPixels(1.4),
+        },
+        color: "white",
+      },
+      grid: {
+        drawTicks: false,
+        color: "rgba(256,256,256,0.1)",
+        borderColor: "rgba(256,256,256,0.1)",
+      },
+    };
+
     return {
       timeRange: "week",
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
         borderColor: "#bf00ff",
+        backgroundColor: "#bf00ff",
         borderCapStyle: "round",
         borderJoinStyle: "round",
         tension: 0.3,
         scales: {
           x: {
+            ...axisStyle,
             title: {
-              text: "Time",
-              font: {
-                family: "Lexend Deca, sans-serif",
-                size: convertRemToPixels(1.4),
-              },
-              color: "white",
+              ...axisStyle.title,
+              text: ["Time"],
             },
-            ticks: {
-              font: {
-                family: "Lexend Deca, sans-serif",
-                size: convertRemToPixels(1.4),
-              },
-              color: "white",
-            },
-            grid: { display: false },
+            grid: { ...axisStyle.grid, display: false },
           },
           y: {
+            ...axisStyle,
             title: {
-              text: "No. of Tracks",
-              color: "white",
-              font: {
-                family: "Lexend Deca, sans-serif",
-                size: convertRemToPixels(1.4),
-              },
-            },
-            ticks: {
-              font: {
-                family: "Lexend Deca, sans-serif",
-                size: convertRemToPixels(1.4),
-              },
-              color: "white",
+              ...axisStyle.title,
+              text: "# of Tracks",
             },
           },
         },
@@ -86,12 +91,6 @@ export default {
               family: "Lexend Deca, sans-serif",
               size: convertRemToPixels(1.2),
             },
-            // callbacks: {
-            //   label: function (context: any) {
-            //     const dataPoint = context.dataset.data[context.dataIndex];
-            //     const percent: string = ((dataPoint / genreSum) * 100).toFixed(2);
-            //     return `${context.label} : ${percent}%`;
-            //   },
           },
           legend: {
             display: false,

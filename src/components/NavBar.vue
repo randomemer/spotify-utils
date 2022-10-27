@@ -1,71 +1,79 @@
-<script lang="ts">
-import { defineAsyncComponent, defineComponent } from "vue";
+<script setup lang="ts">
+import { defineAsyncComponent, h, type PropType } from "vue";
 import { IonIcon } from "@ionic/vue";
 import * as ionicons from "ionicons/icons";
-import ProfileCardSkeleton from "./profile-card/ProfileCardSkeleton.vue";
+import ProfileCard from "@/components/profile-card/ProfileCard.vue";
+import ProfileCardSkeleton from "@/components/profile-card/ProfileCardSkeleton.vue";
+import SpotifyWebApi from "spotify-web-api-js";
+import { useRouter } from "vue-router";
 
-export default defineComponent({
-  components: {
-    IonIcon,
-    ProfileCardSkeleton,
-    ProfileCard: defineAsyncComponent(
-      () => import("./profile-card/ProfileCard.vue")
-    ),
-  },
-  data() {
-    return {
-      appNavItems: [
-        {
-          sectionName: "Main",
-          links: [
-            {
-              icon: {
-                outline: ionicons.gridOutline,
-                filled: ionicons.grid,
-              },
-              name: "Dashboard",
-              route: "/app/dashboard",
-            },
-            {
-              icon: {
-                outline: ionicons.logOutOutline,
-                filled: ionicons.logOut,
-              },
-              name: "Logout",
-              route: "/app/logout",
-            },
-          ],
-        },
-        {
-          sectionName: "Utilities",
-          links: [
-            {
-              icon: {
-                outline: ionicons.timeOutline,
-                filled: ionicons.time,
-              },
-              name: "History",
-              route: "/app/history",
-            },
-            {
-              icon: {
-                outline: ionicons.searchOutline,
-                filled: ionicons.search,
-              },
-              name: "Recommendations",
-              route: "/app/recommends",
-            },
-          ],
-        },
-      ],
-    };
-  },
-  methods: {
-    isActiveLink(route: string): boolean {
-      return this.$router.currentRoute.value.path.includes(route);
-    },
+const token = window.$cookies.get("access_token");
+const spotify = new SpotifyWebApi();
+spotify.setAccessToken(token);
+
+const $router = useRouter();
+
+const $props = defineProps({
+  fetchedUser: { type: Object as PropType<Promise<any>>, required: true },
+});
+
+const AsyncProfileCard = defineAsyncComponent({
+  loadingComponent: ProfileCardSkeleton,
+  loader: async () => {
+    await $props.fetchedUser;
+    const user = await spotify.getMe();
+    return () => h(ProfileCard, { user });
   },
 });
+
+const appNavItems = [
+  {
+    sectionName: "Main",
+    links: [
+      {
+        icon: {
+          outline: ionicons.gridOutline,
+          filled: ionicons.grid,
+        },
+        name: "Dashboard",
+        route: "/app/dashboard",
+      },
+      {
+        icon: {
+          outline: ionicons.logOutOutline,
+          filled: ionicons.logOut,
+        },
+        name: "Logout",
+        route: "/app/logout",
+      },
+    ],
+  },
+  {
+    sectionName: "Utilities",
+    links: [
+      {
+        icon: {
+          outline: ionicons.timeOutline,
+          filled: ionicons.time,
+        },
+        name: "History",
+        route: "/app/history",
+      },
+      {
+        icon: {
+          outline: ionicons.searchOutline,
+          filled: ionicons.search,
+        },
+        name: "Recommendations",
+        route: "/app/recommends",
+      },
+    ],
+  },
+];
+
+function isActiveLink(route: string): boolean {
+  return $router.currentRoute.value.path.includes(route);
+}
 </script>
 
 <template>
@@ -73,14 +81,7 @@ export default defineComponent({
     <span class="logo-title">Spotify Utilities</span>
 
     <!-- Profile Card -->
-    <Suspense>
-      <template #default>
-        <ProfileCard />
-      </template>
-      <template #fallback>
-        <ProfileCardSkeleton></ProfileCardSkeleton>
-      </template>
-    </Suspense>
+    <AsyncProfileCard />
 
     <!-- Tabs area -->
     <nav class="nav-links-area">

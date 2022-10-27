@@ -1,24 +1,26 @@
-<script setup lang="ts">
-import Spotify from "spotify-web-api-js";
+<script lang="ts">
 import { IonIcon } from "@ionic/vue";
 import { earth, people } from "ionicons/icons";
-import { inject } from "vue";
-import type { VueCookies } from "vue-cookies";
+import { defineComponent, type PropType } from "vue";
 
-const $cookies = inject<VueCookies>("$cookies");
-if (!$cookies) throw Error("Couldn't fetch cookies");
-
-const spotify = new Spotify();
-spotify.setAccessToken($cookies.get("access_token"));
-
-// const wait = () => new Promise((res) => setTimeout(res, 10000));
-// await wait();
-
-const user = await spotify.getMe();
-const country = () => {
-  const countryName = new Intl.DisplayNames(["en"], { type: "region" });
-  return user.country ? countryName.of(user.country) : "";
-};
+export default defineComponent({
+  components: { IonIcon },
+  props: {
+    user: {
+      required: true,
+      type: Object as PropType<SpotifyApi.CurrentUsersProfileResponse>,
+    },
+  },
+  setup() {
+    return { earth, people };
+  },
+  methods: {
+    country() {
+      const countryName = new Intl.DisplayNames(["en"], { type: "region" });
+      return this.user.country ? countryName.of(this.user.country) : "";
+    },
+  },
+});
 </script>
 
 <template>
@@ -49,11 +51,7 @@ const country = () => {
 </template>
 
 <style scoped>
-.card {
-  display: flex;
-  align-items: flex-start;
-  gap: 2.4rem;
-}
+@import "./profile-card.css";
 
 .display-name {
   font-size: 1.8rem;
@@ -63,20 +61,6 @@ const country = () => {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1.2rem;
-}
-
-.pfp {
-  --size: 6.4rem;
-  border-radius: var(--size);
-  height: var(--size);
-  width: var(--size);
-  object-fit: cover;
-}
-
-.user-data-field {
-  display: flex;
-  align-items: center;
   gap: 1.2rem;
 }
 
