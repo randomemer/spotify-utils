@@ -14,16 +14,18 @@ export default defineComponent({
 
 <template>
   <div class="track-item">
-    <a :href="track.external_urls.spotify">
+    <a :href="track.external_urls.spotify" target="_blank">
       <img class="track-image" :src="track.album.images[0].url" />
     </a>
     <div class="track-info">
-      <a class="track-name" :href="track.external_urls.spotify">
+      <a class="track-name" :href="track.external_urls.spotify" target="_blank">
         <span>{{ track.name }}</span>
       </a>
       <ul class="track-artists">
         <li v-for="artist in track.artists" :key="artist.id">
-          {{ artist.name }}
+          <a :href="artist.external_urls.spotify" target="_blank" class="link">
+            {{ artist.name }}
+          </a>
         </li>
       </ul>
     </div>

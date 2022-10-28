@@ -2,19 +2,19 @@
 import ArtistItem from "@/components/ArtistItem.vue";
 import TabBar from "@/components/TabBar.vue";
 import TrackItem from "@/components/track/TrackItem.vue";
+import GenreItem from "@/components/GenreItem.vue";
 import { db } from "@/main";
-import { delay } from "@/utilities/functions";
 import { IonIcon, IonSpinner } from "@ionic/vue";
 import { addDoc, collection } from "firebase/firestore";
-import { add, close, musicalNote } from "ionicons/icons";
+import { add, close, musicalNote, musicalNotes } from "ionicons/icons";
 import MiniSearch from "minisearch";
 import Spotify from "spotify-web-api-js";
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  components: { TrackItem, IonIcon, IonSpinner, TabBar, ArtistItem },
+  components: { TrackItem, IonIcon, IonSpinner, TabBar, ArtistItem, GenreItem },
   setup() {
-    return { add, close, musicalNote };
+    return { add, close, musicalNote, musicalNotes };
   },
   mounted() {
     const token = this.$cookies.get("access_token");
@@ -78,7 +78,11 @@ export default defineComponent({
         const genreResults = this.miniSearch.search(searchInput.value);
         this.searchResults.genres = genreResults.map((match) => match.genre);
 
-        this.results = this.searchResults[`${this.searchFilter}s`]?.items;
+        if (this.searchFilter !== "genre") {
+          this.results = this.searchResults[`${this.searchFilter}s`]?.items;
+        } else {
+          this.results = this.searchResults["genres"];
+        }
       } catch (error) {
         console.error(error);
       }
@@ -193,9 +197,7 @@ export default defineComponent({
           <li class="result-item" v-for="(item, i) in results" :key="i">
             <TrackItem :track="item" v-if="searchFilter === 'track'" />
             <ArtistItem :artist="item" v-else-if="searchFilter === 'artist'" />
-            <div class="genre-item" v-else>
-              <span>{{ item }}</span>
-            </div>
+            <GenreItem :genre="item" v-else />
 
             <button type="button" class="add-button" @click="addSeed(item)">
               <ion-icon :icon="add" />
@@ -214,9 +216,7 @@ export default defineComponent({
               :artist="seed.seed"
               v-else-if="seed.type === 'artist'"
             />
-            <div class="genre-item" v-else>
-              <span>{{ seed.seed }}</span>
-            </div>
+            <GenreItem :genre="seed.seed" v-else />
 
             <button
               class="remove-seed-button"
@@ -288,10 +288,6 @@ export default defineComponent({
 .result-item {
   display: flex;
   justify-content: space-between;
-}
-
-.genre-item {
-  font-size: 1.8rem;
 }
 
 .generate-button {
@@ -389,6 +385,8 @@ export default defineComponent({
 
 .seeds-cart {
   display: flex;
+  position: sticky;
+  top: 6.4rem;
   flex-direction: column;
   gap: 2.4rem;
 

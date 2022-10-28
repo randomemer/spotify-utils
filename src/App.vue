@@ -69,16 +69,30 @@ select::-ms-expand {
   display: none;
 }
 
-input {
+input,
+.input {
   border: none;
   font-family: inherit;
-  color: inherit;
+
+  color: white;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 0.8rem 1.6rem;
 }
 
 button {
   border: none;
   cursor: pointer;
   font-family: inherit;
+}
+
+.button {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  background-color: var(--primary-color);
+  color: var(--font-color);
+  padding: 0.8rem 1.6rem;
+  border-radius: 1000px;
 }
 
 .link:link,

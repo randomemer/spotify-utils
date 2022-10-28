@@ -159,10 +159,6 @@ export default defineComponent({
 </template>
 
 <style scoped>
-:deep(#genres-donut) {
-  /* height: 32rem !important; */
-}
-
 .card {
   display: flex;
   flex-direction: column;

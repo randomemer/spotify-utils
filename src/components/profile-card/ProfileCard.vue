@@ -25,12 +25,14 @@ export default defineComponent({
 
 <template>
   <div class="card">
-    <img
-      class="pfp"
-      :src="
-        (user.images && user.images[0]?.url) || '/src/assets/default-pfp.jpeg'
-      "
-    />
+    <div>
+      <img
+        class="pfp"
+        :src="
+          (user.images && user.images[0]?.url) || '/src/assets/default-pfp.jpeg'
+        "
+      />
+    </div>
 
     <div class="card-content">
       <h2 class="display-name">{{ user?.display_name }}</h2>

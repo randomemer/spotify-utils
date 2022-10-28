@@ -35,26 +35,27 @@ const fetchedUser = getNewAccessToken();
 
 <template>
   <div class="app-container">
-    <NavBar :fetchedUser="fetchedUser" />
+    <NavBar :fetchedUser="fetchedUser" class="app-sidebar" />
     <RouterView class="app-main" :fetchedUser="fetchedUser" />
   </div>
 </template>
 
-<style scoped>
-.app-container {
-  position: fixed;
-  height: 100%;
-  width: 100%;
+<style>
+:root {
+  --sidebar-width: 27rem;
+}
 
-  display: grid;
-  grid-template-columns: 15fr 85fr;
-  align-items: stretch;
+.app-container {
+  min-height: 100vh;
+}
+
+.app-sidebar {
+  width: var(--sidebar-width);
 }
 
 .app-main {
-  padding: 6.4rem;
-  overflow-y: scroll;
-  flex: 1;
+  padding-left: var(--sidebar-width);
   scrollbar-color: rgb(123, 123, 123) rgb(66, 66, 66);
+  margin: 6.4rem;
 }
 </style>

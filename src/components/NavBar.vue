@@ -122,14 +122,17 @@ function isActiveLink(route: string): boolean {
 }
 
 .sidebar {
-  height: 100%;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+
   padding: 2.4rem;
   background-color: rgba(255, 255, 255, 0.1);
 
   display: flex;
   gap: 4.8rem;
   flex-direction: column;
-  align-items: center;
 }
 
 .sidebar * {
