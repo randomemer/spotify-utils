@@ -8,8 +8,8 @@ import { IonIcon, IonSpinner } from "@ionic/vue";
 import { addDoc, collection } from "firebase/firestore";
 import { add, close, musicalNote, musicalNotes } from "ionicons/icons";
 import MiniSearch from "minisearch";
-import Spotify from "spotify-web-api-js";
 import { defineComponent } from "vue";
+import { spotify } from "@/utilities/spotify-api";
 
 export default defineComponent({
   components: { TrackItem, IonIcon, IonSpinner, TabBar, ArtistItem, GenreItem },
@@ -17,10 +17,8 @@ export default defineComponent({
     return { add, close, musicalNote, musicalNotes };
   },
   mounted() {
-    const token = sessionStorage.getItem("access_token");
-    this.spotify.setAccessToken(token);
     (async () => {
-      const { genres } = await this.spotify.getAvailableGenreSeeds();
+      const { genres } = await spotify.getAvailableGenreSeeds();
       this.availableGenres = genres;
       this.miniSearch.addAll(
         genres.map((genre, i) => ({ id: i, genre: genre }))
@@ -35,7 +33,6 @@ export default defineComponent({
         searchOptions: { fuzzy: 0.5, boost: { genre: 2 } },
       }),
       availableGenres: [] as string[],
-      spotify: new Spotify(),
       searchResults: {
         genres: undefined,
         tracks: undefined,
@@ -69,7 +66,7 @@ export default defineComponent({
         const searchInput = event.target as HTMLInputElement;
 
         // Search for tracks or genres
-        this.searchResults = await this.spotify.search(
+        this.searchResults = await spotify.search(
           searchInput.value,
           ["track", "artist"],
           { limit: 20 }
@@ -93,7 +90,7 @@ export default defineComponent({
       try {
         // await delay(5000000000);
         // Get Reccomendations
-        const recommendations = await this.spotify.getRecommendations({
+        const recommendations = await spotify.getRecommendations({
           seed_artists: [...this.seeds.artist.keys()],
           seed_tracks: [...this.seeds.track.keys()],
           seed_genres: [...this.seeds.genre.keys()],
@@ -103,7 +100,7 @@ export default defineComponent({
 
         // Save to firestore
         const dbCollection = collection(db, "generated-recommends");
-        const account: AccountCookie = this.$cookies.get("current_user");
+        const account: Account = this.$cookies.get("current_user");
         const saved = await addDoc(dbCollection, {
           spotify_user: account.user,
           data: recommendations,

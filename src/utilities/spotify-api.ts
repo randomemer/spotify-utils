@@ -1,10 +1,16 @@
 import SpotifyWebApi from "spotify-web-api-js";
-import type { Plugin } from "vue";
+import type { App } from "vue";
+// import _Vue from "vue";
 
-export default <Plugin>{
-  install(app, options?: any) {
-    const spotify = new SpotifyWebApi();
+export const spotify = new SpotifyWebApi();
+
+export default function (app: App<any>) {
+  if (app.prototype) {
+    app.prototype.$spotify = spotify;
+  }
+
+  if (app.config && app.config.globalProperties) {
     app.config.globalProperties.$spotify = spotify;
     app.provide("$spotify", spotify);
-  },
-};
+  }
+}

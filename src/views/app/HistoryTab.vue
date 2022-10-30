@@ -3,20 +3,16 @@ import HistoryTable, {
   checkNextPage,
 } from "@/components/history/HistoryTable.vue";
 import HistoryTableSkeleton from "@/components/history/HistoryTableSkeleton.vue";
-import SpotifyWebApi from "spotify-web-api-js";
+import { spotify } from "@/utilities/spotify-api";
 import { defineAsyncComponent, h } from "vue";
-
-const spotify = new SpotifyWebApi();
-const token = sessionStorage.getItem("access_token");
-spotify.setAccessToken(token);
 
 const AsyncHistoryTable = defineAsyncComponent({
   loadingComponent: HistoryTableSkeleton,
   loader: async () => {
-    const recentTracks =
+    const propsHistory =
       (await spotify.getMyRecentlyPlayedTracks()) as RecentlyPlayedTracks;
-    const hasNext = await checkNextPage(recentTracks, spotify);
-    return () => h(HistoryTable, { recentTracks, propHasNext: hasNext });
+    const hasNext = await checkNextPage(propsHistory);
+    return () => h(HistoryTable, { propsHistory, propHasNext: hasNext });
   },
 });
 </script>

@@ -1,13 +1,12 @@
 import type { UserTopItemsSort } from "@/types/enums";
-import Spotify from "spotify-web-api-js";
+import { spotify } from "./spotify-api";
+
+const client_id = import.meta.env.VITE_CLIENT_ID;
+const client_secret = import.meta.env.VITE_CLIENT_SECRET;
 
 export async function getAllTopTracks(
-  sort: UserTopItemsSort,
-  token: string
+  sort: UserTopItemsSort
 ): Promise<SpotifyApi.TrackObjectFull[]> {
-  const spotify = new Spotify();
-  spotify.setAccessToken(token);
-
   const tracks = [];
   let lastResponse;
 
@@ -52,8 +51,6 @@ export function decodeCookie(cookie: string): string {
 export async function refreshAccessToken(
   accountJSON: string
 ): Promise<RefreshedAccessTokenResponse> {
-  const client_id = import.meta.env.VITE_CLIENT_ID;
-  const client_secret = import.meta.env.VITE_CLIENT_SECRET;
   const account: Account = JSON.parse(accountJSON);
 
   const response = await fetch("https://accounts.spotify.com/api/token", {
@@ -71,4 +68,22 @@ export async function refreshAccessToken(
   const body: RefreshedAccessTokenResponse = await response.json();
   sessionStorage.setItem("access_token", body.access_token);
   return body;
+}
+
+export async function retrieveSpotifyTokens(
+  code: string
+): Promise<AccessTokenResponse> {
+  const response = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${btoa(`${client_id}:${client_secret}`)}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      code: code.toString(),
+      redirect_uri: `${location.origin}/auth`,
+      grant_type: "authorization_code",
+    }),
+  });
+  return await response.json();
 }

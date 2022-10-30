@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import NavBar from "@/components/NavBar.vue";
-import { provide, ref } from "vue";
+import { onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 
 const client_id = import.meta.env.VITE_CLIENT_ID;
@@ -36,11 +36,11 @@ async function refreshAccessToken(): Promise<
   return body;
 }
 
-const tokens = ref(refreshAccessToken());
+const interval = setInterval(refreshAccessToken, 3600);
 
-provide<AppTokens>("$tokens", {
-  tokens,
-  updateTokens: () => (tokens.value = refreshAccessToken()),
+onUnmounted(() => {
+  console.log(interval);
+  clearInterval(interval);
 });
 </script>
 

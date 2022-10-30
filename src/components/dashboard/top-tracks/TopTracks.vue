@@ -1,5 +1,4 @@
 <script lang="ts">
-import Spotify from "spotify-web-api-js";
 import { defineComponent, type PropType } from "vue";
 import { IonIcon } from "@ionic/vue";
 import { chevronForward, star } from "ionicons/icons";
@@ -22,13 +21,9 @@ export default defineComponent({
   setup() {
     return { chevronForward, star, UserTopItemsSort };
   },
-  mounted() {
-    this.spotify.setAccessToken(sessionStorage.getItem("access_token"));
-  },
   data() {
     return {
       topTracks: this.tracks,
-      spotify: new Spotify(),
       timeRange: UserTopItemsSort.Medium,
       timeRanges: {
         "All Time": UserTopItemsSort.Long,
@@ -40,7 +35,7 @@ export default defineComponent({
   methods: {
     async getUserTopItems(range: UserTopItemsSort): Promise<void> {
       try {
-        this.topTracks = await this.spotify.getMyTopTracks({
+        this.topTracks = await this.$spotify.getMyTopTracks({
           time_range: range,
         });
       } catch (error) {

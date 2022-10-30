@@ -125,8 +125,6 @@ export default {
             data.unshift(days.get(key));
           }
 
-          console.log(days);
-
           break;
 
         default:

@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
-import AuthView from "@/views/AuthView.vue";
 import { refreshAccessToken } from "@/utilities/functions";
+import AuthViewVue from "@/views/AuthView.vue";
+import { spotify } from "@/utilities/spotify-api";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,7 +25,7 @@ const router = createRouter({
     {
       path: "/auth",
       name: "auth",
-      component: AuthView,
+      component: AuthViewVue,
     },
     {
       path: "/app",
@@ -34,19 +35,15 @@ const router = createRouter({
         // If no user is logged in
         const user = localStorage.getItem("current_user");
         if (!user) {
-          return {
-            path: "/auth",
-          };
+          return { path: "/auth" };
         }
 
-        const tokens = await refreshAccessToken(user);
-        setInterval(() => {}, tokens.expires_in);
+        const tokens = await refreshAccessToken(user!);
+        spotify.setAccessToken(tokens.access_token);
 
         // default route : dashboard
         if (to.path === "/app") {
-          return {
-            path: "/app/dashboard",
-          };
+          return { path: "/app/dashboard" };
         }
       },
       children: [
@@ -72,7 +69,7 @@ const router = createRouter({
         {
           path: "logout",
           redirect() {
-            window.$cookies.remove("current_user");
+            localStorage.removeItem("current_user");
             return { path: "/home" };
           },
         },

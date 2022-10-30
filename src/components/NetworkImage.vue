@@ -12,6 +12,7 @@ export default defineComponent({
     },
   },
   mounted() {
+    this.$spotify.setAccessToken("null");
     if (!this.image.complete) {
       this.image.addEventListener("load", () =>
         this.image.classList.remove("img-loading")

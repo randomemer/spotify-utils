@@ -1,6 +1,7 @@
 <script lang="ts">
 import { UserTopItemsSort } from "@/types/enums";
 import { convertRemToPixels, getAllTopTracks } from "@/utilities/functions";
+import { spotify } from "@/utilities/spotify-api";
 import {
   ArcElement,
   CategoryScale,
@@ -9,17 +10,13 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import Spotify from "spotify-web-api-js";
 import { defineComponent } from "vue";
 import { Doughnut } from "vue-chartjs";
 
 Chart.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
-export async function getTopGenres(token: string) {
-  const spotify = new Spotify();
-  spotify.setAccessToken(token);
-
-  const tracks = await getAllTopTracks(UserTopItemsSort.Long, token);
+export async function getTopGenres() {
+  const tracks = await getAllTopTracks(UserTopItemsSort.Long);
   // console.log(tracks);
 
   // Collect all of the artists in the tracks

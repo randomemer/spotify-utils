@@ -1,17 +1,10 @@
 <script lang="ts">
+import { spotify } from "@/utilities/spotify-api";
 import { IonIcon } from "@ionic/vue";
 import { chevronBack, chevronForward } from "ionicons/icons";
-import SpotifyWebApi from "spotify-web-api-js";
 import { defineComponent, type PropType } from "vue";
 
-const spotify = new SpotifyWebApi();
-const token = sessionStorage.getItem("access_token");
-spotify.setAccessToken(token);
-
-export async function checkNextPage(
-  currentPage: RecentlyPlayedTracks,
-  spotify: SpotifyWebApi.SpotifyWebApiJs
-) {
+export async function checkNextPage(currentPage: RecentlyPlayedTracks) {
   const next = await spotify.getMyRecentlyPlayedTracks({
     limit: 20,
     before: Number(currentPage.cursors.before),
@@ -22,7 +15,7 @@ export async function checkNextPage(
 export default defineComponent({
   components: { IonIcon },
   props: {
-    recentTracks: {
+    propsHistory: {
       required: true,
       type: Object as PropType<RecentlyPlayedTracks>,
     },
@@ -35,7 +28,7 @@ export default defineComponent({
     return {
       isLoading: false,
       curPage: 1,
-      history: this.recentTracks,
+      history: this.propsHistory,
       hasNext: this.propHasNext,
     };
   },
@@ -71,7 +64,7 @@ export default defineComponent({
         })) as RecentlyPlayedTracks;
       }
 
-      this.hasNext = await checkNextPage(this.history, spotify);
+      this.hasNext = await checkNextPage(this.history);
       this.isLoading = false;
     },
   },

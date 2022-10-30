@@ -1,8 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { stringifyQuery } from "vue-router";
-import SpotifyWebApi from "spotify-web-api-js";
-import { getUserProfileImage } from "@/utilities/functions";
 
 const scopes = [
   // user
@@ -47,13 +45,7 @@ export default defineComponent({
       return await response.json();
     }
 
-    return { getUserProfileImage, retrieveSpotifyTokens };
-  },
-  methods: {
-    loginUser(account: Account) {
-      this.$cookies.set("current_user", JSON.stringify(account));
-      this.$router.replace("/app");
-    },
+    return { retrieveSpotifyTokens };
   },
   beforeCreate() {
     const code = this.$route.query.code;
@@ -64,17 +56,16 @@ export default defineComponent({
         const tokens = await this.retrieveSpotifyTokens(code.toString());
 
         // get user data and set local storage data
-        const spotify = new SpotifyWebApi();
-        spotify.setAccessToken(tokens.access_token);
+        this.$spotify.setAccessToken(tokens.access_token);
         const account: Account = {
-          user: await spotify.getMe(),
+          user: await this.$spotify.getMe(),
           refresh_token: tokens.refresh_token,
         };
         localStorage.setItem("current_user", JSON.stringify(account));
         sessionStorage.setItem("access_token", tokens.access_token);
 
         // Redirect to app
-        this.$router.push("/app");
+        this.$router.replace("/app");
       })();
 
       return;
@@ -84,7 +75,7 @@ export default defineComponent({
     const currentUser = localStorage.getItem("current_user");
     if (currentUser) {
       console.log("Current User : ", JSON.parse(currentUser));
-      this.$router.push("/app");
+      this.$router.replace("/app");
       return;
     }
 

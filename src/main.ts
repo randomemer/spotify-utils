@@ -28,4 +28,5 @@ app.use(VueCookies, { expire: "7d" });
 app.use(spotifyApi);
 app.mount("#app");
 
+console.log(app);
 export default app;

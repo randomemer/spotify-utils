@@ -1,25 +1,20 @@
 <script setup lang="ts">
-import { defineAsyncComponent, h, inject } from "vue";
-import { IonIcon } from "@ionic/vue";
-import * as ionicons from "ionicons/icons";
 import ProfileCard from "@/components/profile-card/ProfileCard.vue";
 import ProfileCardSkeleton from "@/components/profile-card/ProfileCardSkeleton.vue";
-import SpotifyWebApi from "spotify-web-api-js";
+import { IonIcon } from "@ionic/vue";
+import * as ionicons from "ionicons/icons";
+import type SpotifyWebApi from "spotify-web-api-js";
+import { defineAsyncComponent, h, inject } from "vue";
 import { useRouter } from "vue-router";
 
-const spotify = new SpotifyWebApi();
+const $spotify = inject<SpotifyWebApi.SpotifyWebApiJs>("$spotify");
+if (!$spotify) throw new Error("no-spotify-api-instance");
 const $router = useRouter();
-const $appUser = inject<AppTokens>("$tokens");
 
 const AsyncProfileCard = defineAsyncComponent({
   loadingComponent: ProfileCardSkeleton,
   loader: async () => {
-    await $appUser?.tokens;
-
-    const token = sessionStorage.getItem("access_token");
-    spotify.setAccessToken(token);
-    const user = await spotify.getMe();
-
+    const user = await $spotify.getMe();
     return () => h(ProfileCard, { user });
   },
 });

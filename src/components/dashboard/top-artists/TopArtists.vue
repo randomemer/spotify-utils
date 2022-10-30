@@ -3,7 +3,6 @@ import DropdownMenu from "@/components/DropdownMenu.vue";
 import { UserTopItemsSort } from "@/types/enums";
 import { IonIcon } from "@ionic/vue";
 import { chevronForward, star } from "ionicons/icons";
-import Spotify from "spotify-web-api-js";
 import { defineComponent, type PropType } from "vue";
 
 export default defineComponent({
@@ -23,7 +22,6 @@ export default defineComponent({
   data() {
     return {
       topArtists: this.artists,
-      spotify: new Spotify(),
       timeRange: UserTopItemsSort.Medium,
       timeRanges: {
         "All Time": UserTopItemsSort.Long,
@@ -35,16 +33,13 @@ export default defineComponent({
   methods: {
     async getUserTopItems(range: UserTopItemsSort): Promise<void> {
       try {
-        this.topArtists = await this.spotify.getMyTopArtists({
+        this.topArtists = await this.$spotify.getMyTopArtists({
           time_range: range,
         });
       } catch (error) {
         console.warn(error);
       }
     },
-  },
-  mounted() {
-    this.spotify.setAccessToken(sessionStorage.getItem("access_token"));
   },
 });
 </script>
