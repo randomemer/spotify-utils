@@ -54,14 +54,15 @@ export default defineComponent({
           this.selectOptions.appendChild(listItem);
         });
     },
-  },
-  emits: ["value-change"],
-  created() {
-    document.addEventListener("click", (event: MouseEvent) => {
+    onDocumentClick(event: MouseEvent) {
       if (!this.selectContainer.contains(event.target as Node | null)) {
         this.selectOptions.classList.add("hidden");
       }
-    });
+    },
+  },
+  emits: ["value-change"],
+  created() {
+    document.addEventListener("click", this.onDocumentClick);
   },
   mounted() {
     if (this.defaultValue) {
@@ -69,6 +70,9 @@ export default defineComponent({
     }
 
     this.customSelectPlugin();
+  },
+  unmounted() {
+    document.removeEventListener("click", this.onDocumentClick);
   },
 });
 </script>

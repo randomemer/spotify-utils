@@ -22,8 +22,8 @@ export default defineComponent({
   setup() {
     return { chevronForward, star, UserTopItemsSort };
   },
-  created() {
-    this.spotify.setAccessToken(this.$cookies.get("access_token"));
+  mounted() {
+    this.spotify.setAccessToken(sessionStorage.getItem("access_token"));
   },
   data() {
     return {

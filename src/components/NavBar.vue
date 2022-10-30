@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineAsyncComponent, h, type PropType } from "vue";
+import { defineAsyncComponent, h, inject } from "vue";
 import { IonIcon } from "@ionic/vue";
 import * as ionicons from "ionicons/icons";
 import ProfileCard from "@/components/profile-card/ProfileCard.vue";
@@ -7,21 +7,19 @@ import ProfileCardSkeleton from "@/components/profile-card/ProfileCardSkeleton.v
 import SpotifyWebApi from "spotify-web-api-js";
 import { useRouter } from "vue-router";
 
-const token = window.$cookies.get("access_token");
 const spotify = new SpotifyWebApi();
-spotify.setAccessToken(token);
-
 const $router = useRouter();
-
-const $props = defineProps({
-  fetchedUser: { type: Object as PropType<Promise<any>>, required: true },
-});
+const $appUser = inject<AppTokens>("$tokens");
 
 const AsyncProfileCard = defineAsyncComponent({
   loadingComponent: ProfileCardSkeleton,
   loader: async () => {
-    await $props.fetchedUser;
+    await $appUser?.tokens;
+
+    const token = sessionStorage.getItem("access_token");
+    spotify.setAccessToken(token);
     const user = await spotify.getMe();
+
     return () => h(ProfileCard, { user });
   },
 });

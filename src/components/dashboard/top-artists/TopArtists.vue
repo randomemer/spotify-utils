@@ -4,19 +4,25 @@ import { UserTopItemsSort } from "@/types/enums";
 import { IonIcon } from "@ionic/vue";
 import { chevronForward, star } from "ionicons/icons";
 import Spotify from "spotify-web-api-js";
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 
 export default defineComponent({
   components: {
     IonIcon,
     DropdownMenu,
   },
+  props: {
+    artists: {
+      type: Object as PropType<SpotifyApi.UsersTopArtistsResponse>,
+      required: true,
+    },
+  },
   setup() {
     return { chevronForward, star, UserTopItemsSort };
   },
   data() {
     return {
-      topArtists: {} as SpotifyApi.UsersTopArtistsResponse,
+      topArtists: this.artists,
       spotify: new Spotify(),
       timeRange: UserTopItemsSort.Medium,
       timeRanges: {
@@ -38,8 +44,7 @@ export default defineComponent({
     },
   },
   mounted() {
-    this.spotify.setAccessToken(this.$cookies.get("access_token"));
-    this.getUserTopItems(this.timeRange);
+    this.spotify.setAccessToken(sessionStorage.getItem("access_token"));
   },
 });
 </script>

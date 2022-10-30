@@ -55,6 +55,13 @@ export default defineComponent({
 <style scoped>
 @import "./profile-card.css";
 
+.pfp {
+  border-radius: 100rem;
+  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+}
+
 .display-name {
   font-size: 1.8rem;
 }

@@ -4,6 +4,7 @@ import App from "./App.vue";
 import router from "./router";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import spotifyApi from "./utilities/spotify-api";
 
 // Firebase Setup
 const env = import.meta.env;
@@ -24,6 +25,7 @@ const app = createApp(App);
 
 app.use(router);
 app.use(VueCookies, { expire: "7d" });
+app.use(spotifyApi);
 app.mount("#app");
 
 export default app;

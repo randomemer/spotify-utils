@@ -11,9 +11,19 @@
 <style scoped>
 @import "./profile-card.css";
 
+.card {
+  align-items: center;
+}
+
+.pfp {
+  --size: 7.5rem;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 100rem;
+}
+
 .display-name {
-  content: " ";
-  height: 2rem;
+  height: 1.5rem;
   width: 100%;
 }
 
@@ -27,7 +37,6 @@
 
 .user-data-field {
   width: 10rem;
-  /* width: 75%; */
   height: 1.5rem;
 }
 </style>

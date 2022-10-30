@@ -1,70 +1,81 @@
-<script setup lang="ts">
+<script lang="ts">
 import { IonIcon } from "@ionic/vue";
 import { chevronBack, chevronForward } from "ionicons/icons";
-import Spotify from "spotify-web-api-js";
-import { inject, ref, watch } from "vue";
-import type { VueCookies } from "vue-cookies";
+import SpotifyWebApi from "spotify-web-api-js";
+import { defineComponent, type PropType } from "vue";
 
-const $cookies = inject<VueCookies>("$cookies");
-const spotify = new Spotify();
-const pageItemsCount = 20;
+const spotify = new SpotifyWebApi();
+const token = sessionStorage.getItem("access_token");
+spotify.setAccessToken(token);
 
-if (!$cookies) throw Error("Couldn't fetch cookies");
-spotify.setAccessToken($cookies.get("access_token"));
-
-// Functions
-async function checkNextPage(currentPage: RecentlyPlayedTracks) {
+export async function checkNextPage(
+  currentPage: RecentlyPlayedTracks,
+  spotify: SpotifyWebApi.SpotifyWebApiJs
+) {
   const next = await spotify.getMyRecentlyPlayedTracks({
-    limit: pageItemsCount,
+    limit: 20,
     before: Number(currentPage.cursors.before),
   });
-  console.log(next);
   return Boolean(next?.items.length > 0);
 }
 
-// Refs
-const curPage = ref(1);
-const isLoading = ref(false);
-const history = ref(
-  (await spotify.getMyRecentlyPlayedTracks({
-    limit: pageItemsCount,
-  })) as RecentlyPlayedTracks
-);
-const hasNext = ref(await checkNextPage(history.value));
-console.log(history.value);
+export default defineComponent({
+  components: { IonIcon },
+  props: {
+    recentTracks: {
+      required: true,
+      type: Object as PropType<RecentlyPlayedTracks>,
+    },
+    propHasNext: {
+      required: true,
+      type: Boolean,
+    },
+  },
+  data() {
+    return {
+      isLoading: false,
+      curPage: 1,
+      history: this.recentTracks,
+      hasNext: this.propHasNext,
+    };
+  },
+  setup() {
+    return { chevronBack, chevronForward };
+  },
+  methods: {
+    dateFormat: (timestamp: number) => `${new Date(timestamp).toDateString()}`,
+    timeFormat: (timestamp: number) =>
+      `${new Date(timestamp).toLocaleTimeString()}`,
+    previous() {
+      if (this.isLoading) return;
+      this.curPage = Math.max(1, this.curPage - 1);
+    },
+    next() {
+      if (this.isLoading) return;
+      this.curPage++;
+    },
+  },
+  watch: {
+    async curPage(cur, prev) {
+      this.isLoading = true;
 
-watch(curPage, async (cur, prev) => {
-  isLoading.value = true;
+      if (cur - prev === 1) {
+        this.history = (await spotify.getMyRecentlyPlayedTracks({
+          limit: 20,
+          before: Number(this.history.cursors.before),
+        })) as RecentlyPlayedTracks;
+      } else if (cur - prev === -1) {
+        this.history = (await spotify.getMyRecentlyPlayedTracks({
+          limit: 20,
+          after: Number(this.history.cursors.after),
+        })) as RecentlyPlayedTracks;
+      }
 
-  if (cur - prev === 1) {
-    history.value = (await spotify.getMyRecentlyPlayedTracks({
-      limit: pageItemsCount,
-      before: Number(history.value.cursors.before),
-    })) as RecentlyPlayedTracks;
-  } else if (cur - prev === -1) {
-    history.value = (await spotify.getMyRecentlyPlayedTracks({
-      limit: 20,
-      after: Number(history.value.cursors.after),
-    })) as RecentlyPlayedTracks;
-  }
-
-  hasNext.value = await checkNextPage(history.value);
-  isLoading.value = false;
+      this.hasNext = await checkNextPage(this.history, spotify);
+      this.isLoading = false;
+    },
+  },
 });
-
-const dateFormat = (timestamp: number) =>
-  `${new Date(timestamp).toDateString()}`;
-const timeFormat = (timestamp: number) =>
-  `${new Date(timestamp).toLocaleTimeString()}`;
-
-const previous = () => {
-  if (isLoading.value) return;
-  curPage.value = Math.max(1, curPage.value - 1);
-};
-const next = () => {
-  if (isLoading.value) return;
-  curPage.value++;
-};
 </script>
 
 <template>

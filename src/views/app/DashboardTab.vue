@@ -7,60 +7,81 @@ import TopGenres, {
   getTopGenres,
 } from "@/components/dashboard/top-genres/TopGenres.vue";
 import TopGenresSkeleton from "@/components/dashboard/top-genres/TopGenresSkeleton.vue";
-import TopTracksSkeleton from "@/components/dashboard/top-tracks/TopTracks.Skeleton.vue";
 import TopTracks from "@/components/dashboard/top-tracks/TopTracks.vue";
+import TopTracksSkeleton from "@/components/dashboard/top-tracks/TopTracksSkeleton.vue";
 // import { delay } from "@/utilities/functions";
 import SpotifyWebApi from "spotify-web-api-js";
-import { defineAsyncComponent, h, type PropType } from "vue";
+import { defineAsyncComponent, h, inject } from "vue";
 
-const token = window.$cookies.get("access_token");
 const spotify = new SpotifyWebApi();
+const $appTokens = inject<AppTokens>("$tokens");
+const token = sessionStorage.getItem("access_token") as string;
 spotify.setAccessToken(token);
 
-const props = defineProps({
-  fetchedUser: { type: Object as PropType<Promise<any>>, required: true },
-});
+if (!$appTokens) {
+  console.log("no access token mate");
+}
 
 const AsyncGenresCard = defineAsyncComponent({
   loadingComponent: TopGenresSkeleton,
   loader: async () => {
-    await props.fetchedUser;
+    // const tokens = await $appTokens?.tokens;
+
     const genres = await getTopGenres(token);
     if (!genres) {
       throw Error("Couldn't get top genres");
     }
+
     return () => h(TopGenres, { genres });
   },
 });
 
 const AsyncActivityCard = defineAsyncComponent({
   loadingComponent: ActivityCardSkeleton,
+  errorComponent: () => h("div"),
   loader: async () => {
-    await props.fetchedUser;
+    // const tokens = await $appTokens?.tokens;
+
+    // spotify.setAccessToken(tokens.access_token);
     const history = await spotify.getMyRecentlyPlayedTracks({
       limit: 50,
     });
+
     return () => h(ActivityCard, { history });
   },
 });
 
 const AsyncTopTracksCard = defineAsyncComponent({
   loadingComponent: TopTracksSkeleton,
+  errorComponent: () => h("div"),
   loader: async () => {
-    await props.fetchedUser;
+    // const tokens = await $appTokens?.tokens;
+
+    // spotify.setAccessToken(tokens.access_token);
     const tracks = await spotify.getMyTopTracks();
+
     return () => h(TopTracks, { tracks });
   },
 });
 
 const AsyncTopArtistsCard = defineAsyncComponent({
   loadingComponent: TopArtistsSkeleton,
+  errorComponent: () => h("div"),
   loader: async () => {
-    await props.fetchedUser;
+    // const tokens = await $appTokens?.tokens;
+
+    // spotify.setAccessToken(tokens.access_token);
     const artists = await spotify.getMyTopArtists();
+
     return () => h(TopArtists, { artists });
   },
 });
+
+// let key = ref(46313);
+// setInterval(() => {
+//   key.value++;
+//   console.log("key updated");
+// }, 5000);
 </script>
 
 <template>

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
 import AuthView from "@/views/AuthView.vue";
+import { refreshAccessToken } from "@/utilities/functions";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,10 +30,24 @@ const router = createRouter({
       path: "/app",
       name: "app",
       component: () => import("@/views/AppView.vue"),
-      redirect() {
-        return {
-          path: "/app/dashboard",
-        };
+      async beforeEnter(to) {
+        // If no user is logged in
+        const user = localStorage.getItem("current_user");
+        if (!user) {
+          return {
+            path: "/auth",
+          };
+        }
+
+        const tokens = await refreshAccessToken(user);
+        setInterval(() => {}, tokens.expires_in);
+
+        // default route : dashboard
+        if (to.path === "/app") {
+          return {
+            path: "/app/dashboard",
+          };
+        }
       },
       children: [
         {

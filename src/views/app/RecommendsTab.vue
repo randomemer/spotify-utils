@@ -17,7 +17,7 @@ export default defineComponent({
     return { add, close, musicalNote, musicalNotes };
   },
   mounted() {
-    const token = this.$cookies.get("access_token");
+    const token = sessionStorage.getItem("access_token");
     this.spotify.setAccessToken(token);
     (async () => {
       const { genres } = await this.spotify.getAvailableGenreSeeds();

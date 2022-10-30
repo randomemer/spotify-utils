@@ -48,3 +48,27 @@ export function decodeCookie(cookie: string): string {
     }
   }
 }
+
+export async function refreshAccessToken(
+  accountJSON: string
+): Promise<RefreshedAccessTokenResponse> {
+  const client_id = import.meta.env.VITE_CLIENT_ID;
+  const client_secret = import.meta.env.VITE_CLIENT_SECRET;
+  const account: Account = JSON.parse(accountJSON);
+
+  const response = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${btoa(`${client_id}:${client_secret}`)}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: account.refresh_token,
+    }),
+  });
+
+  const body: RefreshedAccessTokenResponse = await response.json();
+  sessionStorage.setItem("access_token", body.access_token);
+  return body;
+}

@@ -16,51 +16,47 @@ import { Doughnut } from "vue-chartjs";
 Chart.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
 export async function getTopGenres(token: string) {
-  try {
-    const spotify = new Spotify();
-    spotify.setAccessToken(token);
+  const spotify = new Spotify();
+  spotify.setAccessToken(token);
 
-    const tracks = await getAllTopTracks(UserTopItemsSort.Long, token);
-    // console.log(tracks);
+  const tracks = await getAllTopTracks(UserTopItemsSort.Long, token);
+  // console.log(tracks);
 
-    // Collect all of the artists in the tracks
-    const unknownArtists = new Set<string>();
-    tracks.forEach((track) => {
-      track.artists.forEach((artist) => {
-        unknownArtists.add(artist.id);
+  // Collect all of the artists in the tracks
+  const unknownArtists = new Set<string>();
+  tracks.forEach((track) => {
+    track.artists.forEach((artist) => {
+      unknownArtists.add(artist.id);
+    });
+  });
+
+  // Get artist data in batches of size 50 in accordance with Spotify API rate limits
+
+  const knownArtists = new Map<string, SpotifyApi.ArtistObjectFull>();
+  const artistsArr = Array.from(unknownArtists);
+  do {
+    const batch = await spotify.getArtists(artistsArr.splice(0, 50));
+    batch.artists.forEach((artist) => knownArtists.set(artist.id, artist));
+  } while (artistsArr.length > 0);
+
+  const genres = new Map<string, number>();
+  tracks.forEach((track) => {
+    track.artists.forEach((artist) => {
+      const artistInfo = knownArtists.get(artist.id);
+      artistInfo?.genres.forEach((genre) => {
+        const count = genres.get(genre);
+        if (count) genres.set(genre, count + 1);
+        else genres.set(genre, 1);
       });
     });
+  });
 
-    // Get artist data in batches of size 50 in accordance with Spotify API rate limits
+  // calculated data
+  const sortedGenres = Array.from(genres).sort(
+    (genreA, genreB) => genreB[1] - genreA[1]
+  );
 
-    const knownArtists = new Map<string, SpotifyApi.ArtistObjectFull>();
-    const artistsArr = Array.from(unknownArtists);
-    do {
-      const batch = await spotify.getArtists(artistsArr.splice(0, 50));
-      batch.artists.forEach((artist) => knownArtists.set(artist.id, artist));
-    } while (artistsArr.length > 0);
-
-    const genres = new Map<string, number>();
-    tracks.forEach((track) => {
-      track.artists.forEach((artist) => {
-        const artistInfo = knownArtists.get(artist.id);
-        artistInfo?.genres.forEach((genre) => {
-          const count = genres.get(genre);
-          if (count) genres.set(genre, count + 1);
-          else genres.set(genre, 1);
-        });
-      });
-    });
-
-    // calculated data
-    const sortedGenres = Array.from(genres).sort(
-      (genreA, genreB) => genreB[1] - genreA[1]
-    );
-
-    return sortedGenres;
-  } catch (error) {
-    console.warn("Error getting top genres : ", error);
-  }
+  return sortedGenres;
 }
 
 // prettier-ignore
@@ -75,9 +71,6 @@ export default defineComponent({
     return {
       genreSum: props.genres.reduce((prev, cur) => prev + cur[1], 0),
     };
-  },
-  data() {
-    return {};
   },
   computed: {
     chartData(): any {

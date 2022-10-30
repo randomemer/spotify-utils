@@ -7,10 +7,10 @@ declare global {
     $cookies: VueCookies;
   }
 
-  type AccountCookie = {
+  interface Account {
     user: SpotifyApi.CurrentUsersProfileResponse;
     refresh_token: string;
-  };
+  }
 
   type RecentlyPlayedTracks = SpotifyApi.CursorBasedPagingObject<
     SpotifyApi.PlayHistoryObject & { track: SpotifyApi.TrackObjectFull }
@@ -18,8 +18,20 @@ declare global {
 
   type SpotifySearchFilter = "track" | "artist" | "genre";
 
-  type Seed = {
+  interface Seed {
     seed: SpotifyApi.TrackObjectFull | SpotifyApi.ArtistObjectFull | string;
     type: SpotifySearchFilter;
-  };
+  }
+
+  interface RefreshedAccessTokenResponse {
+    access_token: string;
+    token_type: string;
+    scope: string;
+    expires_in: number;
+  }
+
+  interface AppTokens {
+    tokens: Ref<Promise<RefreshedAccessTokenResponse | undefined>>;
+    updateTokens(): void;
+  }
 }
