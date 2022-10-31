@@ -142,10 +142,12 @@ export default defineComponent({
           this.results = results ? this.availableGenres : results;
         } else {
           this.results = (
-            results as SpotifyApi.PagingObject<
-              SpotifyApi.ArtistObjectFull | SpotifyApi.TrackObjectFull
+            results as Partial<
+              SpotifyApi.PagingObject<
+                SpotifyApi.ArtistObjectFull | SpotifyApi.TrackObjectFull
+              >
             >
-          ).items;
+          )?.items;
         }
       }
     },
