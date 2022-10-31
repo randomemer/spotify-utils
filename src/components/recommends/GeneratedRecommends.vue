@@ -8,17 +8,12 @@ import {
 } from "firebase/firestore";
 import { defineAsyncComponent, defineComponent, h } from "vue";
 import { chevronBack, chevronForward } from "ionicons/icons";
-import Spotify from "spotify-web-api-js";
 import SeedsSource from "./seeds-source/SeedsSource.vue";
 import SeedsSourceSkeleton from "./seeds-source/SeedsSourceSkeleton.vue";
 import TracksTable from "./tracks-table/TracksTable.vue";
 import TracksTableSkeleton from "./tracks-table/TracksTableSkeleton.vue";
 import ModalDialog from "@/components/ModalDialog.vue";
-
-const spotify = new Spotify();
-const $cookies = window.$cookies;
-if (!$cookies) throw Error("Couldn't fetch cookies");
-spotify.setAccessToken($cookies.get("access_token"));
+import { spotify } from "@/utilities/spotify-api";
 
 let recommendation: Promise<DocumentSnapshot<DocumentData>>;
 
@@ -39,17 +34,18 @@ export default defineComponent({
       loader: async () => {
         const rec = await recommendation;
 
-        const seeds: SpotifyApi.RecommendationsSeedObject[] | undefined =
+        const seeds: RecommendationsSeedObject[] | undefined =
           rec.data()?.data.seeds;
+
         console.log(seeds);
         if (!seeds) {
           throw new Error("Seeds Undefined");
         }
 
         for (const seed of seeds) {
-          if (seed.type.toLowerCase() === "track") {
+          if (seed.type === "TRACK") {
             seed.item = await spotify.getTrack(seed.id);
-          } else if (seed.type.toLowerCase() === "artist") {
+          } else if (seed.type === "ARTIST") {
             seed.item = await spotify.getArtist(seed.id);
           } else {
             seed.item = seed.id;
@@ -87,7 +83,7 @@ export default defineComponent({
     async savePlaylist() {
       const rec = await recommendation;
       const tracks = rec.data()?.data.tracks as SpotifyApi.TrackObjectFull[];
-      const account: AccountCookie = window.$cookies.get("current_user");
+      const account: Account = window.$cookies.get("current_user");
       const id = account.user.id;
 
       // create a playlist

@@ -17,13 +17,7 @@ export default defineComponent({
     return { add, close, musicalNote, musicalNotes };
   },
   mounted() {
-    (async () => {
-      const { genres } = await spotify.getAvailableGenreSeeds();
-      this.availableGenres = genres;
-      this.miniSearch.addAll(
-        genres.map((genre, i) => ({ id: i, genre: genre }))
-      );
-    })();
+    this.getAvailableGenres();
   },
   data() {
     return {
@@ -40,27 +34,19 @@ export default defineComponent({
       } as SpotifyApi.SearchResponse & { genres?: string[] },
       results: [] as any[] | undefined,
       searchFilter: "track" as SpotifySearchFilter,
-      seeds: {
-        track: new Map(),
-        artist: new Map(),
-        genre: new Map(),
-      } as { [key: string]: Map<string, any> },
+      seeds: [] as Seed[],
       recommendedTracks: {} as SpotifyApi.RecommendationsFromSeedsResponse,
       isGenerating: false,
     };
   },
-  computed: {
-    seedsArr(): Seed[] {
-      return Object.entries(this.seeds).flatMap(([seedType, seeds]) => {
-        const arr = [];
-        for (const seed of seeds.values()) {
-          arr.push({ seed, type: seedType } as Seed);
-        }
-        return arr;
-      });
-    },
-  },
   methods: {
+    async getAvailableGenres() {
+      const { genres } = await spotify.getAvailableGenreSeeds();
+      this.availableGenres = genres;
+      this.miniSearch.addAll(
+        genres.map((genre, i) => ({ id: i, genre: genre }))
+      );
+    },
     async searchItems(event: KeyboardEvent) {
       try {
         const searchInput = event.target as HTMLInputElement;
@@ -90,10 +76,15 @@ export default defineComponent({
       try {
         // await delay(5000000000);
         // Get Reccomendations
+        const getSeedsOfType = (type: SpotifySearchFilter) =>
+          this.seeds
+            .filter((seed) => seed.type === type)
+            .map((seed) => seed.id);
+
         const recommendations = await spotify.getRecommendations({
-          seed_artists: [...this.seeds.artist.keys()],
-          seed_tracks: [...this.seeds.track.keys()],
-          seed_genres: [...this.seeds.genre.keys()],
+          seed_artists: getSeedsOfType("artist"),
+          seed_tracks: getSeedsOfType("track"),
+          seed_genres: getSeedsOfType("genre"),
           limit: 100,
         });
         console.log(recommendations);
@@ -114,27 +105,33 @@ export default defineComponent({
       }
       this.isGenerating = false;
     },
-    addSeed(item: any) {
-      const property = this.searchFilter;
-      console.log(item);
-      this.seeds[property].set(item.id || item, item);
+    addSeed(item: SeedItem) {
+      if (typeof item === "object") {
+        console.log("Type matches");
+        item.id;
+      }
+
+      const newSeed: Seed = {
+        id: typeof item === "object" ? item.id : item,
+        type: this.searchFilter,
+        seed: item,
+      } as Seed;
+
+      newSeed.seed.valueOf() === Object;
+      if (!this.seeds.find((seed) => seed.id === newSeed.id)) {
+        this.seeds.push(newSeed);
+      }
     },
     removeSeed(event: Event, item: Seed) {
-      for (const [k, v] of this.seeds[item.type].entries()) {
-        if (v === item.seed) {
-          this.seeds[item.type].delete(k);
-          break;
-        }
-      }
+      const index = this.seeds.findIndex((seed) => seed.id == item.id);
+      this.seeds.splice(index, 1);
 
       // const target = event.target as HTMLElement;
       // const chip = target.closest(".seed-chip");
       // chip?.classList.add("delete");
-
       // const listener = () => {
       //   this.seeds[property].delete(item.id);
       // };
-
       // chip?.ownerDocument.addEventListener("animationend", listener, false);
     },
     onTabChange(event: SpotifySearchFilter) {
@@ -142,9 +139,13 @@ export default defineComponent({
       if (this.searchResults) {
         const results = this.searchResults[`${event}s`];
         if (this.searchFilter === "genre") {
-          this.results = results === undefined ? this.availableGenres : results;
+          this.results = results ? this.availableGenres : results;
         } else {
-          this.results = results?.items;
+          this.results = (
+            results as SpotifyApi.PagingObject<
+              SpotifyApi.ArtistObjectFull | SpotifyApi.TrackObjectFull
+            >
+          ).items;
         }
       }
     },
@@ -156,7 +157,9 @@ export default defineComponent({
           artists: undefined,
           genres: this.availableGenres,
         };
-        this.results = this.searchResults[`${this.searchFilter}s`];
+        this.results = this.searchResults[`${this.searchFilter}s`] as
+          | string[]
+          | undefined;
       }
     },
   },
@@ -206,8 +209,8 @@ export default defineComponent({
       <div class="seeds-cart">
         <h3>Selected Seeds</h3>
 
-        <ul v-if="seedsArr.length">
-          <li v-for="seed in seedsArr" :key="seed.seed">
+        <ul v-if="seeds.length">
+          <li v-for="seed in seeds" :key="seed.id">
             <TrackItem :track="seed.seed" v-if="seed.type === 'track'" />
             <ArtistItem
               :artist="seed.seed"
@@ -233,7 +236,7 @@ export default defineComponent({
           type="button"
           @click="generate"
           :class="{ loading: isGenerating }"
-          v-if="seedsArr.length"
+          v-if="seeds.length"
         >
           <ion-spinner v-if="isGenerating"></ion-spinner>
           <span>{{ isGenerating ? "Generating" : "Generate" }}</span>

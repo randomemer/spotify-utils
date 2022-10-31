@@ -19,10 +19,41 @@ declare global {
 
   type SpotifySearchFilter = "track" | "artist" | "genre";
 
-  interface Seed {
-    seed: SpotifyApi.TrackObjectFull | SpotifyApi.ArtistObjectFull | string;
-    type: SpotifySearchFilter;
-  }
+  type SeedItem =
+    | SpotifyApi.TrackObjectFull
+    | SpotifyApi.ArtistObjectFull
+    | string;
+
+  type Seed =
+    | {
+        id: string;
+        seed: SpotifyApi.TrackObjectFull;
+        type: "track";
+      }
+    | {
+        id: string;
+        seed: SpotifyApi.ArtistObjectFull;
+        type: "artist";
+      }
+    | {
+        id: string;
+        seed: string;
+        type: "genre";
+      };
+
+  type RecommendationsSeedObject =
+    | (Omit<SpotifyApi.RecommendationsSeedObject, "type"> & {
+        type: "TRACK";
+        item: SpotifyApi.TrackObjectFull;
+      })
+    | (Omit<SpotifyApi.RecommendationsSeedObject, "type"> & {
+        type: "ARTIST";
+        item: SpotifyApi.ArtistObjectFull;
+      })
+    | (Omit<SpotifyApi.RecommendationsSeedObject, "type"> & {
+        type: "GENRE";
+        item: string;
+      });
 
   interface RefreshedAccessTokenResponse {
     access_token: string;

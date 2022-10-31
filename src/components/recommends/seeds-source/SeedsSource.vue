@@ -9,7 +9,7 @@ export default defineComponent({
   props: {
     seeds: {
       required: true,
-      type: Object as PropType<SpotifyApi.RecommendationsSeedObject[]>,
+      type: Object as PropType<RecommendationsSeedObject[]>,
     },
   },
 });
@@ -20,15 +20,9 @@ export default defineComponent({
     <h3>Generated From</h3>
     <ul class="seeds-list">
       <li v-for="seed in seeds" :key="seed.id">
-        <TrackItem
-          :track="seed.item"
-          v-if="seed.type.toLowerCase() === 'track'"
-        />
-        <ArtistItem
-          :artist="seed.item"
-          v-else-if="seed.type.toLowerCase() === 'artist'"
-        />
-        <GenreItem :genre="seed.id" v-else />
+        <TrackItem :track="seed.item" v-if="seed.type === 'TRACK'" />
+        <ArtistItem :artist="seed.item" v-else-if="seed.type === 'ARTIST'" />
+        <GenreItem :genre="seed.item" v-else />
       </li>
     </ul>
   </div>

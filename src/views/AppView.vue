@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import NavBar from "@/components/NavBar.vue";
+import { spotify } from "@/utilities/spotify-api";
 import { onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 
@@ -32,14 +33,13 @@ async function refreshAccessToken(): Promise<
   });
 
   const body: RefreshedAccessTokenResponse = await response.json();
-  sessionStorage.setItem("access_token", body.access_token);
+  spotify.setAccessToken(body.access_token);
   return body;
 }
 
 const interval = setInterval(refreshAccessToken, 3600);
 
 onUnmounted(() => {
-  console.log(interval);
   clearInterval(interval);
 });
 </script>
