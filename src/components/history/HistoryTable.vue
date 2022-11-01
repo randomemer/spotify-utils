@@ -173,95 +173,93 @@ export default defineComponent({
   </table>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .history-table {
   display: grid;
   align-items: center;
   justify-content: stretch;
   grid-template-columns: auto 1fr auto auto;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: $card-color;
   min-width: 100%;
   border-radius: 10px;
   border-collapse: collapse;
   grid-row-gap: 1.6rem;
   /* overflow-y: hidden; */
-  --table-padding: 3rem;
-}
+  $table-padding: 3rem;
 
-.history-table thead,
-.history-table tbody,
-.history-table tfoot,
-.history-table tr {
-  display: contents;
-}
+  thead,
+  tbody,
+  tfoot,
+  tr {
+    display: contents;
+  }
 
-.history-table th {
-  /* position: sticky; */
-  /* top: 0; */
-  /* background-color: rgba(64, 64, 64); */
-  text-transform: uppercase;
-  color: var(--primary-font-color);
-  padding: 1.6rem 0;
-  text-align: left;
-  font-weight: 500;
-  letter-spacing: 1px;
-  border-bottom: 1px solid grey;
-}
+  th {
+    /* position: sticky; */
+    /* top: 0; */
+    /* background-color: rgba(64, 64, 64); */
+    text-transform: uppercase;
+    color: $primary-font-color;
+    padding: 1.6rem 0;
+    text-align: left;
+    font-weight: 500;
+    letter-spacing: 1px;
+    border-bottom: 1px solid grey;
+  }
 
-.history-table th,
-.history-table td {
-  font-size: 1.6rem;
-  padding-left: 1.1rem;
-  padding-right: 1.1rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+  th,
+  td {
+    font-size: 1.6rem;
+    padding-left: 1.1rem;
+    padding-right: 1.1rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
-/* Left padding for table */
-.history-table td:first-child,
-.history-table th:first-child {
-  padding-left: var(--table-padding);
-}
+    /* Left padding for table */
+    &:first-child {
+      padding-left: $table-padding;
+    }
 
-/* Right padding for table */
-.history-table td:last-child,
-.history-table th:last-child {
-  padding-right: var(--table-padding);
+    /* Right padding for table */
+    &:last-child {
+      padding-right: $table-padding;
+    }
+  }
+
+  .track-number {
+    padding-left: 2.4rem;
+    padding-right: 2.4rem;
+    text-align: center;
+  }
+
+  .track {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .track-image {
+    $size: 5rem;
+    height: $size;
+    width: $size;
+    border-radius: $size;
+    object-fit: cover;
+  }
+
+  .table-footer {
+    padding: 1.6rem 0;
+    border-top: 1px solid grey;
+    grid-column: span 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .button-group {
   display: flex;
   align-items: stretch;
   gap: 1.8rem;
-}
-
-.history-table .track-number {
-  padding-left: 2.4rem;
-  padding-right: 2.4rem;
-  text-align: center;
-}
-
-.table-footer {
-  padding: 1.6rem 0;
-  border-top: 1px solid grey;
-  grid-column: span 4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.track {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.track-image {
-  --size: 5rem;
-  height: var(--size);
-  width: var(--size);
-  border-radius: var(--size);
-  object-fit: cover;
 }
 
 .track-info {
@@ -276,10 +274,10 @@ export default defineComponent({
   list-style: none;
   color: #bbb;
   font-size: 1.4rem;
-}
 
-.track-artists li + li:before {
-  content: ", ";
+  li + li:before {
+    content: ", ";
+  }
 }
 
 .track-popularity {
@@ -301,20 +299,20 @@ export default defineComponent({
   text-transform: uppercase;
   padding: 0.5rem;
   border-radius: 5px;
-  color: var(--primary-font-color);
+  color: $primary-font-color;
   font-size: 2.4rem;
   transition: background 0.3s ease-out;
   cursor: auto;
-}
 
-.data-nav-button:disabled {
-  color: #bbb;
-}
+  &:disabled {
+    color: #bbb;
+  }
 
-.data-nav-button:not(:disabled):hover,
-.data-nav-button:not(:disabled):active {
-  background-color: var(--splash-color);
-  cursor: pointer;
+  &:not(:disabled):hover,
+  &:not(:disabled):active {
+    background-color: $splash-color;
+    cursor: pointer;
+  }
 }
 
 .page-index {
@@ -334,7 +332,7 @@ export default defineComponent({
 .bar-fill {
   height: 1.4rem;
   border-radius: 10rem;
-  background-color: var(--primary-color);
+  background-color: $primary-color;
 
   transition: width 0.3s;
   width: 0;

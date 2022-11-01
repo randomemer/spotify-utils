@@ -148,14 +148,8 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 2.4rem;
-  /* grid-column: span 2; */
-  /* grid-column: 75fr; */
-}
+<style scoped lang="scss">
+@import "./top-genres.scss";
 
 .card * {
   transition: all 0.3s;
@@ -207,9 +201,9 @@ export default defineComponent({
 }
 
 .genre-colour {
-  --size: 1.6rem;
-  width: var(--size);
-  height: var(--size);
-  border-radius: var(--size);
+  $size: 1.6rem;
+  width: $size;
+  height: $size;
+  border-radius: $size;
 }
 </style>

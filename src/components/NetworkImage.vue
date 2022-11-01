@@ -25,7 +25,7 @@ export default defineComponent({
   <img :src="src" :alt="alt" ref="image" class="img-loading" />
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .img-loading {
   background-color: aqua;
 }

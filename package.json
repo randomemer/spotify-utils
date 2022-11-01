@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@ionic/vue": "^6.2.8",
+    "@popperjs/core": "^2.11.6",
     "chart.js": "^3.9.1",
     "firebase": "^9.12.1",
     "ionicons": "^6.0.3",

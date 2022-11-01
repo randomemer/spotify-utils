@@ -1,23 +1,13 @@
 <script setup lang="ts">
-import ProfileCard from "@/components/profile-card/ProfileCard.vue";
-import ProfileCardSkeleton from "@/components/profile-card/ProfileCardSkeleton.vue";
 import { IonIcon } from "@ionic/vue";
 import * as ionicons from "ionicons/icons";
 import type SpotifyWebApi from "spotify-web-api-js";
-import { defineAsyncComponent, h, inject } from "vue";
+import { inject } from "vue";
 import { useRouter } from "vue-router";
 
 const $spotify = inject<SpotifyWebApi.SpotifyWebApiJs>("$spotify");
 if (!$spotify) throw new Error("no-spotify-api-instance");
 const $router = useRouter();
-
-const AsyncProfileCard = defineAsyncComponent({
-  loadingComponent: ProfileCardSkeleton,
-  loader: async () => {
-    const user = await $spotify.getMe();
-    return () => h(ProfileCard, { user });
-  },
-});
 
 const appNavItems = [
   {
@@ -73,10 +63,6 @@ function isActiveLink(route: string): boolean {
   <aside class="sidebar">
     <span class="logo-title">Spotify Utilities</span>
 
-    <!-- Profile Card -->
-    <AsyncProfileCard />
-
-    <!-- Tabs area -->
     <nav class="nav-links-area">
       <div class="link-section" v-for="(section, _, i) in appNavItems" :key="i">
         <span class="link-section-name">{{ section.sectionName }}</span>
@@ -106,9 +92,7 @@ function isActiveLink(route: string): boolean {
   </aside>
 </template>
 
-<style scoped>
-@import "@/assets/general.css";
-
+<style scoped lang="scss">
 .logo-title {
   font-size: 3rem;
   text-align: center;
@@ -121,15 +105,15 @@ function isActiveLink(route: string): boolean {
   left: 0;
 
   padding: 2.4rem;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--card-color);
 
   display: flex;
   gap: 4.8rem;
   flex-direction: column;
-}
 
-.sidebar * {
-  transition: all 0.1s;
+  * {
+    transition: all 0.1s;
+  }
 }
 
 .nav-links-area {
@@ -170,11 +154,10 @@ function isActiveLink(route: string): boolean {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-}
 
-.nav-link--active {
-  /* color: var(--primary-color); */
-  color: var(--primary-font-color);
+  &--active {
+    color: $primary-font-color;
+  }
 }
 
 .route-icon {

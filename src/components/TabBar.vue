@@ -37,12 +37,14 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
-@import "@/assets/general.css";
-
+<style scoped lang="scss">
 .tabbar {
   display: flex;
   gap: 1.8rem;
+
+  input {
+    display: none;
+  }
 }
 
 .tab {
@@ -55,11 +57,7 @@ export default defineComponent({
   transition: all 0.15s ease-in;
 }
 
-.tabbar input {
-  display: none;
-}
-
 .tab-active {
-  background-color: var(--primary-color);
+  background-color: $primary-color;
 }
 </style>

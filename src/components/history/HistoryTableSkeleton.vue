@@ -55,7 +55,7 @@ import TrackItemSkeleton from "@/components/track/TrackItemSkeleton.vue";
   </table>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .history-table {
   display: grid;
   align-items: center;

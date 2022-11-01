@@ -25,11 +25,12 @@ export default defineComponent({
 
 <template>
   <div class="card">
-    <div>
+    <div class="pfp-container">
       <img
         class="pfp"
         :src="
-          (user.images && user.images[0]?.url) || '/src/assets/default-pfp.jpeg'
+          (user.images && user.images.at(-1)?.url) ||
+          '/src/assets/default-pfp.jpeg'
         "
       />
     </div>
@@ -52,8 +53,12 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
-@import "./profile-card.css";
+<style scoped lang="scss">
+@import "./profile-card.scss";
+
+.pfp-container {
+  height: 8rem;
+}
 
 .pfp {
   border-radius: 100rem;
@@ -69,13 +74,12 @@ export default defineComponent({
 .card-content {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: 1.2rem;
 }
 
 .user-data-field-icon {
   font-size: 1.8rem;
-  color: var(--primary-font-color);
+  color: $primary-font-color;
 }
 
 .user-data-field-text {

@@ -248,7 +248,7 @@ export default defineComponent({
   </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .heading-secondary {
   margin-bottom: 4.8rem;
 }
@@ -278,7 +278,7 @@ export default defineComponent({
   border-radius: 5px;
   font-size: 1.8rem;
   color: white;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: $card-color;
   padding: 0.8rem 1.6rem;
   margin-bottom: 3.6rem;
 }
@@ -293,8 +293,8 @@ export default defineComponent({
 }
 
 .generate-button {
-  background-color: var(--primary-color);
-  color: var(--font-color);
+  background-color: $primary-color;
+  color: $font-color;
   padding: 0.8rem 1.6rem;
   border-radius: 50rem;
   font-size: 1.6rem;
@@ -307,7 +307,7 @@ export default defineComponent({
 
 @keyframes loading-bg {
   0% {
-    background-color: var(--primary-color);
+    background-color: $primary-color;
   }
 
   50% {
@@ -315,7 +315,7 @@ export default defineComponent({
   }
 
   100% {
-    background-color: var(--primary-color);
+    background-color: $primary-color;
   }
 }
 
@@ -333,25 +333,25 @@ export default defineComponent({
   border-radius: 50rem;
   background: none;
   cursor: pointer;
-  color: #e91e63;
+  color: $danger-color;
   display: flex;
   align-items: center;
 }
 
 .remove-seed-button:hover,
 .remove-seed-button:active {
-  color: rgba(233, 30, 98, 0.6);
+  color: rgba(254, 78, 69, 0.6);
 }
 
 .add-button {
-  background: var(--primary-color);
-  color: var(--font-color);
-  --size: 3.6rem;
+  background: $primary-color;
+  color: $font-color;
+  $size: 3.6rem;
   align-self: center;
   font-size: 2.4rem;
-  height: var(--size);
-  width: var(--size);
-  border-radius: var(--size);
+  height: $size;
+  width: $size;
+  border-radius: $size;
 
   display: flex;
   align-items: center;
@@ -392,27 +392,27 @@ export default defineComponent({
   flex-direction: column;
   gap: 2.4rem;
 
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: $card-color;
   border-radius: 1rem;
   padding: 2.4rem;
   transition: all 0.3s;
-}
 
-.seeds-cart h3 {
-  font-size: 2.4rem;
-  font-weight: 600;
-}
+  h3 {
+    font-size: 2.4rem;
+    font-weight: 600;
+  }
 
-.seeds-cart ul {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 1.8rem;
-}
+  ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
 
-.seeds-cart ul li {
-  display: flex;
-  justify-content: space-between;
+    li {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
 }
 
 .empty-seeds {
@@ -422,14 +422,14 @@ export default defineComponent({
   align-items: center;
   gap: 3rem;
   margin: 3rem 0;
-}
 
-.empty-seeds ion-icon {
-  font-size: 7.2rem;
-  color: rgba(255, 255, 255, 0.3);
-}
+  ion-icon {
+    font-size: 7.2rem;
+    color: rgba(255, 255, 255, 0.3);
+  }
 
-.empty-seeds span {
-  font-size: 1.6rem;
+  span {
+    font-size: 1.6rem;
+  }
 }
 </style>

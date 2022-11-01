@@ -16,7 +16,7 @@ defineProps({
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .genre-item {
   font-size: 1.8rem;
   display: flex;
@@ -25,10 +25,10 @@ defineProps({
 }
 
 .genre-seed-icon {
-  color: var(--primary-font-color);
-  --size: 5rem;
-  height: var(--size);
-  width: var(--size);
+  color: $primary-font-color;
+  $size: 5rem;
+  height: $size;
+  width: $size;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -176,7 +176,7 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .modal {
   position: fixed;
   left: 0;

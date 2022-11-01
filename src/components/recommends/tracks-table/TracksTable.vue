@@ -71,8 +71,8 @@ export default defineComponent({
   </table>
 </template>
 
-<style scoped>
-@import "./table-styles.css";
+<style scoped lang="scss">
+@import "./table-styles.scss";
 
 .track-popularity {
   display: flex;

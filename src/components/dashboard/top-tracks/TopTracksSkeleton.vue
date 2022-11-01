@@ -15,6 +15,6 @@ import TrackItemSkeleton from "@/components/track/TrackItemSkeleton.vue";
   </div>
 </template>
 
-<style scoped>
-@import "./top-tracks.css";
+<style scoped lang="scss">
+@import "./top-tracks.scss";
 </style>

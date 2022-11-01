@@ -11,6 +11,6 @@ import TrackItemSkeleton from "../../track/TrackItemSkeleton.vue";
   </div>
 </template>
 
-<style scoped>
-@import "./seeds-source.css";
+<style scoped lang="scss">
+@import "./seeds-source.scss";
 </style>

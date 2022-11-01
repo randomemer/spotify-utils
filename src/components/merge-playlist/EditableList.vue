@@ -8,7 +8,7 @@ export default defineComponent({});
   <div class="editable-list"></div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .editable-list {
   border-top: 1px solid white;
   display: flex;

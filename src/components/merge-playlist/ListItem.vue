@@ -74,7 +74,7 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .playlist-item {
   padding: 1.2rem;
   display: flex;

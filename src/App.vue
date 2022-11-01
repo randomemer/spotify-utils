@@ -6,9 +6,7 @@ import { RouterView } from "vue-router";
   <RouterView />
 </template>
 
-<style>
-@import "@/assets/general.css";
-
+<style lang="scss">
 *,
 *::before,
 *::after {
@@ -31,8 +29,8 @@ html {
 }
 
 body {
-  background-color: var(--background-color);
-  color: var(--font-color);
+  background-color: $background-color;
+  color: $font-color;
   font-family: "Lexend Deca", sans-serif;
   line-height: 1;
 }
@@ -89,8 +87,8 @@ button {
   border: none;
   cursor: pointer;
   font-family: inherit;
-  background-color: var(--primary-color);
-  color: var(--font-color);
+  background-color: $primary-color;
+  color: $font-color;
   padding: 0.8rem 1.6rem;
   border-radius: 1000px;
 }
@@ -148,5 +146,21 @@ button {
 ion-icon {
   display: flex;
   align-items: center;
+}
+
+.list {
+  list-style: none;
+}
+
+.btn {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  background: none;
+}
+
+.card {
+  background-color: var(--card-color);
+  border-radius: 1rem;
 }
 </style>

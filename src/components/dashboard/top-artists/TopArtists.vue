@@ -110,8 +110,8 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
-@import "./top-artists.css";
+<style scoped lang="scss">
+@import "./top-artists.scss";
 
 .card * {
   transition: all 0.3s;

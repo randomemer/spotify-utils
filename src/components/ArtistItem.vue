@@ -31,7 +31,7 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .artist-item {
   display: flex;
   align-items: center;

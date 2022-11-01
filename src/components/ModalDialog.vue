@@ -18,7 +18,7 @@ defineExpose({ isModalOpen });
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .modal {
   position: fixed;
   left: 0;
@@ -61,9 +61,9 @@ defineExpose({ isModalOpen });
   align-items: center;
   transition: all 0.3s;
   margin-left: 10px;
-}
 
-.close-button:hover {
-  background-color: rgba(169, 169, 169, 0.5);
+  &:hover {
+    background-color: rgba(169, 169, 169, 0.5);
+  }
 }
 </style>

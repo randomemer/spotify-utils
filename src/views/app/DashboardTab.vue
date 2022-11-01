@@ -67,17 +67,11 @@ const AsyncTopArtistsCard = defineAsyncComponent({
   </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .dashboard {
   display: grid;
   grid-template-columns: repeat(2, 50fr);
   flex-direction: column;
   gap: 4.8rem;
-}
-
-.card {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 2.4rem;
 }
 </style>

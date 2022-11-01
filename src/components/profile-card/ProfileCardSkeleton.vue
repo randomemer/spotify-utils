@@ -8,17 +8,17 @@
   </div>
 </template>
 
-<style scoped>
-@import "./profile-card.css";
+<style scoped lang="scss">
+@import "./profile-card.scss";
 
 .card {
   align-items: center;
 }
 
 .pfp {
-  --size: 7.5rem;
-  width: var(--size);
-  height: var(--size);
+  $size: 7.5rem;
+  width: $size;
+  height: $size;
   border-radius: 100rem;
 }
 

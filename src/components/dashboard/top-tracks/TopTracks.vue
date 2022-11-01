@@ -112,17 +112,8 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
-@import "./top-tracks.css";
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 2.4rem;
-
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 2.4rem;
-}
+<style scoped lang="scss">
+@import "./top-tracks.scss";
 
 .card * {
   transition: all 0.3s;
@@ -146,10 +137,10 @@ export default defineComponent({
 }
 
 .track-image {
-  --size: 5rem;
-  height: var(--size);
-  width: var(--size);
-  border-radius: var(--size);
+  $size: 5rem;
+  height: $size;
+  width: $size;
+  border-radius: $size;
   object-fit: cover;
 }
 
@@ -169,23 +160,25 @@ export default defineComponent({
   font-size: 1.8rem;
 }
 
-.action-button:link,
-.action-button:visited {
-  align-self: flex-end;
-  border-radius: 5px;
-  color: var(--primary-font-color);
-  font-size: 1.2rem;
-  padding: 1.4rem;
+.action-button {
+  &:link,
+  &:visited {
+    align-self: flex-end;
+    border-radius: 5px;
+    color: var(--primary-font-color);
+    font-size: 1.2rem;
+    padding: 1.4rem;
 
-  display: flex;
-  align-items: center;
-  text-transform: uppercase;
-  gap: 0.5rem;
-}
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    gap: 0.5rem;
+  }
 
-.action-button:active,
-.action-button:hover {
-  background-color: var(--splash-color);
+  &:active,
+  &:hover {
+    background-color: var(--splash-color);
+  }
 }
 
 .track-popularity {
@@ -193,20 +186,20 @@ export default defineComponent({
   gap: 1rem;
   align-items: center;
   font-size: 1.5rem;
-}
 
-.track-popularity ion-icon {
-  color: var(--primary-font-color);
-  font-size: 2rem;
+  ion-icon {
+    color: $primary-font-color;
+    font-size: 2rem;
+  }
 }
 
 .track-genre {
   font-size: 1.2rem;
   color: #bbbbbb;
   text-transform: capitalize;
-}
 
-.track-genre:not(:last-child)::after {
-  content: " | ";
+  &:not(:last-child)::after {
+    content: " | ";
+  }
 }
 </style>

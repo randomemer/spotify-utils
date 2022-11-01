@@ -28,6 +28,6 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
-@import "./seeds-source.css";
+<style scoped lang="scss">
+@import "./seeds-source.scss";
 </style>

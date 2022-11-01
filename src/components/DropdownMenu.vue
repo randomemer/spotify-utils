@@ -105,7 +105,8 @@ export default defineComponent({
     <div class="select-styled" ref="selectStyled">Select Period</div>
 
     <ul
-      :class="{ 'select-options': true, hidden: !isMenuOpen }"
+      class="select-options"
+      :class="{ hidden: !isMenuOpen }"
       ref="selectOptions"
     ></ul>
 
@@ -117,7 +118,7 @@ export default defineComponent({
   </div>
 </template>
 
-<style>
+<style scoped lang="scss">
 .dropdown-icon {
   font-size: 1.6rem;
   transition: all 0.3s ease-in;
@@ -130,10 +131,16 @@ export default defineComponent({
   padding: 0.8rem;
   gap: 0.5rem;
 
-  --select-background: rgba(255, 255, 255, 0.1);
-  background-color: var(--select-background);
+  $select-background: rgba(255, 255, 255, 0.1);
+  background-color: $select-background;
   border-radius: 5px;
   cursor: pointer;
+
+  &:hover,
+  &:active,
+  &.active {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
 }
 
 .select-container,
@@ -154,12 +161,6 @@ export default defineComponent({
   left: 0;
 }
 
-.select-container:hover,
-.select-container:active,
-.select-container.active {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
 .select-options {
   position: absolute;
   top: 100%;
@@ -172,28 +173,29 @@ export default defineComponent({
   border-radius: 5px;
   background-color: #555;
   transform-origin: 50% 0;
+  overflow: hidden;
+
+  li {
+    margin: 0;
+    padding: 12px 0;
+    text-indent: 15px;
+    transition: all 0.3s ease-in;
+
+    &:hover,
+    &.selected {
+      color: white;
+      background-color: $primary-color;
+    }
+
+    &[rel="hide"] {
+      display: none;
+    }
+  }
 }
 
 .hidden {
   opacity: 0;
   visibility: hidden;
   transform: scaleY(0);
-}
-
-.select-options li {
-  margin: 0;
-  padding: 12px 0;
-  text-indent: 15px;
-  transition: all 0.3s ease-in;
-}
-
-.select-options li:hover,
-.select-options li.selected {
-  color: white;
-  background-color: #1db954;
-}
-
-.select-options li[rel="hide"] {
-  display: none;
 }
 </style>

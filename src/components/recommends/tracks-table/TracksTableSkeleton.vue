@@ -28,8 +28,8 @@ import TrackItemSkeleton from "@/components/track/TrackItemSkeleton.vue";
   </table>
 </template>
 
-<style scoped>
-@import "./table-styles.css";
+<style scoped lang="scss">
+@import "./table-styles.scss";
 
 .history-table .track-number {
   padding-left: 2.4rem;

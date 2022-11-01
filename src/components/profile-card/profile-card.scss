@@ -1,7 +1,10 @@
+@use "@/assets/_general.scss";
+
 .card {
   display: flex;
   align-items: flex-start;
   gap: 2.4rem;
+  padding: 1.8rem;
 }
 
 .user-data-field {

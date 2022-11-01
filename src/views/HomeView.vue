@@ -19,7 +19,7 @@
   </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .nav-bar {
   display: flex;
   /* justify-content: space-between; */
@@ -36,7 +36,7 @@
 .nav-link:link,
 .nav-link:visited {
   font-size: 1.8rem;
-  color: #1db954;
+  color: $primary-font-color;
   text-transform: uppercase;
 }
 
@@ -59,7 +59,7 @@
 
 .cta-button:link,
 .cta-button:visited {
-  background-color: var(--primary-color);
+  background-color: $primary-color;
   padding: 1.6rem 3.2rem;
   font-size: 1.8rem;
   border-radius: 100rem;

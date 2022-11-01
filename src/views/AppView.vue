@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import NavBar from "@/components/NavBar.vue";
+import NavBar from "@/components/TheNavBar.vue";
+import SideBar from "@/components/TheSideBar.vue";
 import { spotify } from "@/utilities/spotify-api";
 import { onUnmounted } from "vue";
 import { useRouter } from "vue-router";
@@ -46,27 +47,40 @@ onUnmounted(() => {
 
 <template>
   <div class="app-container">
-    <NavBar class="app-sidebar" />
-    <RouterView class="app-main" />
+    <SideBar class="app-sidebar" />
+    <div class="app-content">
+      <NavBar class="nav-bar" />
+      <RouterView class="app-main" />
+    </div>
   </div>
 </template>
 
-<style>
-:root {
-  --sidebar-width: 27rem;
-}
+<style lang="scss">
+$sidebar-width: 27rem;
 
 .app-container {
   min-height: 100vh;
 }
 
 .app-sidebar {
-  width: var(--sidebar-width);
+  width: $sidebar-width;
+}
+
+.nav-bar {
+  margin-bottom: 4.8rem;
+  position: sticky;
+  top: 0;
+  /* box-shadow: 0px 0px 50px 0px rgba(0, 0, 0, 0.36); */
+  padding: 1.6rem 6.4rem;
+}
+
+.app-content {
+  padding-left: $sidebar-width;
+  scrollbar-color: rgb(123, 123, 123) rgb(66, 66, 66);
 }
 
 .app-main {
-  padding-left: var(--sidebar-width);
-  scrollbar-color: rgb(123, 123, 123) rgb(66, 66, 66);
   margin: 6.4rem;
+  margin-top: 3.2rem;
 }
 </style>

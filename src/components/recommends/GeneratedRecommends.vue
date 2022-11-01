@@ -140,7 +140,7 @@ export default defineComponent({
   </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .heading-secondary {
   grid-column: span 2;
   margin-bottom: 6.4rem;

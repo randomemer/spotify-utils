@@ -1,5 +1,4 @@
 <script lang="ts">
-import type { key } from "ionicons/icons";
 import { defineComponent } from "vue";
 import { stringifyQuery } from "vue-router";
 
@@ -99,8 +98,8 @@ export default defineComponent({
 </template>
 
 <style scoped lang="scss">
-@use "sass:list";
-@use "sass:map";
+// @use "sass:list";
+// @use "sass:map";
 
 .center-box {
   position: absolute;
@@ -148,7 +147,8 @@ export default defineComponent({
     display: flex;
     align-items: flex-end;
     .moving-bar {
-      background-color: var(--primary-font-color);
+      // background-color: $primary-color;
+      background-color: #730099;
       border-radius: 2px;
       width: 100%;
       height: 50%;
@@ -159,11 +159,8 @@ export default defineComponent({
 @mixin bar-keyframes($values) {
   $frames: (0, 25, 50, 75, 100);
 
-  // @each $frame in $frames
-
   @for $i from 1 through length($values) {
     #{nth($frames, $i)}% {
-      @debug nth($frames, $i) nth($values, $i);
       height: nth($values, $i);
     }
   }

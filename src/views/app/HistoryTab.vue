@@ -25,7 +25,7 @@ const AsyncHistoryTable = defineAsyncComponent({
   </main>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .heading-secondary {
   margin-bottom: 4.8rem;
 }

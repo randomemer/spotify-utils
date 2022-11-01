@@ -1,3 +1,5 @@
+@use "@/assets/general.scss";
+
 .track-item {
   display: flex;
   align-items: center;
@@ -5,10 +7,10 @@
 }
 
 .track-image {
-  --size: 5rem;
-  height: var(--size);
-  width: var(--size);
-  border-radius: var(--size);
+  $size: 5rem;
+  height: $size;
+  width: $size;
+  border-radius: $size;
   object-fit: cover;
 }
 

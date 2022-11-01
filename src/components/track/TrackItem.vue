@@ -32,8 +32,8 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
-@import "./track.css";
+<style scoped lang="scss">
+@import "./track.scss";
 
 .track-info {
   align-items: flex-start;

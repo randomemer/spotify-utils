@@ -27,8 +27,8 @@ const randomCount = (start: number, end: number) => _.random(start, end);
   </div>
 </template>
 
-<style scoped>
-@import "./track.css";
+<style scoped lang="scss">
+@import "./track.scss";
 
 .track-info {
   text-align: start;

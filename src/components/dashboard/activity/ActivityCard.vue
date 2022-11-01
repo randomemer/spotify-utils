@@ -152,6 +152,6 @@ export default {
   </div>
 </template>
 
-<style scoped>
-@import "./activity.css";
+<style scoped lang="scss">
+@import "./activity.scss";
 </style>

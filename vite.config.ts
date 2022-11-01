@@ -19,4 +19,11 @@ export default defineConfig({
     strictPort: true,
     open: true,
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import "@/assets/general.scss";`,
+      },
+    },
+  },
 });

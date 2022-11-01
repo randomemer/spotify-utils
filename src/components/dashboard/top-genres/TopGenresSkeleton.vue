@@ -20,16 +20,8 @@
   </div>
 </template>
 
-<style scoped>
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 2.4rem;
-
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 2.4rem;
-}
+<style scoped lang="scss">
+@import "./top-genres.scss";
 
 .card * {
   transition: all 0.3s;
