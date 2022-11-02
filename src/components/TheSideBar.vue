@@ -21,14 +21,6 @@ const appNavItems = [
         name: "Dashboard",
         route: "/app/dashboard",
       },
-      {
-        icon: {
-          outline: ionicons.logOutOutline,
-          filled: ionicons.logOut,
-        },
-        name: "Logout",
-        route: "/app/logout",
-      },
     ],
   },
   {

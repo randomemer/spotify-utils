@@ -28,6 +28,13 @@ const router = createRouter({
       component: AuthViewVue,
     },
     {
+      path: "/logout",
+      redirect() {
+        localStorage.removeItem("current_user");
+        return { path: "/home" };
+      },
+    },
+    {
       path: "/app",
       name: "app",
       component: () => import("@/views/AppView.vue"),
@@ -65,13 +72,6 @@ const router = createRouter({
           path: "recommends/:id",
           component: () =>
             import("@/components/recommends/GeneratedRecommends.vue"),
-        },
-        {
-          path: "logout",
-          redirect() {
-            localStorage.removeItem("current_user");
-            return { path: "/home" };
-          },
         },
       ],
     },

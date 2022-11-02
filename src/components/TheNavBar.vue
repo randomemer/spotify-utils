@@ -4,40 +4,21 @@ import {
   logOutOutline,
   notifications,
   notificationsOutline,
+  personCircle,
 } from "ionicons/icons";
 import { defineComponent } from "vue";
-import PopupMenu from "./PopupMenu.vue";
-import ProfileCard from "./profile-card/ProfileCard.vue";
-import { createPopper } from "@popperjs/core";
+import PopupMenu from "@/components/PopupMenu.vue";
+import ProfileCard from "@/components/profile-card/ProfileCard.vue";
 
 export default defineComponent({
   components: { IonIcon, PopupMenu, ProfileCard },
   setup() {
-    return { notificationsOutline, notifications, logOutOutline };
-  },
-  mounted() {
-    const profileBtn = document.querySelector<HTMLElement>(".profile-button");
-    const profilePopup = document.querySelector<HTMLElement>(".profile-popup");
-
-    createPopper(profileBtn!, profilePopup!, {
-      placement: "bottom-end",
-      modifiers: [
-        {
-          name: "offset",
-          enabled: true,
-          phase: "main",
-          options: { offset: [0, 20] },
-        },
-      ],
-    });
-
-    console.log(profileBtn);
-    console.log(profilePopup);
+    return { notificationsOutline, notifications, logOutOutline, personCircle };
   },
   data() {
     return {
-      notifsButtonActive: false,
-      profileButtonActive: false,
+      notifsPopperActive: false,
+      profilePopperActive: false,
     };
   },
   computed: {
@@ -57,6 +38,12 @@ export default defineComponent({
       const accountJSON = localStorage.getItem("current_user") as string;
       return JSON.parse(accountJSON);
     },
+    toggleProfilePopper(state: boolean) {
+      this.profilePopperActive = state;
+    },
+    toggleNotifsPopper(state: boolean) {
+      this.notifsPopperActive = state;
+    },
   },
 });
 </script>
@@ -67,31 +54,68 @@ export default defineComponent({
       <li>
         <button
           class="notifs-button btn"
-          :class="{ 'notifs-button-active': notifsButtonActive }"
-          @click="notifsButtonActive = !notifsButtonActive"
+          :class="{ 'notifs-button-active': notifsPopperActive }"
+          @click="toggleNotifsPopper(!notifsPopperActive)"
         >
           <IonIcon
-            class="notifs-icon"
-            :icon="notifsButtonActive ? notifications : notificationsOutline"
+            :icon="notifsPopperActive ? notifications : notificationsOutline"
           />
         </button>
+        <popup-menu
+          class="notifs-popup"
+          reference-el-selector=".notifs-button"
+          :is-open="notifsPopperActive"
+          :popper-options="{
+            placement: 'bottom-end',
+            modifiers: [
+              {
+                name: 'offset',
+                phase: 'main',
+                enabled: true,
+                options: { offset: [0, 20] },
+              },
+            ],
+          }"
+        >
+          <div>No Notifications Rn</div>
+        </popup-menu>
       </li>
       <li>
         <button
           class="profile-button btn"
-          @click="profileButtonActive = !profileButtonActive"
+          @click="toggleProfilePopper(!profilePopperActive)"
         >
-          <img class="profile-image-small" :src="pfpUrl" />
+          <img :src="pfpUrl" />
         </button>
-        <popup-menu :prop-is-open="profileButtonActive" class="profile-popup">
+        <popup-menu
+          class="profile-popup"
+          reference-el-selector=".profile-button"
+          :is-open="profilePopperActive"
+          @toggled="toggleProfilePopper($event)"
+          :popper-options="{
+            placement: 'bottom-end',
+            modifiers: [
+              {
+                name: 'offset',
+                phase: 'main',
+                enabled: true,
+                options: { offset: [0, 20] },
+              },
+            ],
+          }"
+        >
           <ProfileCard :user="getAccount().user" />
           <hr class="" />
-          <ul class="account-links list">
+          <ul class="list">
             <li>
-              <div class="account-option">
-                <IonIcon :icon="logOutOutline" class="option-icon" />
+              <RouterLink to="/account" class="account-option link">
+                <IonIcon :icon="personCircle" />
+                <span>Account</span>
+              </RouterLink>
+              <RouterLink to="/logout" class="account-option link">
+                <IonIcon :icon="logOutOutline" />
                 <span>Logout</span>
-              </div>
+              </RouterLink>
             </li>
           </ul>
         </popup-menu>
@@ -103,10 +127,6 @@ export default defineComponent({
 <style scoped lang="scss">
 .header {
   background-color: general.$background-color;
-}
-
-.account-links {
-  padding: 10px 0;
 }
 
 .header-list-items {
@@ -130,8 +150,10 @@ export default defineComponent({
   }
 }
 
-.notifs-icon {
-  font-size: 3rem;
+.notifs-button {
+  ion-icon {
+    font-size: 3rem;
+  }
 }
 
 .notifs-button-active {
@@ -140,22 +162,25 @@ export default defineComponent({
 
 .profile-button {
   overflow: hidden;
-}
 
-.profile-image-small {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: cover;
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+  }
 }
 
 .profile-popup {
   display: flex;
   flex-direction: column;
-  position: absolute;
   background-color: general.$card-color;
   box-shadow: 0px 0px 50px 0px rgba(0, 0, 0, 0.36);
   border-radius: 10px;
   z-index: 100;
+
+  .list {
+    padding: 10px 0;
+  }
 }
 
 .separator {
@@ -163,14 +188,19 @@ export default defineComponent({
 }
 
 .account-option {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   display: flex;
   gap: 1.8rem;
   align-self: stretch;
+  align-items: center;
   padding: 0.9rem 1.8rem;
-}
 
-.option-icon {
-  font-size: 2.2rem;
+  ion-icon {
+    font-size: 2.2rem;
+  }
+
+  &:hover {
+    background-color: general.$primary-color;
+  }
 }
 </style>
