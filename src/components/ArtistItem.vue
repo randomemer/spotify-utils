@@ -39,10 +39,10 @@ export default defineComponent({
 }
 
 .artist-image {
-  --size: 5rem;
-  height: var(--size);
-  width: var(--size);
-  border-radius: var(--size);
+  $size: 5rem;
+  height: $size;
+  width: $size;
+  border-radius: $size;
   object-fit: cover;
 }
 
@@ -64,9 +64,9 @@ export default defineComponent({
   list-style: none;
   color: #bbb;
   font-size: 1.4rem;
-}
 
-.artist-artists li + li:before {
-  content: ", ";
+  li + li:before {
+    content: ", ";
+  }
 }
 </style>

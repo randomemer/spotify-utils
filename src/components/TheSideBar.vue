@@ -105,7 +105,7 @@ function isActiveLink(route: string): boolean {
   left: 0;
 
   padding: 2.4rem;
-  background-color: var(--card-color);
+  // background-color: general.$card-color;
 
   display: flex;
   gap: 4.8rem;
@@ -156,7 +156,7 @@ function isActiveLink(route: string): boolean {
   gap: 1.5rem;
 
   &--active {
-    color: $primary-font-color;
+    color: general.$primary-font-color;
   }
 }
 

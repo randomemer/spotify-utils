@@ -135,10 +135,10 @@ export default defineComponent({
 }
 
 .artist-image {
-  --size: 5rem;
-  height: var(--size);
-  width: var(--size);
-  border-radius: var(--size);
+  $size: 5rem;
+  height: $size;
+  width: $size;
+  border-radius: $size;
   object-fit: cover;
 }
 
@@ -158,23 +158,25 @@ export default defineComponent({
   font-size: 1.8rem;
 }
 
-.action-button:link,
-.action-button:visited {
-  align-self: flex-end;
-  border-radius: 5px;
-  color: var(--primary-font-color);
-  font-size: 1.2rem;
-  padding: 1.4rem;
+.action-button {
+  &:link,
+  &:visited {
+    align-self: flex-end;
+    border-radius: 5px;
+    color: general.$primary-font-color;
+    font-size: 1.2rem;
+    padding: 1.4rem;
 
-  display: flex;
-  align-items: center;
-  text-transform: uppercase;
-  gap: 0.5rem;
-}
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    gap: 0.5rem;
+  }
 
-.action-button:active,
-.action-button:hover {
-  background-color: var(--splash-color);
+  &:active,
+  &:hover {
+    background-color: general.$splash-color;
+  }
 }
 
 .artist-popularity {
@@ -182,20 +184,20 @@ export default defineComponent({
   gap: 1rem;
   align-items: center;
   font-size: 1.5rem;
-}
 
-.artist-popularity ion-icon {
-  color: var(--primary-font-color);
-  font-size: 2rem;
+  ion-icon {
+    color: general.$primary-font-color;
+    font-size: 2rem;
+  }
 }
 
 .artist-genre {
   font-size: 1.2rem;
   color: #bbbbbb;
   text-transform: capitalize;
-}
 
-.artist-genre:not(:last-child)::after {
-  content: " | ";
+  &:not(:last-child)::after {
+    content: " | ";
+  }
 }
 </style>

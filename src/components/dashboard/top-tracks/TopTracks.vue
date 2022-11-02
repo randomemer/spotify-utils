@@ -165,7 +165,7 @@ export default defineComponent({
   &:visited {
     align-self: flex-end;
     border-radius: 5px;
-    color: var(--primary-font-color);
+    color: general.$primary-font-color;
     font-size: 1.2rem;
     padding: 1.4rem;
 
@@ -177,7 +177,7 @@ export default defineComponent({
 
   &:active,
   &:hover {
-    background-color: var(--splash-color);
+    background-color: general.$splash-color;
   }
 }
 
@@ -188,7 +188,7 @@ export default defineComponent({
   font-size: 1.5rem;
 
   ion-icon {
-    color: $primary-font-color;
+    color: general.$primary-font-color;
     font-size: 2rem;
   }
 }

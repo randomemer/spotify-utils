@@ -98,8 +98,8 @@ export default defineComponent({
 </template>
 
 <style scoped lang="scss">
-// @use "sass:list";
-// @use "sass:map";
+@use "sass:list";
+@use "sass:map";
 
 .center-box {
   position: absolute;
@@ -147,8 +147,7 @@ export default defineComponent({
     display: flex;
     align-items: flex-end;
     .moving-bar {
-      // background-color: $primary-color;
-      background-color: #730099;
+      background-color: general.$primary-color;
       border-radius: 2px;
       width: 100%;
       height: 50%;

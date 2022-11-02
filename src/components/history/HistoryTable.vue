@@ -174,64 +174,9 @@ export default defineComponent({
 </template>
 
 <style scoped lang="scss">
+@use "./history-table.scss";
+
 .history-table {
-  display: grid;
-  align-items: center;
-  justify-content: stretch;
-  grid-template-columns: auto 1fr auto auto;
-  background-color: $card-color;
-  min-width: 100%;
-  border-radius: 10px;
-  border-collapse: collapse;
-  grid-row-gap: 1.6rem;
-  /* overflow-y: hidden; */
-  $table-padding: 3rem;
-
-  thead,
-  tbody,
-  tfoot,
-  tr {
-    display: contents;
-  }
-
-  th {
-    /* position: sticky; */
-    /* top: 0; */
-    /* background-color: rgba(64, 64, 64); */
-    text-transform: uppercase;
-    color: $primary-font-color;
-    padding: 1.6rem 0;
-    text-align: left;
-    font-weight: 500;
-    letter-spacing: 1px;
-    border-bottom: 1px solid grey;
-  }
-
-  th,
-  td {
-    font-size: 1.6rem;
-    padding-left: 1.1rem;
-    padding-right: 1.1rem;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    /* Left padding for table */
-    &:first-child {
-      padding-left: $table-padding;
-    }
-
-    /* Right padding for table */
-    &:last-child {
-      padding-right: $table-padding;
-    }
-  }
-
-  .track-number {
-    padding-left: 2.4rem;
-    padding-right: 2.4rem;
-    text-align: center;
-  }
-
   .track {
     display: flex;
     align-items: center;
@@ -286,12 +231,6 @@ export default defineComponent({
   gap: 10px;
 }
 
-.track-played-at {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
 .data-nav-button {
   background: none;
   display: flex;
@@ -299,7 +238,7 @@ export default defineComponent({
   text-transform: uppercase;
   padding: 0.5rem;
   border-radius: 5px;
-  color: $primary-font-color;
+  color: general.$primary-font-color;
   font-size: 2.4rem;
   transition: background 0.3s ease-out;
   cursor: auto;
@@ -310,7 +249,7 @@ export default defineComponent({
 
   &:not(:disabled):hover,
   &:not(:disabled):active {
-    background-color: $splash-color;
+    background-color: general.$splash-color;
     cursor: pointer;
   }
 }
@@ -332,7 +271,7 @@ export default defineComponent({
 .bar-fill {
   height: 1.4rem;
   border-radius: 10rem;
-  background-color: $primary-color;
+  background-color: general.$primary-color;
 
   transition: width 0.3s;
   width: 0;

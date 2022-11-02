@@ -31,17 +31,11 @@ import TrackItemSkeleton from "@/components/track/TrackItemSkeleton.vue";
 <style scoped lang="scss">
 @import "./table-styles.scss";
 
-.history-table .track-number {
-  padding-left: 2.4rem;
-  padding-right: 2.4rem;
-  text-align: center;
-}
-
 .track-image {
-  --size: 5rem;
-  height: var(--size);
-  width: var(--size);
-  border-radius: var(--size);
+  $size: 5rem;
+  height: $size;
+  width: $size;
+  border-radius: $size;
   object-fit: cover;
 }
 

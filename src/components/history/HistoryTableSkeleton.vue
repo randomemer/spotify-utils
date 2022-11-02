@@ -56,66 +56,11 @@ import TrackItemSkeleton from "@/components/track/TrackItemSkeleton.vue";
 </template>
 
 <style scoped lang="scss">
-.history-table {
-  display: grid;
-  align-items: center;
-  justify-content: stretch;
-  grid-template-columns: auto 1fr auto auto;
-  background-color: rgba(255, 255, 255, 0.1);
-  min-width: 100%;
-  border-radius: 10px;
-  grid-row-gap: 1.6rem;
-  /* overflow-y: hidden; */
-  --table-padding: 3rem;
-}
-
-.history-table thead,
-.history-table tbody,
-.history-table tfoot,
-.history-table tr {
-  display: contents;
-}
-
-.history-table th {
-  text-transform: uppercase;
-  color: var(--primary-font-color);
-  padding: 1.6rem 0;
-  text-align: left;
-  font-weight: 500;
-  letter-spacing: 1px;
-  border-bottom: 1px solid grey;
-}
-
-.history-table td,
-.history-table th {
-  font-size: 1.6rem;
-  padding-left: 1.1rem;
-  padding-right: 1.1rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Left padding for table */
-.history-table td:first-child,
-.history-table th:first-child {
-  padding-left: var(--table-padding);
-}
-
-/* Right padding for table */
-.history-table td:last-child,
-.history-table th:last-child {
-  padding-right: var(--table-padding);
-}
+@use "./history-table.scss";
 
 .button-group {
   display: flex;
   align-self: flex-end;
-}
-
-.history-table .track-number {
-  padding-left: 2.4rem;
-  padding-right: 2.4rem;
-  text-align: center;
 }
 
 .table-footer {
@@ -127,21 +72,9 @@ import TrackItemSkeleton from "@/components/track/TrackItemSkeleton.vue";
   justify-content: flex-end;
 }
 
-.history-table .track-number {
-  padding-left: 2.4rem;
-  padding-right: 2.4rem;
-  text-align: center;
-}
-
 .track-popularity {
   height: 1.4rem;
   width: 10rem;
-}
-
-.track-played-at {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .data-nav-button {
@@ -151,7 +84,7 @@ import TrackItemSkeleton from "@/components/track/TrackItemSkeleton.vue";
   /* gap: 5px; */
   padding: 0.8rem 1.6rem;
   border-radius: 5px;
-  color: #1db954;
+  color: general.$primary-font-color;
   font-size: 1.8rem;
 }
 </style>

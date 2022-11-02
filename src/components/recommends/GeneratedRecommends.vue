@@ -176,19 +176,19 @@ main {
   display: flex;
   flex-direction: column;
   gap: 2.4rem;
-}
 
-.save-tracks-form h3 {
-  margin-right: 6.4rem;
-}
+  h3 {
+    margin-right: 6.4rem;
+  }
 
-.save-tracks-form button {
-  width: auto;
-  align-self: flex-end;
-}
+  button {
+    width: auto;
+    align-self: flex-end;
+  }
 
-.right-pane {
-  position: sticky;
-  top: 6.4rem;
+  .right-pane {
+    position: sticky;
+    top: 6.4rem;
+  }
 }
 </style>

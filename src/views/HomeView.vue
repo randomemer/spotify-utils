@@ -36,7 +36,7 @@
 .nav-link:link,
 .nav-link:visited {
   font-size: 1.8rem;
-  color: $primary-font-color;
+  color: general.$primary-font-color;
   text-transform: uppercase;
 }
 
@@ -59,7 +59,7 @@
 
 .cta-button:link,
 .cta-button:visited {
-  background-color: $primary-color;
+  background-color: general.$primary-color;
   padding: 1.6rem 3.2rem;
   font-size: 1.8rem;
   border-radius: 100rem;

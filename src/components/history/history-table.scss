@@ -1,24 +1,26 @@
 @use "@/assets/general.scss";
 
-.tracks-table {
+.history-table {
   display: grid;
   align-items: center;
   justify-content: stretch;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   background-color: general.$card-color;
+  min-width: 100%;
   border-radius: 10px;
   border-collapse: collapse;
   grid-row-gap: 1.6rem;
+  /* overflow-y: hidden; */
   $table-padding: 3rem;
 
-  & thead,
-  & tbody,
-  & tfoot,
-  & tr {
+  thead,
+  tbody,
+  tfoot,
+  tr {
     display: contents;
   }
 
-  & th {
+  th {
     /* position: sticky; */
     /* top: 0; */
     /* background-color: rgba(64, 64, 64); */
@@ -31,45 +33,34 @@
     border-bottom: 1px solid grey;
   }
 
-  & th,
-  & td {
+  th,
+  td {
     font-size: 1.6rem;
     padding-left: 1.1rem;
     padding-right: 1.1rem;
     text-overflow: ellipsis;
-    /* white-space: nowrap; */
+    white-space: nowrap;
+
+    /* Left padding for table */
+    &:first-child {
+      padding-left: $table-padding;
+    }
+
+    /* Right padding for table */
+    &:last-child {
+      padding-right: $table-padding;
+    }
   }
 
-  /* Left padding for table */
-  & td:first-child,
-  & th:first-child {
-    padding-left: $table-padding;
-  }
-
-  /* Right padding for table */
-  & td:last-child,
-  & th:last-child {
-    padding-right: $table-padding;
-  }
-
-  & .track-number {
+  .track-number {
     padding-left: 2.4rem;
     padding-right: 2.4rem;
     text-align: center;
   }
-}
 
-.table-footer {
-  padding: 1.6rem 0;
-  border-top: 1px solid grey;
-  grid-column: span 3;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.button-group {
-  display: flex;
-  align-items: stretch;
-  gap: 1.8rem;
+  .track-played-at {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
 }

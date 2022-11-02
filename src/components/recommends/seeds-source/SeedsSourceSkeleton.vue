@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TrackItemSkeleton from "../../track/TrackItemSkeleton.vue";
+import TrackItemSkeleton from "@/components/track/TrackItemSkeleton.vue";
 </script>
 
 <template>

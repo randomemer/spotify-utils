@@ -58,6 +58,6 @@ export default defineComponent({
 }
 
 .tab-active {
-  background-color: $primary-color;
+  background-color: general.$primary-color;
 }
 </style>

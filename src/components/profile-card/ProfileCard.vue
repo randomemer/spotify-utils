@@ -44,10 +44,8 @@ export default defineComponent({
       </div>
 
       <div class="user-data-field">
-        <ion-icon :icon="people" class="user-data-field-icon"></ion-icon>
-        <span class="user-data-field-text">
-          {{ user.followers?.total }} Followers
-        </span>
+        <ion-icon :icon="people"></ion-icon>
+        <span> {{ user.followers?.total }} Followers </span>
       </div>
     </div>
   </div>
@@ -77,13 +75,15 @@ export default defineComponent({
   gap: 1.2rem;
 }
 
-.user-data-field-icon {
-  font-size: 1.8rem;
-  color: $primary-font-color;
-}
+.user-data-field {
+  ion-icon {
+    font-size: 1.8rem;
+    color: general.$primary-font-color;
+  }
 
-.user-data-field-text {
-  font-size: 1.4rem;
-  color: #bbbbbb;
+  span {
+    font-size: 1.4rem;
+    color: #bbbbbb;
+  }
 }
 </style>

@@ -23,14 +23,10 @@
 <style scoped lang="scss">
 @import "./top-genres.scss";
 
-.card * {
-  transition: all 0.3s;
-}
-
 .summary p {
-  --text-height: 1.6rem;
-  height: var(--text-height);
-  margin-bottom: calc(var(--text-height) * 0.8);
+  $text-height: 1.6rem;
+  height: $text-height;
+  margin-bottom: calc($text-height * 0.8);
 }
 
 .canvas-area {
@@ -41,10 +37,10 @@
 }
 
 .donut-chart {
-  --size: 25.6rem;
-  width: var(--size);
-  height: var(--size);
-  border-radius: calc(var(--size) / 2);
+  $size: 25.6rem;
+  width: $size;
+  height: $size;
+  border-radius: calc($size / 2);
 }
 
 .legend {

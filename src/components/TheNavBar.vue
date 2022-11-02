@@ -22,7 +22,12 @@ export default defineComponent({
     createPopper(profileBtn!, profilePopup!, {
       placement: "bottom-end",
       modifiers: [
-        { name: "offset", enabled: true, phase: "main", data: { y: 15 } },
+        {
+          name: "offset",
+          enabled: true,
+          phase: "main",
+          options: { offset: [0, 20] },
+        },
       ],
     });
 
@@ -97,7 +102,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .header {
-  background-color: $background-color;
+  background-color: general.$background-color;
 }
 
 .account-links {
@@ -130,7 +135,7 @@ export default defineComponent({
 }
 
 .notifs-button-active {
-  color: $primary-color;
+  color: general.$primary-color;
 }
 
 .profile-button {
@@ -147,9 +152,10 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   position: absolute;
-  background-color: $card-color;
+  background-color: general.$card-color;
   box-shadow: 0px 0px 50px 0px rgba(0, 0, 0, 0.36);
   border-radius: 10px;
+  z-index: 100;
 }
 
 .separator {

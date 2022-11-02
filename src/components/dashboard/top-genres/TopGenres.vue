@@ -151,10 +151,6 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "./top-genres.scss";
 
-.card * {
-  transition: all 0.3s;
-}
-
 .data-area {
   display: flex;
   gap: 4.8rem;
@@ -162,10 +158,6 @@ export default defineComponent({
 
 .summary {
   font-size: 1.6rem;
-}
-
-.chatjs {
-  display: fixed;
 }
 
 /* .donut-chart-container {

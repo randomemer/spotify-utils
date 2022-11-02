@@ -90,7 +90,7 @@ export default defineComponent({
 .bar-fill {
   height: 1.4rem;
   border-radius: 10rem;
-  background-color: var(--primary-color);
+  background-color: general.$primary-color;
 
   transition: width 0.3s;
   width: 0;

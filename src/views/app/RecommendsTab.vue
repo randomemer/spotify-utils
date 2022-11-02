@@ -278,7 +278,7 @@ export default defineComponent({
   border-radius: 5px;
   font-size: 1.8rem;
   color: white;
-  background-color: $card-color;
+  background-color: general.$card-color;
   padding: 0.8rem 1.6rem;
   margin-bottom: 3.6rem;
 }
@@ -293,8 +293,8 @@ export default defineComponent({
 }
 
 .generate-button {
-  background-color: $primary-color;
-  color: $font-color;
+  background-color: general.$primary-color;
+  color: general.$font-color;
   padding: 0.8rem 1.6rem;
   border-radius: 50rem;
   font-size: 1.6rem;
@@ -307,7 +307,7 @@ export default defineComponent({
 
 @keyframes loading-bg {
   0% {
-    background-color: $primary-color;
+    background-color: general.$primary-color;
   }
 
   50% {
@@ -315,7 +315,7 @@ export default defineComponent({
   }
 
   100% {
-    background-color: $primary-color;
+    background-color: general.$primary-color;
   }
 }
 
@@ -333,7 +333,7 @@ export default defineComponent({
   border-radius: 50rem;
   background: none;
   cursor: pointer;
-  color: $danger-color;
+  color: general.$danger-color;
   display: flex;
   align-items: center;
 }
@@ -344,8 +344,8 @@ export default defineComponent({
 }
 
 .add-button {
-  background: $primary-color;
-  color: $font-color;
+  background: general.$primary-color;
+  color: general.$font-color;
   $size: 3.6rem;
   align-self: center;
   font-size: 2.4rem;
@@ -392,7 +392,7 @@ export default defineComponent({
   flex-direction: column;
   gap: 2.4rem;
 
-  background-color: $card-color;
+  background-color: general.$card-color;
   border-radius: 1rem;
   padding: 2.4rem;
   transition: all 0.3s;

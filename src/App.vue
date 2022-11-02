@@ -29,8 +29,8 @@ html {
 }
 
 body {
-  background-color: $background-color;
-  color: $font-color;
+  background-color: general.$background-color;
+  color: general.$font-color;
   font-family: "Lexend Deca", sans-serif;
   line-height: 1;
 }
@@ -87,8 +87,8 @@ button {
   border: none;
   cursor: pointer;
   font-family: inherit;
-  background-color: $primary-color;
-  color: $font-color;
+  background-color: general.$primary-color;
+  color: general.$font-color;
   padding: 0.8rem 1.6rem;
   border-radius: 1000px;
 }
@@ -160,7 +160,7 @@ ion-icon {
 }
 
 .card {
-  background-color: var(--card-color);
+  background-color: general.$card-color;
   border-radius: 1rem;
 }
 </style>

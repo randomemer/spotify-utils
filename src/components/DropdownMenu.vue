@@ -119,11 +119,6 @@ export default defineComponent({
 </template>
 
 <style scoped lang="scss">
-.dropdown-icon {
-  font-size: 1.6rem;
-  transition: all 0.3s ease-in;
-}
-
 .select-container {
   display: inline-flex;
   position: relative;
@@ -141,11 +136,16 @@ export default defineComponent({
   &.active {
     background-color: rgba(255, 255, 255, 0.2);
   }
-}
 
-.select-container,
-.select-container * {
-  transition: all 0.15s ease-in;
+  &,
+  & * {
+    transition: all 0.15s ease-in;
+  }
+
+  ion-icon {
+    font-size: 1.6rem;
+    transition: all 0.3s ease-in;
+  }
 }
 
 .select-hidden {
@@ -184,7 +184,7 @@ export default defineComponent({
     &:hover,
     &.selected {
       color: white;
-      background-color: $primary-color;
+      background-color: general.$primary-color;
     }
 
     &[rel="hide"] {

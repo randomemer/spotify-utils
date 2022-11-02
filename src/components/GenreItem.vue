@@ -25,7 +25,7 @@ defineProps({
 }
 
 .genre-seed-icon {
-  color: $primary-font-color;
+  color: general.$primary-font-color;
   $size: 5rem;
   height: $size;
   width: $size;
