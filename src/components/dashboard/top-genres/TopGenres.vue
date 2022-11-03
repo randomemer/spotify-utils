@@ -1,7 +1,10 @@
 <script lang="ts">
 import { UserTopItemsSort } from "@/types/enums";
-import { convertRemToPixels, getAllTopTracks } from "@/utilities/functions";
-import { spotify } from "@/utilities/spotify-api";
+import {
+  convertRemToPixels,
+  getAllTopTracks,
+  getGenresFromTracks,
+} from "@/utilities/functions";
 import {
   ArcElement,
   CategoryScale,
@@ -17,43 +20,8 @@ Chart.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
 export async function getTopGenres() {
   const tracks = await getAllTopTracks(UserTopItemsSort.Long);
-  // console.log(tracks);
-
-  // Collect all of the artists in the tracks
-  const unknownArtists = new Set<string>();
-  tracks.forEach((track) => {
-    track.artists.forEach((artist) => {
-      unknownArtists.add(artist.id);
-    });
-  });
-
-  // Get artist data in batches of size 50 in accordance with Spotify API rate limits
-
-  const knownArtists = new Map<string, SpotifyApi.ArtistObjectFull>();
-  const artistsArr = Array.from(unknownArtists);
-  do {
-    const batch = await spotify.getArtists(artistsArr.splice(0, 50));
-    batch.artists.forEach((artist) => knownArtists.set(artist.id, artist));
-  } while (artistsArr.length > 0);
-
-  const genres = new Map<string, number>();
-  tracks.forEach((track) => {
-    track.artists.forEach((artist) => {
-      const artistInfo = knownArtists.get(artist.id);
-      artistInfo?.genres.forEach((genre) => {
-        const count = genres.get(genre);
-        if (count) genres.set(genre, count + 1);
-        else genres.set(genre, 1);
-      });
-    });
-  });
-
-  // calculated data
-  const sortedGenres = Array.from(genres).sort(
-    (genreA, genreB) => genreB[1] - genreA[1]
-  );
-
-  return sortedGenres;
+  const genres = await getGenresFromTracks(tracks);
+  return genres;
 }
 
 // prettier-ignore

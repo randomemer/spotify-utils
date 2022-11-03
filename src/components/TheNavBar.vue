@@ -108,7 +108,7 @@ export default defineComponent({
           <hr class="" />
           <ul class="list">
             <li>
-              <RouterLink to="/account" class="account-option link">
+              <RouterLink to="/app/account" class="account-option link">
                 <IonIcon :icon="personCircle" />
                 <span>Account</span>
               </RouterLink>

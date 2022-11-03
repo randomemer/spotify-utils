@@ -67,7 +67,7 @@ $sidebar-width: 27rem;
 }
 
 .nav-bar {
-  margin-bottom: 4.8rem;
+  margin-bottom: 3.2rem;
   position: sticky;
   top: 0;
   /* box-shadow: 0px 0px 50px 0px rgba(0, 0, 0, 0.36); */
@@ -81,6 +81,6 @@ $sidebar-width: 27rem;
 
 .app-main {
   margin: 6.4rem;
-  margin-top: 3.2rem;
+  margin-top: 0px;
 }
 </style>

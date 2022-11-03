@@ -21,6 +21,14 @@ const appNavItems = [
         name: "Dashboard",
         route: "/app/dashboard",
       },
+      {
+        icon: {
+          outline: ionicons.personCircleOutline,
+          filled: ionicons.personCircle,
+        },
+        name: "Account",
+        route: "/app/account",
+      },
     ],
   },
   {
@@ -41,6 +49,14 @@ const appNavItems = [
         },
         name: "Recommendations",
         route: "/app/recommends",
+      },
+      {
+        icon: {
+          outline: ionicons.listOutline,
+          filled: ionicons.list,
+        },
+        name: "Playlists",
+        route: "/app/playlists",
       },
     ],
   },

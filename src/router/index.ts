@@ -64,14 +64,20 @@ const router = createRouter({
         },
         {
           path: "recommends",
-          component: () => {
-            return import("@/views/app/RecommendsTab.vue");
-          },
+          component: () => import("@/views/app/RecommendsTab.vue"),
         },
         {
           path: "recommends/:id",
           component: () =>
             import("@/components/recommends/GeneratedRecommends.vue"),
+        },
+        {
+          path: "account",
+          component: () => import("@/views/app/AccountTab.vue"),
+        },
+        {
+          path: "playlists",
+          component: () => import("@/views/app/PlaylistsTab.vue"),
         },
       ],
     },

@@ -23,6 +23,54 @@ export async function getAllTopTracks(
   return tracks;
 }
 
+export async function getArtistsFromTracks(
+  tracks: SpotifyApi.TrackObjectSimplified[]
+) {
+  // Collect all of the artists in the tracks
+  const unknownArtists = new Set<string>();
+  tracks.forEach((track) => {
+    track.artists.forEach((artist) => {
+      unknownArtists.add(artist.id);
+    });
+  });
+
+  // Get artist data in batches of size 50 in accordance with Spotify API rate limits
+
+  const knownArtists = new Map<string, SpotifyApi.ArtistObjectFull>();
+  const artistsArr = Array.from(unknownArtists);
+  do {
+    const batch = await spotify.getArtists(artistsArr.splice(0, 50));
+    batch.artists.forEach((artist) => knownArtists.set(artist.id, artist));
+  } while (artistsArr.length > 0);
+
+  return knownArtists;
+}
+
+export async function getGenresFromTracks(
+  tracks: SpotifyApi.TrackObjectSimplified[]
+) {
+  const knownArtists = await getArtistsFromTracks(tracks);
+
+  const genres = new Map<string, number>();
+  tracks.forEach((track) => {
+    track.artists.forEach((artist) => {
+      const artistInfo = knownArtists.get(artist.id);
+      artistInfo?.genres.forEach((genre) => {
+        const count = genres.get(genre);
+        if (count) genres.set(genre, count + 1);
+        else genres.set(genre, 1);
+      });
+    });
+  });
+
+  // calculated data
+  const sortedGenres = Array.from(genres).sort(
+    (genreA, genreB) => genreB[1] - genreA[1]
+  );
+
+  return sortedGenres;
+}
+
 export function convertRemToPixels(rem: number) {
   return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
