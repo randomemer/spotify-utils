@@ -3,6 +3,7 @@ import { spotify } from "@/utilities/spotify-api";
 import { IonIcon } from "@ionic/vue";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import { defineComponent, type PropType } from "vue";
+import "sticksy";
 
 export async function checkNextPage(currentPage: RecentlyPlayedTracks) {
   const next = await spotify.getMyRecentlyPlayedTracks({
@@ -67,6 +68,9 @@ export default defineComponent({
       this.hasNext = await checkNextPage(this.history);
       this.isLoading = false;
     },
+  },
+  mounted() {
+    const stick = new Sticksy(".history-table");
   },
 });
 </script>

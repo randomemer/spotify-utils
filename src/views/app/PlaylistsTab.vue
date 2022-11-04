@@ -10,20 +10,24 @@ import {
   Tooltip,
 } from "chart.js";
 import { Doughnut } from "vue-chartjs";
+import TracksTable from "@/components/recommends/tracks-table/TracksTable.vue";
 
 Chart.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
 export default defineComponent({
-  components: { Doughnut },
+  components: { Doughnut, TracksTable },
   data() {
     return {
+      chartSize: 225,
       playlistID:
         "https://open.spotify.com/playlist/0LQN66XmARzQSM1XRCGWAU?si=b34b0ead91454095",
       isAnalysing: false,
       hasAnalysed: false,
+      // analysis data
       playlist: null as SpotifyApi.PlaylistObjectFull | null,
       avgPopularity: null as number | null,
       genres: null as [string, number][] | null,
+      tracks: null as SpotifyApi.TrackObjectFull[] | null,
     };
   },
   methods: {
@@ -48,6 +52,8 @@ export default defineComponent({
         if (playlist.tracks.next) {
           console.log("There's more tracks");
         }
+        this.tracks = tracks;
+        console.log(tracks);
 
         // get avg popularity
         this.avgPopularity =
@@ -94,9 +100,10 @@ export default defineComponent({
       const genreSum = this.genres.reduce((prev, cur) => prev + cur[1], 0);
       return {
         radius: convertRemToPixels(10.8),
-        // cutout: "60%",
-        responsive: true,
-        maintainAspectRatio: false,
+        cutout: "50%",
+        // aspectRatio: 1,
+        // maintainAspectRatio: false,
+        responsive: false,
         plugins: {
           tooltip: {
             displayColors: false,
@@ -116,15 +123,6 @@ export default defineComponent({
           },
           legend: {
             display: false,
-            position: "right",
-            labels: {
-              boxWidth: convertRemToPixels(1.4),
-              color: "white",
-              font: {
-                family: "Lexend Deca, sans-serif",
-                size: convertRemToPixels(1.4),
-              },
-            },
           },
         },
       };
@@ -145,36 +143,22 @@ export default defineComponent({
     />
 
     <div class="analysis" v-if="hasAnalysed">
-      <div
-        class="basic-info card"
-        :style="{
-          background: `url('${playlist?.images[0].url}')`,
-        }"
-      >
-        <!-- <img class="playlist-image" :src="playlist?.images[0].url" /> -->
-        <h3 class="name">{{ playlist?.name }}</h3>
-        <p class="desc">{{ playlist?.description }}</p>
-      </div>
+      <div class="first-col">
+        <div
+          class="basic-info card"
+          :style="{
+            background: `linear-gradient(rgba(115, 0, 153, 0.75), rgba(0, 0, 0, 0.75)), url('${playlist?.images[0].url}')`,
+          }"
+        >
+          <h3 class="name">{{ playlist?.name }}</h3>
+          <p class="desc">{{ playlist?.description }}</p>
+        </div>
 
-      <div class="genres card">
-        <h3>
-          Has an assortment of
-          <span class="genre-count">{{ genres?.length }}</span> genres!
-        </h3>
-
-        <Doughnut
-          :chart-data="chartData"
-          :chart-options="chartOptions"
-          chart-id="genres-donut"
-          :height="convertRemToPixels(32)"
-        />
-      </div>
-
-      <div>
         <div class="avg-popularity card">
           <div class="top-row">
             <span class="avg-popularity-number">{{ avgPopularity }}%</span>
             <div class="avg-popularity-bar">
+              <!-- <div class=""></div> -->
               <div
                 class="avg-popularity-bar-track"
                 :style="{ width: `${avgPopularity}%` }"
@@ -185,27 +169,59 @@ export default defineComponent({
           <div class="bottom-row"></div>
         </div>
 
-        <div class="tracks card">
+        <!-- <div class="tracks card">
           <span class="number">{{ playlist?.tracks.total }}</span>
           <span class="text">Tracks</span>
-        </div>
+        </div> -->
+      </div>
+
+      <div class="genres card">
+        <h3>
+          Has an assortment of
+          <span class="genre-count">{{ genres?.length }}</span> genres!
+        </h3>
+
+        <Doughnut
+          chart-id="genres-donut"
+          :chart-data="chartData"
+          :chart-options="chartOptions"
+          :width="chartSize"
+          :height="chartSize"
+        />
       </div>
       <div class="tracks-table"></div>
     </div>
+
+    <TracksTable :tracks="tracks" v-if="tracks" />
   </main>
 </template>
 
 <style scoped lang="scss">
+#genres-donut {
+  background-color: general.$danger-color;
+
+  // width: 100% !important;
+  // height: 100% !important;
+}
+
 .analysis {
-  margin-top: 4.8rem;
+  margin: 4.8rem 0;
   display: grid;
   // align-items: flex-start;
   gap: 4.8rem;
-  grid-template-columns: auto 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: stretch;
+}
+
+.first-col {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: inherit;
 }
 
 .card {
-  padding: 3rem;
+  padding: 2.4rem;
 }
 
 .heading-primary {
@@ -219,17 +235,12 @@ export default defineComponent({
 }
 
 .basic-info {
-  // height: 25.6rem;
-  background-size: contain;
-  align-self: flex-start;
-
-  img {
-    max-width: 100%;
-    min-width: 100%;
-  }
+  background-size: cover !important;
+  flex-grow: 1;
 
   .name {
     font-size: 3rem;
+    margin-bottom: 1.8rem;
     font-weight: 600;
   }
 
@@ -256,8 +267,13 @@ export default defineComponent({
 }
 
 .genres {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
   h3 {
     font-size: 1.8rem;
+    margin-bottom: 1.8rem;
     font-weight: 500;
   }
 
@@ -271,6 +287,7 @@ export default defineComponent({
   .top-row {
     display: flex;
     gap: 1.8rem;
+    margin-bottom: 1.8rem;
     align-items: center;
   }
 
@@ -294,7 +311,6 @@ export default defineComponent({
   }
 
   p {
-    margin-top: 2.4rem;
     line-height: 1.5;
     font-size: 1.8rem;
   }

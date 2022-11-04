@@ -10,8 +10,18 @@
   border-radius: 10px;
   border-collapse: collapse;
   grid-row-gap: 1.6rem;
-  /* overflow-y: hidden; */
   $table-padding: 3rem;
+
+  // position: sticky;
+  // top: 8rem;
+  // background-image: linear-gradient(
+  //   to bottom,
+  //   transparent 8rem,
+  //   general.$card-color 8rem,
+  //   general.$card-color calc(100% - 8rem),
+  //   transparent 0
+  // );
+  // margin-top: 8rem;
 
   thead,
   tbody,
@@ -21,9 +31,6 @@
   }
 
   th {
-    /* position: sticky; */
-    /* top: 0; */
-    /* background-color: rgba(64, 64, 64); */
     text-transform: uppercase;
     color: general.$primary-font-color;
     padding: 1.6rem 0;
@@ -31,6 +38,12 @@
     font-weight: 500;
     letter-spacing: 1px;
     border-bottom: 1px solid grey;
+    background-color: general.$card-color;
+
+    // position: sticky;
+    // top: 0rem;
+    // border-top-left-radius: 10px;
+    // border-top-right-radius: 10px;
   }
 
   th,
@@ -51,6 +64,10 @@
       padding-right: $table-padding;
     }
   }
+
+  // td {
+  //   z-index: -3;
+  // }
 
   .track-number {
     padding-left: 2.4rem;

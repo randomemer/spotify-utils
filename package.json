@@ -19,6 +19,7 @@
     "luxon": "^3.0.4",
     "minisearch": "^5.0.0",
     "spotify-web-api-js": "^1.5.2",
+    "sticksy": "^0.2.0",
     "vue": "^3.2.38",
     "vue-chartjs": "^4.1.2",
     "vue-cookies": "^1.8.1",

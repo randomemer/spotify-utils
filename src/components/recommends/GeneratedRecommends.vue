@@ -83,7 +83,8 @@ export default defineComponent({
     async savePlaylist() {
       const rec = await recommendation;
       const tracks = rec.data()?.data.tracks as SpotifyApi.TrackObjectFull[];
-      const account: Account = window.$cookies.get("current_user");
+      const accountJSON = localStorage.getItem("current_user");
+      const account: Account = JSON.parse(accountJSON);
       const id = account.user.id;
 
       // create a playlist

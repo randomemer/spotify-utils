@@ -91,7 +91,8 @@ export default defineComponent({
 
         // Save to firestore
         const dbCollection = collection(db, "generated-recommends");
-        const account: Account = this.$cookies.get("current_user");
+        const accountJSON = localStorage.getItem("current_user");
+        const account: Account = JSON.parse(accountJSON);
         const saved = await addDoc(dbCollection, {
           spotify_user: account.user,
           data: recommendations,

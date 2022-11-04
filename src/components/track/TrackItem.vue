@@ -5,7 +5,6 @@ export default defineComponent({
   props: {
     track: {
       required: true,
-
       type: Object as PropType<SpotifyApi.TrackObjectFull>,
     },
   },
@@ -15,7 +14,10 @@ export default defineComponent({
 <template>
   <div class="track-item">
     <a :href="track.external_urls.spotify" target="_blank">
-      <img class="track-image" :src="track.album.images[0].url" />
+      <img
+        class="track-image"
+        :src="(track.album.images[0] && track.album.images[0].url) || ''"
+      />
     </a>
     <div class="track-info">
       <a class="track-name" :href="track.external_urls.spotify" target="_blank">
