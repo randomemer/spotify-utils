@@ -14,6 +14,7 @@ import TracksTable from "./tracks-table/TracksTable.vue";
 import TracksTableSkeleton from "./tracks-table/TracksTableSkeleton.vue";
 import ModalDialog from "@/components/ModalDialog.vue";
 import { spotify } from "@/utilities/spotify-api";
+import { getCurrentUser } from "@/utilities/functions";
 
 let recommendation: Promise<DocumentSnapshot<DocumentData>>;
 
@@ -24,23 +25,21 @@ export default defineComponent({
     AsyncTracksTable: defineAsyncComponent({
       loadingComponent: TracksTableSkeleton,
       loader: async () => {
-        const rec = await recommendation;
-        const tracks = rec.data()?.data.tracks;
+        // prettier-ignore
+        const data = (await recommendation).data() as RecommendationDocument | undefined;
+        if (!data) throw new Error("No Tracks!");
+        const tracks = JSON.parse(data.tracks);
         return () => h(TracksTable, { tracks });
       },
     }),
     AsyncSeedsSource: defineAsyncComponent({
       loadingComponent: SeedsSourceSkeleton,
       loader: async () => {
-        const rec = await recommendation;
+        // prettier-ignore
+        const data = (await recommendation).data() as RecommendationDocument | undefined;
+        if (!data) throw new Error("Seeds Undefined");
 
-        const seeds: RecommendationsSeedObject[] | undefined =
-          rec.data()?.data.seeds;
-
-        console.log(seeds);
-        if (!seeds) {
-          throw new Error("Seeds Undefined");
-        }
+        const seeds: RecommendationsSeedObject[] = JSON.parse(data.seeds);
 
         for (const seed of seeds) {
           if (seed.type === "TRACK") {
@@ -81,10 +80,10 @@ export default defineComponent({
   },
   methods: {
     async savePlaylist() {
-      const rec = await recommendation;
-      const tracks = rec.data()?.data.tracks as SpotifyApi.TrackObjectFull[];
-      const accountJSON = localStorage.getItem("current_user");
-      const account: Account = JSON.parse(accountJSON);
+      const data = (await recommendation).data() as RecommendationDocument;
+      const tracks = JSON.parse(data.tracks) as SpotifyApi.TrackObjectFull[];
+      const account = getCurrentUser();
+      if (!account) throw "no user logged in";
       const id = account.user.id;
 
       // create a playlist

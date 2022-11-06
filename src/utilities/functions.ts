@@ -5,6 +5,11 @@ import { spotify } from "./spotify-api";
 const client_id = import.meta.env.VITE_CLIENT_ID;
 const client_secret = import.meta.env.VITE_CLIENT_SECRET;
 
+export function getCurrentUser(): Account | null {
+  const accountJSON = localStorage.getItem("current_user");
+  return accountJSON && JSON.parse(accountJSON);
+}
+
 export function timeFormat(string: string) {
   return DateTime.fromISO(string).toLocaleString({
     hour: "2-digit",

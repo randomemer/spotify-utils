@@ -1,6 +1,7 @@
 <script lang="ts">
 import ArtistItem from "@/components/ArtistItem.vue";
 import PopularityBar from "@/components/PopularityBar.vue";
+import AnalysisSkeleton from "@/components/playlists/AnalysisSkeleton.vue";
 import TableEl from "@/components/table/TableEl.vue";
 import TrackItem from "@/components/track/TrackItem.vue";
 import { db } from "@/main";
@@ -35,6 +36,7 @@ export default defineComponent({
     TableEl,
     TrackItem,
     PopularityBar,
+    AnalysisSkeleton,
   },
   setup() {
     return { chevronBack, chevronForward };
@@ -243,6 +245,8 @@ export default defineComponent({
       v-model.trim="playlistID"
       @keydown.enter="analyseWithMemo"
     />
+
+    <AnalysisSkeleton />
 
     <div class="analysis" v-if="analysis">
       <div class="first-col">

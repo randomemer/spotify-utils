@@ -83,6 +83,24 @@ declare global {
     avgPopularity: number;
     items: SpotifyApi.PlaylistTrackObject[];
   }
+
+  interface UserDocument {
+    name: string;
+    email: string;
+    country: string;
+  }
+
+  interface AnalysedPlaylistDocument {
+    analysis: string;
+    last_analysed: number;
+    snapshot_id: string;
+  }
+
+  interface RecommendationDocument {
+    user: any;
+    tracks: string;
+    seeds: string;
+  }
 }
 
 declare module "vue/types/vue" {

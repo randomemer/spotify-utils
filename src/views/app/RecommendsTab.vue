@@ -5,11 +5,12 @@ import TrackItem from "@/components/track/TrackItem.vue";
 import GenreItem from "@/components/GenreItem.vue";
 import { db } from "@/main";
 import { IonIcon, IonSpinner } from "@ionic/vue";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc } from "firebase/firestore";
 import { add, close, musicalNote, musicalNotes } from "ionicons/icons";
 import MiniSearch from "minisearch";
 import { defineComponent } from "vue";
 import { spotify } from "@/utilities/spotify-api";
+import { getCurrentUser } from "@/utilities/functions";
 
 export default defineComponent({
   components: { TrackItem, IonIcon, IonSpinner, TabBar, ArtistItem, GenreItem },
@@ -91,12 +92,14 @@ export default defineComponent({
 
         // Save to firestore
         const dbCollection = collection(db, "generated-recommends");
-        const accountJSON = localStorage.getItem("current_user");
-        const account: Account = JSON.parse(accountJSON);
-        const saved = await addDoc(dbCollection, {
-          spotify_user: account.user,
-          data: recommendations,
-        });
+        const account: Account | null = getCurrentUser();
+        if (!account) throw new Error("no user detected, logging out");
+        const document: RecommendationDocument = {
+          user: doc(db, "users", account.user.id),
+          seeds: JSON.stringify(recommendations.seeds),
+          tracks: JSON.stringify(recommendations.tracks),
+        };
+        const saved = await addDoc(dbCollection, document);
         console.log(saved.id);
 
         // Redirect to generated playlist page
