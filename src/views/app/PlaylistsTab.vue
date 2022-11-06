@@ -1,5 +1,9 @@
 <script lang="ts">
-import { convertRemToPixels, getGenresFromTracks } from "@/utilities/functions";
+import {
+  convertRemToPixels,
+  getArtistsFromTracks,
+  getGenresFromTracks,
+} from "@/utilities/functions";
 import { defineComponent } from "vue";
 import {
   ArcElement,
@@ -11,11 +15,12 @@ import {
 } from "chart.js";
 import { Doughnut } from "vue-chartjs";
 import TracksTable from "@/components/recommends/tracks-table/TracksTable.vue";
+import ArtistItem from "@/components/ArtistItem.vue";
 
 Chart.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
 export default defineComponent({
-  components: { Doughnut, TracksTable },
+  components: { Doughnut, TracksTable, ArtistItem },
   data() {
     return {
       chartSize: 225,
@@ -27,7 +32,8 @@ export default defineComponent({
       playlist: null as SpotifyApi.PlaylistObjectFull | null,
       avgPopularity: null as number | null,
       genres: null as [string, number][] | null,
-      tracks: null as SpotifyApi.TrackObjectFull[] | null,
+      tracks: null as PlaylistItem[] | null,
+      artists: null as SpotifyApi.ArtistObjectFull[] | null,
     };
   },
   methods: {
@@ -37,7 +43,42 @@ export default defineComponent({
       const paths = url.pathname.split("/");
       return paths[paths.length - 1];
     },
-    async getPlaylistTracks(id: string) {},
+    getArtistsFreq(
+      tracks: SpotifyApi.TrackObjectFull[],
+      artists: Map<string, SpotifyApi.ArtistObjectFull>
+    ) {
+      const freqs = new Map<string, number>();
+
+      for (const track of tracks) {
+        for (const artist of track.artists) {
+          const freq = freqs.get(artist.id) || 0;
+          freqs.set(artist.id, freq + 1);
+        }
+      }
+
+      const sorted = [...artists.values()].sort(
+        (a, b) => freqs.get(b.id)! - freqs.get(a.id)!
+      );
+      return sorted;
+    },
+    async getPlaylistTracks(playlist: SpotifyApi.SinglePlaylistResponse) {
+      const tracks: PlaylistItem[] = playlist.tracks.items.map(
+        (item) => item.track
+      );
+
+      let response = playlist.tracks;
+
+      while (response.offset + response.limit < response.total) {
+        response = await this.$spotify.getPlaylistTracks(playlist.id, {
+          offset: response.offset + response.limit,
+          limit: response.limit,
+        });
+
+        tracks.push(...response.items.map((item) => item.track));
+      }
+
+      return tracks;
+    },
     async analyse() {
       this.isAnalysing = true;
       try {
@@ -46,22 +87,20 @@ export default defineComponent({
         this.playlist = playlist;
 
         // get all tracks
-        const tracks = playlist.tracks.items.map(
-          (playlistTrack) => playlistTrack.track
-        ) as SpotifyApi.TrackObjectFull[];
-        if (playlist.tracks.next) {
-          console.log("There's more tracks");
-        }
+        const tracks = await this.getPlaylistTracks(playlist);
         this.tracks = tracks;
-        console.log(tracks);
+
+        // get all artists
+        const artists = await getArtistsFromTracks(tracks);
+        this.artists = this.getArtistsFreq(tracks, artists);
 
         // get avg popularity
         this.avgPopularity =
-          tracks.reduce((prev, track) => prev + track.popularity, 0) / 100;
+          tracks.reduce((prev, track) => prev + track.popularity, 0) /
+          tracks.length;
 
         // get all genres
         this.genres = await getGenresFromTracks(tracks);
-        console.log("genres :", this.genres);
 
         console.log("playlist :", playlist);
         this.hasAnalysed = true;
@@ -151,14 +190,19 @@ export default defineComponent({
           }"
         >
           <h3 class="name">{{ playlist?.name }}</h3>
+          <!-- <span class="track-count">
+            <span class="number">{{ playlist?.tracks.total }}</span>
+            tracks
+          </span> -->
           <p class="desc">{{ playlist?.description }}</p>
         </div>
 
         <div class="avg-popularity card">
           <div class="top-row">
-            <span class="avg-popularity-number">{{ avgPopularity }}%</span>
+            <span class="avg-popularity-number"
+              >{{ avgPopularity?.toFixed(2) }}%</span
+            >
             <div class="avg-popularity-bar">
-              <!-- <div class=""></div> -->
               <div
                 class="avg-popularity-bar-track"
                 :style="{ width: `${avgPopularity}%` }"
@@ -168,11 +212,6 @@ export default defineComponent({
           <p>is the average popularity of your playlist's tracks</p>
           <div class="bottom-row"></div>
         </div>
-
-        <!-- <div class="tracks card">
-          <span class="number">{{ playlist?.tracks.total }}</span>
-          <span class="text">Tracks</span>
-        </div> -->
       </div>
 
       <div class="genres card">
@@ -189,7 +228,26 @@ export default defineComponent({
           :height="chartSize"
         />
       </div>
-      <div class="tracks-table"></div>
+
+      <div class="artists card">
+        <h3>
+          Featuring
+          <span class="artist-count">{{ artists?.length }}</span> different
+          artists
+        </h3>
+
+        <div class="top-artists">
+          <ArtistItem
+            :artist="artist"
+            :key="artists?.id || i"
+            v-for="(artist, i) in artists?.slice(0, 3)"
+          />
+        </div>
+
+        <span class="more" v-if="artists && artists.length > 3">
+          and more ...
+        </span>
+      </div>
     </div>
 
     <TracksTable :tracks="tracks" v-if="tracks" />
@@ -242,6 +300,10 @@ export default defineComponent({
     font-size: 3rem;
     margin-bottom: 1.8rem;
     font-weight: 600;
+  }
+
+  .track-count {
+    font-size: 1.6rem;
   }
 
   .desc {
@@ -313,6 +375,36 @@ export default defineComponent({
   p {
     line-height: 1.5;
     font-size: 1.8rem;
+  }
+}
+
+.artists {
+  font-size: 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  justify-content: space-between;
+
+  h3 {
+    font-size: 1.8rem;
+    font-weight: 500;
+
+    .artist-count {
+      color: general.$primary-font-color;
+      font-size: 3rem;
+    }
+  }
+
+  .top-artists {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .more {
+    align-self: flex-end;
+    text-align: end;
+    width: 100%;
   }
 }
 </style>

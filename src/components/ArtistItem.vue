@@ -19,7 +19,7 @@ export default defineComponent({
     <a :href="artist.external_urls.spotify">
       <NetworkImage
         class="artist-image"
-        :src="artist.images.at(-1)?.url || ''"
+        :src="(artist.images && artist.images.at(-1)?.url) || ''"
         :alt="`${artist.name} Artist Image`"
       />
     </a>

@@ -24,6 +24,8 @@ declare global {
     | SpotifyApi.ArtistObjectFull
     | string;
 
+  type PlaylistItem = SpotifyApi.TrackObjectFull | SpotifyApi.EpisodeObjectFull;
+
   type Seed =
     | {
         id: string;

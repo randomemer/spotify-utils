@@ -48,8 +48,16 @@ export async function getArtistsFromTracks(
 
 export async function getGenresFromTracks(
   tracks: SpotifyApi.TrackObjectSimplified[]
-) {
-  const knownArtists = await getArtistsFromTracks(tracks);
+): Promise<[string, number][]>;
+export async function getGenresFromTracks(
+  tracks: SpotifyApi.TrackObjectSimplified[],
+  artists: Map<string, SpotifyApi.ArtistObjectFull>
+): Promise<[string, number][]>;
+export async function getGenresFromTracks(
+  tracks: SpotifyApi.TrackObjectSimplified[],
+  artists?: Map<string, SpotifyApi.ArtistObjectFull>
+): Promise<[string, number][]> {
+  const knownArtists = artists || (await getArtistsFromTracks(tracks));
 
   const genres = new Map<string, number>();
   tracks.forEach((track) => {
