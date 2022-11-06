@@ -1,12 +1,17 @@
 <script lang="ts">
+import ArtistItem from "@/components/ArtistItem.vue";
+import PopularityBar from "@/components/PopularityBar.vue";
+import TableEl from "@/components/table/TableEl.vue";
+import TrackItem from "@/components/track/TrackItem.vue";
+import { db } from "@/main";
 import {
-  timeFormat,
-  dateFormat,
   convertRemToPixels,
+  dateFormat,
   getArtistsFromTracks,
   getGenresFromTracks,
+  timeFormat,
 } from "@/utilities/functions";
-import { defineComponent } from "vue";
+import { IonIcon } from "@ionic/vue";
 import {
   ArcElement,
   CategoryScale,
@@ -15,13 +20,10 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import { Doughnut } from "vue-chartjs";
-import { IonIcon } from "@ionic/vue";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { chevronBack, chevronForward } from "ionicons/icons";
-import ArtistItem from "@/components/ArtistItem.vue";
-import TableEl from "@/components/table/TableEl.vue";
-import TrackItem from "@/components/track/TrackItem.vue";
-import PopularityBar from "@/components/PopularityBar.vue";
+import { defineComponent } from "vue";
+import { Doughnut } from "vue-chartjs";
 
 Chart.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
@@ -45,12 +47,8 @@ export default defineComponent({
       isAnalysing: false,
       hasAnalysed: false,
       // analysis data
+      analysis: null as PlaylistAnalysis | null,
       playlist: null as SpotifyApi.PlaylistObjectFull | null,
-      avgPopularity: null as number | null,
-      genres: null as [string, number][] | null,
-      tracks: null as PlaylistItem[] | null,
-      artists: null as SpotifyApi.ArtistObjectFull[] | null,
-      items: null as SpotifyApi.PlaylistTrackObject[] | null,
       // pagination
       pageSize: 50,
       curPageNumber: 0,
@@ -61,8 +59,8 @@ export default defineComponent({
     dateFormat,
     convertRemToPixels,
     changePage(pageNumber: number) {
-      if (!this.items) return;
-      const max = Math.ceil(this.items?.length / this.pageSize);
+      if (!this.analysis) return;
+      const max = Math.ceil(this.analysis.items.length / this.pageSize);
       if (pageNumber <= max || pageNumber === 0) {
         this.curPageNumber = pageNumber;
       }
@@ -106,39 +104,67 @@ export default defineComponent({
 
       return items;
     },
-    async analyse() {
+    async analyse(playlist: SpotifyApi.SinglePlaylistResponse) {
+      // get all tracks
+      const items = await this.getPlaylistTracks(playlist);
+      const tracks = items
+        .map((item) => item.track)
+        .filter(
+          (item) => item.type === "track"
+        ) as SpotifyApi.TrackObjectFull[];
+
+      // get all artists
+      const artistsMap = await getArtistsFromTracks(tracks);
+      const artists = this.getArtistsFreq(tracks, artistsMap);
+
+      // get avg popularity
+      const avgPopularity =
+        tracks.reduce((prev, track) => prev + track.popularity, 0) /
+        tracks.length;
+
+      // get all genres
+      const genres = await getGenresFromTracks(tracks);
+
+      return {
+        items,
+        avgPopularity,
+        artists,
+        genres,
+      };
+    },
+    async analyseWithMemo() {
       this.isAnalysing = true;
       try {
+        // get playlist id and snapshot data
         const id = this.extractID();
         const playlist = await this.$spotify.getPlaylist(id);
         this.playlist = playlist;
 
-        // get all tracks
-        const items = await this.getPlaylistTracks(playlist);
-        this.items = items;
-        console.log(items);
-        const tracks = items.map((item) => item.track);
+        let analysis: any;
 
-        // get all artists
-        const artists = await getArtistsFromTracks(tracks);
-        this.artists = this.getArtistsFreq(tracks, artists);
+        // re-use data or analyse freshly
+        const document = await getDoc(doc(db, "playlists", id));
+        if (
+          document.exists() &&
+          document.data().snapshot_id === playlist.snapshot_id
+        ) {
+          analysis = JSON.parse(document.data().analysis);
+          console.log("analysis exists");
+        } else {
+          analysis = await this.analyse(playlist);
 
-        // get avg popularity
-        this.avgPopularity =
-          tracks.reduce((prev, track) => prev + track.popularity, 0) /
-          tracks.length;
+          // update analysis
+          setDoc(doc(db, "playlists", id), {
+            snapshot_id: playlist.snapshot_id,
+            analysis: JSON.stringify(analysis),
+            last_analysed: Date.now(),
+          }).then((value) => console.log("analysed now : ", value));
+        }
 
-        // get all genres
-        this.genres = await getGenresFromTracks(tracks);
-
-        console.log("playlist :", playlist);
+        this.analysis = analysis;
         this.hasAnalysed = true;
       } catch (error) {
-        if (error instanceof TypeError) {
-          console.error("Invalid URL!");
-        } else {
-          console.error(error);
-        }
+        console.error(error);
       }
       this.isAnalysing = false;
     },
@@ -151,27 +177,29 @@ export default defineComponent({
       return (this.curPageNumber + 1) * this.pageSize;
     },
     chartData(): any {
-      if (!this.genres) return;
+      const genres = this.analysis?.genres;
+      if (!genres) return;
 
       // prettier-ignore
       const materialColours = ["#f44336", "#00bcd4", "#9c27b0", "#03a9f4", "#4caf50", "#e91e63", "#3f51b5", "#ffc107", "#673ab7", "#009688", "#bbbbbb"];
 
       return {
-        labels: [...this.genres.slice(0, 10).map((genre) => genre[0]), "other"],
+        labels: [...genres.slice(0, 10).map((genre) => genre[0]), "other"],
         datasets: [
           {
             backgroundColor: materialColours,
             data: [
-              ...this.genres.slice(0, 10).map((genre) => genre[1]),
-              this.genres.slice(10).reduce((prev, cur) => prev + cur[1], 0),
+              ...genres.slice(0, 10).map((genre) => genre[1]),
+              genres.slice(10).reduce((prev, cur) => prev + cur[1], 0),
             ],
           },
         ],
       };
     },
     chartOptions(): any {
-      if (!this.genres) return;
-      const genreSum = this.genres.reduce((prev, cur) => prev + cur[1], 0);
+      const genres = this.analysis?.genres;
+      if (!genres) return;
+      const genreSum = genres.reduce((prev, cur) => prev + cur[1], 0);
       return {
         radius: convertRemToPixels(10.8),
         cutout: "50%",
@@ -213,10 +241,10 @@ export default defineComponent({
       class="playlist-link-input"
       placeholder="Enter a playlist link"
       v-model.trim="playlistID"
-      @keydown.enter="analyse"
+      @keydown.enter="analyseWithMemo"
     />
 
-    <div class="analysis" v-if="hasAnalysed">
+    <div class="analysis" v-if="analysis">
       <div class="first-col">
         <div
           class="basic-info card"
@@ -225,22 +253,18 @@ export default defineComponent({
           }"
         >
           <h3 class="name">{{ playlist?.name }}</h3>
-          <!-- <span class="track-count">
-            <span class="number">{{ playlist?.tracks.total }}</span>
-            tracks
-          </span> -->
           <p class="desc">{{ playlist?.description }}</p>
         </div>
 
         <div class="avg-popularity card">
           <div class="top-row">
             <span class="avg-popularity-number"
-              >{{ avgPopularity?.toFixed(2) }}%</span
+              >{{ analysis.avgPopularity?.toFixed(2) }}%</span
             >
             <div class="avg-popularity-bar">
               <div
                 class="avg-popularity-bar-track"
-                :style="{ width: `${avgPopularity}%` }"
+                :style="{ width: `${analysis.avgPopularity}%` }"
               ></div>
             </div>
           </div>
@@ -252,7 +276,7 @@ export default defineComponent({
       <div class="genres card">
         <h3>
           Has an assortment of
-          <span class="genre-count">{{ genres?.length }}</span> genres!
+          <span class="genre-count">{{ analysis.genres.length }}</span> genres!
         </h3>
 
         <Doughnut
@@ -267,26 +291,29 @@ export default defineComponent({
       <div class="artists card">
         <h3>
           Featuring
-          <span class="artist-count">{{ artists?.length }}</span> different
-          artists
+          <span class="artist-count">{{ analysis.artists?.length }}</span>
+          different artists
         </h3>
 
         <div class="top-artists">
           <ArtistItem
             :artist="artist"
-            :key="artists?.id || i"
-            v-for="(artist, i) in artists?.slice(0, 3)"
+            :key="artist.id || i"
+            v-for="(artist, i) in analysis.artists.slice(0, 3)"
           />
         </div>
 
-        <span class="more" v-if="artists && artists.length > 3">
+        <span
+          class="more"
+          v-if="analysis.artists && analysis.artists.length > 3"
+        >
           and more ...
         </span>
       </div>
     </div>
 
     <!-- <TracksTable :tracks="tracks" v-if="tracks" /> -->
-    <TableEl v-if="items" class="playlist-tracks">
+    <TableEl v-if="analysis && analysis.items" class="playlist-tracks">
       <template v-slot:thead>
         <tr>
           <th class="track-number">#</th>
@@ -297,7 +324,7 @@ export default defineComponent({
       </template>
       <template v-slot:tbody>
         <tr
-          v-for="(item, index) in items.slice(startIndex, endIndex)"
+          v-for="(item, index) in analysis.items.slice(startIndex, endIndex)"
           :key="item.track.id"
         >
           <td class="track-number">{{ startIndex + index + 1 }}</td>
@@ -335,7 +362,8 @@ export default defineComponent({
                   class="data-nav-button"
                   @click="changePage(curPageNumber + 1)"
                   :disabled="
-                    curPageNumber === Math.ceil(items.length / pageSize) - 1
+                    curPageNumber ===
+                    Math.ceil(analysis.items.length / pageSize) - 1
                   "
                 >
                   <ion-icon :icon="chevronForward"></ion-icon>

@@ -76,6 +76,13 @@ declare global {
     tokens: Ref<Promise<RefreshedAccessTokenResponse | undefined>>;
     updateTokens(): void;
   }
+
+  interface PlaylistAnalysis {
+    genres: [string, number][];
+    artists: SpotifyApi.ArtistObjectFull[];
+    avgPopularity: number;
+    items: SpotifyApi.PlaylistTrackObject[];
+  }
 }
 
 declare module "vue/types/vue" {
