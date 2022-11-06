@@ -1,8 +1,25 @@
 import type { UserTopItemsSort } from "@/types/enums";
+import { DateTime } from "luxon";
 import { spotify } from "./spotify-api";
 
 const client_id = import.meta.env.VITE_CLIENT_ID;
 const client_secret = import.meta.env.VITE_CLIENT_SECRET;
+
+export function timeFormat(string: string) {
+  return DateTime.fromISO(string).toLocaleString({
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+}
+
+export function dateFormat(string: string) {
+  return DateTime.fromISO(string).toLocaleString({
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
 
 export async function getAllTopTracks(
   sort: UserTopItemsSort

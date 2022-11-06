@@ -1,5 +1,7 @@
 <script lang="ts">
 import {
+  timeFormat,
+  dateFormat,
   convertRemToPixels,
   getArtistsFromTracks,
   getGenresFromTracks,
@@ -14,13 +16,27 @@ import {
   Tooltip,
 } from "chart.js";
 import { Doughnut } from "vue-chartjs";
-import TracksTable from "@/components/recommends/tracks-table/TracksTable.vue";
+import { IonIcon } from "@ionic/vue";
+import { chevronBack, chevronForward } from "ionicons/icons";
 import ArtistItem from "@/components/ArtistItem.vue";
+import TableEl from "@/components/table/TableEl.vue";
+import TrackItem from "@/components/track/TrackItem.vue";
+import PopularityBar from "@/components/PopularityBar.vue";
 
 Chart.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
 export default defineComponent({
-  components: { Doughnut, TracksTable, ArtistItem },
+  components: {
+    Doughnut,
+    IonIcon,
+    ArtistItem,
+    TableEl,
+    TrackItem,
+    PopularityBar,
+  },
+  setup() {
+    return { chevronBack, chevronForward };
+  },
   data() {
     return {
       chartSize: 225,
@@ -34,10 +50,23 @@ export default defineComponent({
       genres: null as [string, number][] | null,
       tracks: null as PlaylistItem[] | null,
       artists: null as SpotifyApi.ArtistObjectFull[] | null,
+      items: null as SpotifyApi.PlaylistTrackObject[] | null,
+      // pagination
+      pageSize: 50,
+      curPageNumber: 0,
     };
   },
   methods: {
+    timeFormat,
+    dateFormat,
     convertRemToPixels,
+    changePage(pageNumber: number) {
+      if (!this.items) return;
+      const max = Math.ceil(this.items?.length / this.pageSize);
+      if (pageNumber <= max || pageNumber === 0) {
+        this.curPageNumber = pageNumber;
+      }
+    },
     extractID() {
       const url = new URL(this.playlistID);
       const paths = url.pathname.split("/");
@@ -62,9 +91,7 @@ export default defineComponent({
       return sorted;
     },
     async getPlaylistTracks(playlist: SpotifyApi.SinglePlaylistResponse) {
-      const tracks: PlaylistItem[] = playlist.tracks.items.map(
-        (item) => item.track
-      );
+      const items: SpotifyApi.PlaylistTrackObject[] = playlist.tracks.items;
 
       let response = playlist.tracks;
 
@@ -74,10 +101,10 @@ export default defineComponent({
           limit: response.limit,
         });
 
-        tracks.push(...response.items.map((item) => item.track));
+        items.push(...response.items);
       }
 
-      return tracks;
+      return items;
     },
     async analyse() {
       this.isAnalysing = true;
@@ -87,8 +114,10 @@ export default defineComponent({
         this.playlist = playlist;
 
         // get all tracks
-        const tracks = await this.getPlaylistTracks(playlist);
-        this.tracks = tracks;
+        const items = await this.getPlaylistTracks(playlist);
+        this.items = items;
+        console.log(items);
+        const tracks = items.map((item) => item.track);
 
         // get all artists
         const artists = await getArtistsFromTracks(tracks);
@@ -115,6 +144,12 @@ export default defineComponent({
     },
   },
   computed: {
+    startIndex(): number {
+      return this.curPageNumber * this.pageSize;
+    },
+    endIndex(): number {
+      return (this.curPageNumber + 1) * this.pageSize;
+    },
     chartData(): any {
       if (!this.genres) return;
 
@@ -250,7 +285,67 @@ export default defineComponent({
       </div>
     </div>
 
-    <TracksTable :tracks="tracks" v-if="tracks" />
+    <!-- <TracksTable :tracks="tracks" v-if="tracks" /> -->
+    <TableEl v-if="items" class="playlist-tracks">
+      <template v-slot:thead>
+        <tr>
+          <th class="track-number">#</th>
+          <th>Track</th>
+          <th>Popularity</th>
+          <th>Added At</th>
+        </tr>
+      </template>
+      <template v-slot:tbody>
+        <tr
+          v-for="(item, index) in items.slice(startIndex, endIndex)"
+          :key="item.track.id"
+        >
+          <td class="track-number">{{ startIndex + index + 1 }}</td>
+          <td class="track">
+            <TrackItem :track="item.track" v-if="item.track.type === 'track'" />
+          </td>
+          <td>
+            <PopularityBar
+              :popularity="Number(item.track.popularity)"
+              v-if="item.track.type === 'track'"
+            />
+          </td>
+          <td>
+            <div class="added-at">
+              <span>{{ timeFormat(item.added_at) }}</span>
+              <span>{{ dateFormat(item.added_at) }}</span>
+            </div>
+          </td>
+        </tr>
+      </template>
+      <template v-slot:tfoot>
+        <tr>
+          <td class="table-footer">
+            <div>
+              <div class="button-group">
+                <button
+                  class="data-nav-button"
+                  @click="changePage(curPageNumber - 1)"
+                  :disabled="curPageNumber === 0"
+                >
+                  <ion-icon :icon="chevronBack"></ion-icon>
+                </button>
+                <span class="page-index">{{ curPageNumber + 1 }}</span>
+                <button
+                  class="data-nav-button"
+                  @click="changePage(curPageNumber + 1)"
+                  :disabled="
+                    curPageNumber === Math.ceil(items.length / pageSize) - 1
+                  "
+                >
+                  <ion-icon :icon="chevronForward"></ion-icon>
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </template>
+    </TableEl>
   </main>
 </template>
 
@@ -405,6 +500,61 @@ export default defineComponent({
     align-self: flex-end;
     text-align: end;
     width: 100%;
+  }
+}
+
+.playlist-tracks {
+  grid-template-columns: auto 1fr auto auto;
+
+  .added-at {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .table-footer {
+    padding: 1.6rem 0;
+    border-top: 1px solid grey;
+    grid-column: span 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .button-group {
+      display: flex;
+      align-items: stretch;
+      gap: 1.8rem;
+
+      .page-index {
+        font-size: 1.8rem;
+        text-align: center;
+        display: flex;
+        align-items: center;
+      }
+
+      .data-nav-button {
+        background: none;
+        display: flex;
+        align-items: center;
+        text-transform: uppercase;
+        padding: 0.5rem;
+        border-radius: 5px;
+        color: general.$primary-font-color;
+        font-size: 2.4rem;
+        transition: background 0.3s ease-out;
+        cursor: auto;
+
+        &:disabled {
+          color: #bbb;
+        }
+
+        &:not(:disabled):hover,
+        &:not(:disabled):active {
+          background-color: general.$splash-color;
+          cursor: pointer;
+        }
+      }
+    }
   }
 }
 </style>

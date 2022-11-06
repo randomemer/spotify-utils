@@ -202,13 +202,43 @@ export default defineComponent({
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-}
 
-.button-group {
-  display: flex;
-  align-items: stretch;
-  gap: 1.8rem;
+    .button-group {
+      display: flex;
+      align-items: stretch;
+      gap: 1.8rem;
+
+      .page-index {
+        font-size: 1.8rem;
+        text-align: center;
+        display: flex;
+        align-items: center;
+      }
+
+      .data-nav-button {
+        background: none;
+        display: flex;
+        align-items: center;
+        text-transform: uppercase;
+        padding: 0.5rem;
+        border-radius: 5px;
+        color: general.$primary-font-color;
+        font-size: 2.4rem;
+        transition: background 0.3s ease-out;
+        cursor: auto;
+
+        &:disabled {
+          color: #bbb;
+        }
+
+        &:not(:disabled):hover,
+        &:not(:disabled):active {
+          background-color: general.$splash-color;
+          cursor: pointer;
+        }
+      }
+    }
+  }
 }
 
 .track-info {
@@ -233,36 +263,6 @@ export default defineComponent({
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.data-nav-button {
-  background: none;
-  display: flex;
-  align-items: center;
-  text-transform: uppercase;
-  padding: 0.5rem;
-  border-radius: 5px;
-  color: general.$primary-font-color;
-  font-size: 2.4rem;
-  transition: background 0.3s ease-out;
-  cursor: auto;
-
-  &:disabled {
-    color: #bbb;
-  }
-
-  &:not(:disabled):hover,
-  &:not(:disabled):active {
-    background-color: general.$splash-color;
-    cursor: pointer;
-  }
-}
-
-.page-index {
-  font-size: 1.8rem;
-  text-align: center;
-  display: flex;
-  align-items: center;
 }
 
 .bar-track {
