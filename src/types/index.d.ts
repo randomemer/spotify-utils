@@ -8,6 +8,15 @@ declare global {
     $cookies: VueCookies;
   }
 
+  interface AppTab {
+    icon: {
+      filled: string;
+      outline: string;
+    };
+    name: string;
+    route: string;
+  }
+
   interface Account {
     user: SpotifyApi.CurrentUsersProfileResponse;
     refresh_token: string;

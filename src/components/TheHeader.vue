@@ -12,6 +12,12 @@ import ProfileCard from "@/components/profile-card/ProfileCard.vue";
 
 export default defineComponent({
   components: { IonIcon, PopupMenu, ProfileCard },
+  props: {
+    tabTitle: {
+      required: true,
+      type: String,
+    },
+  },
   setup() {
     return { notificationsOutline, notifications, logOutOutline, personCircle };
   },
@@ -50,6 +56,7 @@ export default defineComponent({
 
 <template>
   <header class="header">
+    <span class="tab-title">{{ tabTitle }}</span>
     <ul class="header-list-items list">
       <li>
         <button
@@ -126,7 +133,20 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .header {
-  background-color: general.$background-color;
+  height: general.$header-height;
+  background-color: general.$card-color;
+  margin-bottom: general.$header-margin-bottom;
+  box-shadow: 0px 20px 20px -20px rgba(0, 0, 0, 0.36);
+  padding: 1.6rem 6.4rem;
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tab-title {
+  font-size: 2.4rem;
 }
 
 .header-list-items {

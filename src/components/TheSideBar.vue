@@ -1,66 +1,15 @@
 <script setup lang="ts">
 import { IonIcon } from "@ionic/vue";
-import * as ionicons from "ionicons/icons";
-import type SpotifyWebApi from "spotify-web-api-js";
-import { inject } from "vue";
+import type { PropType } from "vue";
 import { useRouter } from "vue-router";
-
-const $spotify = inject<SpotifyWebApi.SpotifyWebApiJs>("$spotify");
-if (!$spotify) throw new Error("no-spotify-api-instance");
 const $router = useRouter();
 
-const appNavItems = [
-  {
-    sectionName: "Main",
-    links: [
-      {
-        icon: {
-          outline: ionicons.gridOutline,
-          filled: ionicons.grid,
-        },
-        name: "Dashboard",
-        route: "/app/dashboard",
-      },
-      {
-        icon: {
-          outline: ionicons.personCircleOutline,
-          filled: ionicons.personCircle,
-        },
-        name: "Account",
-        route: "/app/account",
-      },
-    ],
+defineProps({
+  appNavItems: {
+    required: true,
+    type: Object as PropType<{ sectionName: string; links: AppTab[] }[]>,
   },
-  {
-    sectionName: "Utilities",
-    links: [
-      {
-        icon: {
-          outline: ionicons.timeOutline,
-          filled: ionicons.time,
-        },
-        name: "History",
-        route: "/app/history",
-      },
-      {
-        icon: {
-          outline: ionicons.searchOutline,
-          filled: ionicons.search,
-        },
-        name: "Recommendations",
-        route: "/app/recommends",
-      },
-      {
-        icon: {
-          outline: ionicons.listOutline,
-          filled: ionicons.list,
-        },
-        name: "Playlists",
-        route: "/app/playlists",
-      },
-    ],
-  },
-];
+});
 
 function isActiveLink(route: string): boolean {
   return $router.currentRoute.value.path.includes(route);

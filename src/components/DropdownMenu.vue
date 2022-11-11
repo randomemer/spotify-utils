@@ -57,6 +57,7 @@ export default defineComponent({
     onDocumentClick(event: MouseEvent) {
       if (!this.selectContainer.contains(event.target as Node | null)) {
         this.selectOptions.classList.add("hidden");
+        this.isMenuOpen = false;
       }
     },
   },
@@ -118,7 +119,7 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .select-container {
   display: inline-flex;
   position: relative;
@@ -166,7 +167,7 @@ export default defineComponent({
   top: 100%;
   right: 0;
   left: 0;
-  z-index: 999;
+  z-index: 1;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -175,7 +176,7 @@ export default defineComponent({
   transform-origin: 50% 0;
   overflow: hidden;
 
-  li {
+  & li {
     margin: 0;
     padding: 12px 0;
     text-indent: 15px;

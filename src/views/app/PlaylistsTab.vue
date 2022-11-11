@@ -25,6 +25,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import { defineComponent } from "vue";
 import { Doughnut } from "vue-chartjs";
+import TracksTableSkeleton from "@/components/recommends/tracks-table/TracksTableSkeleton.vue";
 
 Chart.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 
@@ -37,6 +38,7 @@ export default defineComponent({
     TrackItem,
     PopularityBar,
     AnalysisSkeleton,
+    TracksTableSkeleton,
   },
   setup() {
     return { chevronBack, chevronForward };
@@ -44,10 +46,8 @@ export default defineComponent({
   data() {
     return {
       chartSize: 225,
-      playlistID:
-        "https://open.spotify.com/playlist/0LQN66XmARzQSM1XRCGWAU?si=b34b0ead91454095",
-      isAnalysing: false,
-      hasAnalysed: false,
+      playlistID: "https://open.spotify.com/playlist/0LQN66XmARzQSM1XRCGWAU",
+      state: "idle" as "loading" | "resolved" | "error" | "idle",
       // analysis data
       analysis: null as PlaylistAnalysis | null,
       playlist: null as SpotifyApi.PlaylistObjectFull | null,
@@ -135,7 +135,7 @@ export default defineComponent({
       };
     },
     async analyseWithMemo() {
-      this.isAnalysing = true;
+      this.state = "loading";
       try {
         // get playlist id and snapshot data
         const id = this.extractID();
@@ -164,11 +164,11 @@ export default defineComponent({
         }
 
         this.analysis = analysis;
-        this.hasAnalysed = true;
+        this.state = "resolved";
       } catch (error) {
+        this.state = "error";
         console.error(error);
       }
-      this.isAnalysing = false;
     },
   },
   computed: {
@@ -237,8 +237,6 @@ export default defineComponent({
 
 <template>
   <main>
-    <h1 class="heading-primary">Playlists</h1>
-
     <input
       class="playlist-link-input"
       placeholder="Enter a playlist link"
@@ -246,9 +244,8 @@ export default defineComponent({
       @keydown.enter="analyseWithMemo"
     />
 
-    <AnalysisSkeleton />
-
-    <div class="analysis" v-if="analysis">
+    <AnalysisSkeleton v-if="state === 'loading'" />
+    <div class="analysis" v-if="state === 'resolved'">
       <div class="first-col">
         <div
           class="basic-info card"
@@ -263,12 +260,12 @@ export default defineComponent({
         <div class="avg-popularity card">
           <div class="top-row">
             <span class="avg-popularity-number"
-              >{{ analysis.avgPopularity?.toFixed(2) }}%</span
+              >{{ analysis!.avgPopularity?.toFixed(2) }}%</span
             >
             <div class="avg-popularity-bar">
               <div
                 class="avg-popularity-bar-track"
-                :style="{ width: `${analysis.avgPopularity}%` }"
+                :style="{ width: `${analysis!.avgPopularity}%` }"
               ></div>
             </div>
           </div>
@@ -280,7 +277,7 @@ export default defineComponent({
       <div class="genres card">
         <h3>
           Has an assortment of
-          <span class="genre-count">{{ analysis.genres.length }}</span> genres!
+          <span class="genre-count">{{ analysis!.genres.length }}</span> genres!
         </h3>
 
         <Doughnut
@@ -295,7 +292,7 @@ export default defineComponent({
       <div class="artists card">
         <h3>
           Featuring
-          <span class="artist-count">{{ analysis.artists?.length }}</span>
+          <span class="artist-count">{{ analysis!.artists?.length }}</span>
           different artists
         </h3>
 
@@ -303,21 +300,21 @@ export default defineComponent({
           <ArtistItem
             :artist="artist"
             :key="artist.id || i"
-            v-for="(artist, i) in analysis.artists.slice(0, 3)"
+            v-for="(artist, i) in analysis!.artists.slice(0, 3)"
           />
         </div>
 
         <span
           class="more"
-          v-if="analysis.artists && analysis.artists.length > 3"
+          v-if="analysis!.artists && analysis!.artists.length > 3"
         >
           and more ...
         </span>
       </div>
     </div>
 
-    <!-- <TracksTable :tracks="tracks" v-if="tracks" /> -->
-    <TableEl v-if="analysis && analysis.items" class="playlist-tracks">
+    <TracksTableSkeleton v-if="state === 'loading'" />
+    <TableEl v-if="state === 'resolved'" class="playlist-tracks">
       <template v-slot:thead>
         <tr>
           <th class="track-number">#</th>
@@ -328,7 +325,7 @@ export default defineComponent({
       </template>
       <template v-slot:tbody>
         <tr
-          v-for="(item, index) in analysis.items.slice(startIndex, endIndex)"
+          v-for="(item, index) in analysis!.items.slice(startIndex, endIndex)"
           :key="item.track.id"
         >
           <td class="track-number">{{ startIndex + index + 1 }}</td>
@@ -367,7 +364,7 @@ export default defineComponent({
                   @click="changePage(curPageNumber + 1)"
                   :disabled="
                     curPageNumber ===
-                    Math.ceil(analysis.items.length / pageSize) - 1
+                    Math.ceil(analysis!.items.length / pageSize) - 1
                   "
                 >
                   <ion-icon :icon="chevronForward"></ion-icon>

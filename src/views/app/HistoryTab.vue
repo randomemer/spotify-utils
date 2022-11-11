@@ -19,14 +19,8 @@ const AsyncHistoryTable = defineAsyncComponent({
 
 <template>
   <main>
-    <h2 class="heading-secondary">Listening History</h2>
-
     <AsyncHistoryTable />
   </main>
 </template>
 
-<style scoped lang="scss">
-.heading-secondary {
-  margin-bottom: 4.8rem;
-}
-</style>
+<style scoped lang="scss"></style>

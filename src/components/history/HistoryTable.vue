@@ -1,9 +1,9 @@
 <script lang="ts">
+import { dateFormat, timeFormat } from "@/utilities/functions";
 import { spotify } from "@/utilities/spotify-api";
 import { IonIcon } from "@ionic/vue";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import { defineComponent, type PropType } from "vue";
-import "sticksy";
 
 export async function checkNextPage(currentPage: RecentlyPlayedTracks) {
   const next = await spotify.getMyRecentlyPlayedTracks({
@@ -37,9 +37,8 @@ export default defineComponent({
     return { chevronBack, chevronForward };
   },
   methods: {
-    dateFormat: (timestamp: number) => `${new Date(timestamp).toDateString()}`,
-    timeFormat: (timestamp: number) =>
-      `${new Date(timestamp).toLocaleTimeString()}`,
+    dateFormat,
+    timeFormat,
     previous() {
       if (this.isLoading) return;
       this.curPage = Math.max(1, this.curPage - 1);
@@ -69,15 +68,11 @@ export default defineComponent({
       this.isLoading = false;
     },
   },
-  mounted() {
-    const stick = new Sticksy(".history-table");
-  },
 });
 </script>
 
 <template>
   <table class="history-table">
-    <!-- Table Header -->
     <thead>
       <tr>
         <th class="track-number">#</th>
@@ -142,8 +137,8 @@ export default defineComponent({
         </td>
         <td>
           <div class="track-played-at">
-            <span>{{ timeFormat(Date.parse(played_at)) }}</span>
-            <span>{{ dateFormat(Date.parse(played_at)) }}</span>
+            <span>{{ timeFormat(played_at) }}</span>
+            <span>{{ dateFormat(played_at) }}</span>
           </div>
         </td>
       </tr>
@@ -279,5 +274,16 @@ export default defineComponent({
 
   transition: width 0.3s;
   width: 0;
+}
+
+table {
+  position: sticky !important;
+  top: 0;
+  overflow-y: scroll;
+}
+
+th {
+  position: sticky !important;
+  top: 0;
 }
 </style>

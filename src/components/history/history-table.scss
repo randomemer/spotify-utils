@@ -6,14 +6,15 @@
   justify-content: stretch;
   grid-template-columns: auto 1fr auto auto;
   background-color: general.$card-color;
-  min-width: 100%;
+  // min-width: 100%;
   border-radius: 10px;
   border-collapse: collapse;
   grid-row-gap: 1.6rem;
   $table-padding: 3rem;
 
-  // position: sticky;
-  // top: 8rem;
+  position: sticky;
+  // position: fixed;
+  top: 8rem;
   // background-image: linear-gradient(
   //   to bottom,
   //   transparent 8rem,
@@ -38,7 +39,6 @@
     font-weight: 500;
     letter-spacing: 1px;
     border-bottom: 1px solid grey;
-    background-color: general.$card-color;
 
     // position: sticky;
     // top: 0rem;
@@ -64,10 +64,6 @@
       padding-right: $table-padding;
     }
   }
-
-  // td {
-  //   z-index: -3;
-  // }
 
   .track-number {
     padding-left: 2.4rem;

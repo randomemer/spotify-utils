@@ -174,29 +174,28 @@ export default defineComponent({
 
 <template>
   <main>
-    <h3 class="heading-secondary">Generate Recommendations</h3>
-
     <div class="grid">
       <div class="search-pane">
-        <!-- Input Area -->
-        <input
-          class="search-field"
-          type="search"
-          placeholder="Search"
-          @input="onSearchTextChange"
-          @keydown.enter="searchItems"
-        />
+        <div class="input-area">
+          <input
+            class="search-field"
+            type="search"
+            placeholder="Search"
+            @input="onSearchTextChange"
+            @keydown.enter="searchItems"
+          />
 
-        <!-- Tabs -->
-        <TabBar
-          class="tabbar"
-          :tabs="[
-            { value: 'track', label: 'Tracks' },
-            { value: 'artist', label: 'Artists' },
-            { value: 'genre', label: 'Genres' },
-          ]"
-          v-on:tab-change="onTabChange"
-        />
+          <!-- Tabs -->
+          <TabBar
+            class="tabbar"
+            :tabs="[
+              { value: 'track', label: 'Tracks' },
+              { value: 'artist', label: 'Artists' },
+              { value: 'genre', label: 'Genres' },
+            ]"
+            v-on:tab-change="onTabChange"
+          />
+        </div>
 
         <!-- Search Results -->
         <ul class="search-results-container" v-if="searchResults">
@@ -253,15 +252,23 @@ export default defineComponent({
 </template>
 
 <style scoped lang="scss">
-.heading-secondary {
-  margin-bottom: 4.8rem;
-}
-
 .grid {
   display: grid;
   gap: 4.8rem;
   grid-template-columns: 60fr 40fr;
   align-items: flex-start;
+}
+
+.input-area,
+.seeds-cart {
+  position: sticky;
+  top: calc(general.$header-height + general.$header-margin-bottom);
+}
+
+.input-area {
+  background-color: general.$background-color;
+  z-index: 1;
+  width: 100%;
 }
 
 .search-pane {
@@ -274,7 +281,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-
   list-style: none;
 }
 
@@ -285,6 +291,7 @@ export default defineComponent({
   background-color: general.$card-color;
   padding: 0.8rem 1.6rem;
   margin-bottom: 3.6rem;
+  width: 100%;
 }
 
 .tabbar {
@@ -391,8 +398,6 @@ export default defineComponent({
 
 .seeds-cart {
   display: flex;
-  position: sticky;
-  top: 6.4rem;
   flex-direction: column;
   gap: 2.4rem;
 
