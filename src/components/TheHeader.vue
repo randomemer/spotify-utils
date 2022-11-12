@@ -135,7 +135,7 @@ export default defineComponent({
 .header {
   height: general.$header-height;
   background-color: general.$card-color;
-  margin-bottom: general.$header-margin-bottom;
+  // margin-bottom: general.$header-margin-bottom;
   box-shadow: 0px 20px 20px -20px rgba(0, 0, 0, 0.36);
   padding: 1.6rem 6.4rem;
   z-index: 10;

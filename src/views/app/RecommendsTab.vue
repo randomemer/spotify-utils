@@ -173,82 +173,74 @@ export default defineComponent({
 </script>
 
 <template>
-  <main>
-    <div class="grid">
-      <div class="search-pane">
-        <div class="input-area">
-          <input
-            class="search-field"
-            type="search"
-            placeholder="Search"
-            @input="onSearchTextChange"
-            @keydown.enter="searchItems"
-          />
+  <div class="grid">
+    <div class="search-pane">
+      <div class="input-area">
+        <input
+          class="search-field"
+          type="search"
+          placeholder="Search"
+          @input="onSearchTextChange"
+          @keydown.enter="searchItems"
+        />
 
-          <!-- Tabs -->
-          <TabBar
-            class="tabbar"
-            :tabs="[
-              { value: 'track', label: 'Tracks' },
-              { value: 'artist', label: 'Artists' },
-              { value: 'genre', label: 'Genres' },
-            ]"
-            v-on:tab-change="onTabChange"
-          />
-        </div>
-
-        <!-- Search Results -->
-        <ul class="search-results-container" v-if="searchResults">
-          <li class="result-item" v-for="(item, i) in results" :key="i">
-            <TrackItem :track="item" v-if="searchFilter === 'track'" />
-            <ArtistItem :artist="item" v-else-if="searchFilter === 'artist'" />
-            <GenreItem :genre="item" v-else />
-
-            <button type="button" class="add-button" @click="addSeed(item)">
-              <ion-icon :icon="add" />
-            </button>
-          </li>
-        </ul>
+        <!-- Tabs -->
+        <TabBar
+          class="tabbar"
+          :tabs="[
+            { value: 'track', label: 'Tracks' },
+            { value: 'artist', label: 'Artists' },
+            { value: 'genre', label: 'Genres' },
+          ]"
+          v-on:tab-change="onTabChange"
+        />
       </div>
 
-      <div class="seeds-cart">
-        <h3>Selected Seeds</h3>
+      <!-- Search Results -->
+      <ul class="search-results-container" v-if="searchResults">
+        <li class="result-item" v-for="(item, i) in results" :key="i">
+          <TrackItem :track="item" v-if="searchFilter === 'track'" />
+          <ArtistItem :artist="item" v-else-if="searchFilter === 'artist'" />
+          <GenreItem :genre="item" v-else />
 
-        <ul v-if="seeds.length">
-          <li v-for="seed in seeds" :key="seed.id">
-            <TrackItem :track="seed.seed" v-if="seed.type === 'track'" />
-            <ArtistItem
-              :artist="seed.seed"
-              v-else-if="seed.type === 'artist'"
-            />
-            <GenreItem :genre="seed.seed" v-else />
-
-            <button
-              class="remove-seed-button"
-              @click="removeSeed($event, seed)"
-            >
-              <ion-icon :icon="close" />
-            </button>
-          </li>
-        </ul>
-        <div class="empty-seeds" v-else>
-          <ion-icon :icon="musicalNote" />
-          <span>Select upto 5 tracks, artists or genres</span>
-        </div>
-
-        <button
-          class="generate-button"
-          type="button"
-          @click="generate"
-          :class="{ loading: isGenerating }"
-          v-if="seeds.length"
-        >
-          <ion-spinner v-if="isGenerating"></ion-spinner>
-          <span>{{ isGenerating ? "Generating" : "Generate" }}</span>
-        </button>
-      </div>
+          <button type="button" class="add-button" @click="addSeed(item)">
+            <ion-icon :icon="add" />
+          </button>
+        </li>
+      </ul>
     </div>
-  </main>
+
+    <div class="seeds-cart">
+      <h3>Selected Seeds</h3>
+
+      <ul v-if="seeds.length">
+        <li v-for="seed in seeds" :key="seed.id">
+          <TrackItem :track="seed.seed" v-if="seed.type === 'track'" />
+          <ArtistItem :artist="seed.seed" v-else-if="seed.type === 'artist'" />
+          <GenreItem :genre="seed.seed" v-else />
+
+          <button class="remove-seed-button" @click="removeSeed($event, seed)">
+            <ion-icon :icon="close" />
+          </button>
+        </li>
+      </ul>
+      <div class="empty-seeds" v-else>
+        <ion-icon :icon="musicalNote" />
+        <span>Select upto 5 tracks, artists or genres</span>
+      </div>
+
+      <button
+        class="generate-button"
+        type="button"
+        @click="generate"
+        :class="{ loading: isGenerating }"
+        v-if="seeds.length"
+      >
+        <ion-spinner v-if="isGenerating"></ion-spinner>
+        <span>{{ isGenerating ? "Generating" : "Generate" }}</span>
+      </button>
+    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -257,24 +249,30 @@ export default defineComponent({
   gap: 4.8rem;
   grid-template-columns: 60fr 40fr;
   align-items: flex-start;
+  padding-top: 0px;
 }
 
-.input-area,
 .seeds-cart {
   position: sticky;
+  background-color: yellow;
+  margin-top: general.$header-margin-bottom;
   top: calc(general.$header-height + general.$header-margin-bottom);
 }
 
 .input-area {
   background-color: general.$background-color;
+  position: sticky;
+  top: general.$header-height;
   z-index: 1;
+  padding-top: general.$header-margin-bottom;
   width: 100%;
+  // padding-bottom: 3.6rem;
+  padding-bottom: 1.8rem;
 }
 
 .search-pane {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
 }
 
 .search-results-container {
@@ -282,6 +280,8 @@ export default defineComponent({
   flex-direction: column;
   gap: 1.2rem;
   list-style: none;
+  // background-color: green;
+  padding-top: 1.8rem;
 }
 
 .search-field {
@@ -294,13 +294,10 @@ export default defineComponent({
   width: 100%;
 }
 
-.tabbar {
-  margin-bottom: 4.8rem;
-}
-
 .result-item {
   display: flex;
   justify-content: space-between;
+  gap: 1.8rem;
 }
 
 .generate-button {
@@ -358,6 +355,7 @@ export default defineComponent({
   background: general.$primary-color;
   color: general.$font-color;
   $size: 3.6rem;
+  flex-shrink: 0;
   align-self: center;
   font-size: 2.4rem;
   height: $size;

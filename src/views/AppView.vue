@@ -106,39 +106,44 @@ function getHeaderTitle(): string {
 </script>
 
 <template>
-  <div class="app-container">
-    <SideBar class="app-sidebar" :app-nav-items="appNavItems" />
-    <div class="app-content">
-      <TheHeader class="nav-bar" :tab-title="getHeaderTitle()" />
-      <RouterView class="app-main" />
-    </div>
+  <SideBar class="app-sidebar" :app-nav-items="appNavItems" />
+  <div class="app-content">
+    <TheHeader class="nav-bar" :tab-title="getHeaderTitle()" />
+    <RouterView class="app-main" />
   </div>
 </template>
 
 <style lang="scss">
 $sidebar-width: 27rem;
-
-.app-container {
-  min-height: 100vh;
+body {
+  width: 100%;
+  height: 100vh;
 }
+
+// #app {
+//   height: 100%;
+// }
 
 .app-sidebar {
   width: $sidebar-width;
-  background-color: general.$card-color;
 }
 
 .nav-bar {
-  position: sticky;
+  position: fixed;
+  width: calc(100vw - $sidebar-width);
   top: 0;
 }
 
 .app-content {
   padding-left: $sidebar-width;
   scrollbar-color: rgb(123, 123, 123) rgb(66, 66, 66);
+  display: flex;
+  flex-direction: column;
+  padding-top: general.$header-height;
 }
 
 .app-main {
-  margin: 6.4rem;
+  padding: 6.4rem;
   margin-top: 0px;
 }
 </style>

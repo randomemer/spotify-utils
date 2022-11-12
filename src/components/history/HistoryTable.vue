@@ -276,14 +276,14 @@ export default defineComponent({
   width: 0;
 }
 
-table {
-  position: sticky !important;
-  top: 0;
-  overflow-y: scroll;
-}
+// table {
+//   position: sticky !important;
+//   top: 0;
+//   overflow-y: scroll;
+// }
 
-th {
-  position: sticky !important;
-  top: 0;
-}
+// th {
+//   position: sticky !important;
+//   top: 0;
+// }
 </style>

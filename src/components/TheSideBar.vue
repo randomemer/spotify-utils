@@ -62,7 +62,7 @@ function isActiveLink(route: string): boolean {
   left: 0;
 
   padding: 2.4rem;
-  // background-color: general.$card-color;
+  background-color: general.$card-color;
 
   display: flex;
   gap: 4.8rem;
