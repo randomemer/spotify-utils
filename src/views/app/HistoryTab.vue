@@ -18,9 +18,10 @@ const AsyncHistoryTable = defineAsyncComponent({
 </script>
 
 <template>
-  <main>
+  <div>
+    <div>Table COntrols</div>
     <AsyncHistoryTable />
-  </main>
+  </div>
 </template>
 
 <style scoped lang="scss"></style>

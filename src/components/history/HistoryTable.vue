@@ -276,14 +276,18 @@ export default defineComponent({
   width: 0;
 }
 
-// table {
-//   position: sticky !important;
-//   top: 0;
-//   overflow-y: scroll;
-// }
+table {
+  position: sticky !important;
+  top: 10rem;
+}
 
-// th {
-//   position: sticky !important;
-//   top: 0;
-// }
+th {
+  position: sticky !important;
+  // top: 10rem;
+
+  top: 0px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: general.$card-color;
+}
 </style>
