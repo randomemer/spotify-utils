@@ -1,17 +1,42 @@
 // The Cloud Functions for Firebase SDK to create Cloud Functions and set up triggers.
 import functions from "firebase-functions";
-
 // The Firebase Admin SDK to access Firestore.
 import admin from "firebase-admin";
-import { getAccessToken, getRecentlyPlayedTracks } from "./utils.js";
+import {
+  getAccessToken,
+  getRecentlyPlayedTracks,
+  updateUserHistory,
+} from "./utils.js";
+
 admin.initializeApp();
 
 // // Create and deploy your first functions
 // // https://firebase.google.com/docs/functions/get-started
 
-// exports.collectUserHistory = functions.runWith({
-//   secrets: ["CLIENT_ID", "CLIENT_SECRET"],
-// });
+export const updateUsersHistory = functions
+  .runWith({
+    secrets: ["SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET"],
+  })
+  .pubsub.schedule("every 25 minutes")
+  .onRun(async () => {
+    const collection = await admin.firestore().collection("users").get();
+    const documents = collection.docs.slice();
+
+    // update user history in batches of 500 documents (batch-limit)
+    while (documents.length > 0) {
+      const batchDocs = documents.splice(0, 500);
+      const writeBatch = admin.firestore().batch();
+
+      for (const doc of batchDocs) {
+        await updateUserHistory(doc, writeBatch);
+      }
+
+      await writeBatch.commit();
+    }
+
+    console.log(`Updated ${collection.docs.length} users' playback history.`);
+    return null;
+  });
 
 export const onUserCreate = functions
   .runWith({

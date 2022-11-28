@@ -1,4 +1,6 @@
+import { db } from "@/main";
 import type { UserTopItemsSort } from "@/types/enums";
+import { doc, setDoc } from "firebase/firestore";
 import { DateTime } from "luxon";
 import { spotify } from "./spotify-api";
 
@@ -164,4 +166,23 @@ export async function retrieveSpotifyTokens(
     }),
   });
   return await response.json();
+}
+
+export async function updateUser(accountJSON: string) {
+  try {
+    const user = await spotify.getMe();
+    const account: Account = JSON.parse(accountJSON);
+
+    const data = {
+      spotify_username: user.display_name,
+      email: user.email,
+      country: user.country,
+      refresh_token: account.refresh_token,
+    };
+
+    const document = doc(db, "users", user.id);
+    await setDoc(document, data, { merge: true });
+  } catch (error) {
+    console.error(error);
+  }
 }
