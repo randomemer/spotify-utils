@@ -1,4 +1,5 @@
 <script lang="ts">
+import { spotify } from "@/utilities/spotify-api";
 import { defineComponent } from "vue";
 import { stringifyQuery } from "vue-router";
 
@@ -54,7 +55,7 @@ export default defineComponent({
         // Get refresh tokens from spotify
         const tokens = await this.retrieveSpotifyTokens(code.toString());
         // get user data and set local storage data
-        this.$spotify.setAccessToken(tokens.access_token);
+        spotify.setAccessToken(tokens.access_token);
         const account: Account = {
           user: await this.$spotify.getMe(),
           refresh_token: tokens.refresh_token,

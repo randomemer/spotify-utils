@@ -15,6 +15,9 @@ import { RouterView } from "vue-router";
   box-sizing: border-box;
 }
 
+:root {
+}
+
 *:focus {
   outline: none;
   /* box-shadow: 0 0 0 0.4rem rgba(29, 185, 84, 0.5); */

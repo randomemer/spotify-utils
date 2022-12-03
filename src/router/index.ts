@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
-import { refreshAccessToken } from "@/utilities/functions";
+import { refreshAccessToken, updateUser } from "@/utilities/functions";
 import AuthViewVue from "@/views/AuthView.vue";
 import { spotify } from "@/utilities/spotify-api";
 
@@ -47,6 +47,7 @@ const router = createRouter({
 
         const tokens = await refreshAccessToken(user!);
         spotify.setAccessToken(tokens.access_token);
+        updateUser(user!);
 
         // default route : dashboard
         if (to.path === "/app") {

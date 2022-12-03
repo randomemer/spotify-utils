@@ -1,5 +1,6 @@
 <script lang="ts">
 import { convertRemToPixels } from "@/utilities/functions";
+import type { DocumentData, DocumentSnapshot } from "@firebase/firestore";
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -29,7 +30,7 @@ export default {
   props: {
     history: {
       required: true,
-      type: Object as PropType<SpotifyApi.UsersRecentlyPlayedTracksResponse>,
+      type: Object as PropType<DocumentSnapshot<DocumentData>>,
     },
   },
   data() {
@@ -66,7 +67,7 @@ export default {
         backgroundColor: "#bf00ff",
         borderCapStyle: "round",
         borderJoinStyle: "round",
-        tension: 0.3,
+        // tension: 0.3,
         scales: {
           x: {
             ...axisStyle,
@@ -105,6 +106,14 @@ export default {
       let labels = [];
       let data = [];
       const days = new Map<DateTime, number>();
+
+      console.log(this.history.get("playback_history"));
+      console.log(this.history.get("playback_history.items"));
+      const items = JSON.parse(
+        this.history.get("playback_history.items")
+      ) as SpotifyApi.PlayHistoryObject[];
+      console.log(items);
+
       switch (this.timeRange) {
         case "week":
           for (let i = 0; i < 7; i++) {
@@ -112,7 +121,7 @@ export default {
           }
 
           for (const date of days.keys()) {
-            for (const { played_at } of this.history.items) {
+            for (const { played_at } of items) {
               const track_date = DateTime.fromISO(played_at);
               if (track_date.hasSame(date, "day")) {
                 days.set(date, (days.get(date) || 0) + 1);

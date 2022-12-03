@@ -19,7 +19,6 @@ const AsyncHistoryTable = defineAsyncComponent({
 
 <template>
   <div>
-    <div>Table COntrols</div>
     <AsyncHistoryTable />
   </div>
 </template>

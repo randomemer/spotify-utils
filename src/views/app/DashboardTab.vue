@@ -9,6 +9,8 @@ import TopGenres, {
 import TopGenresSkeleton from "@/components/dashboard/top-genres/TopGenresSkeleton.vue";
 import TopTracks from "@/components/dashboard/top-tracks/TopTracks.vue";
 import TopTracksSkeleton from "@/components/dashboard/top-tracks/TopTracksSkeleton.vue";
+import { db } from "@/main";
+import { doc, getDoc } from "@firebase/firestore";
 import type SpotifyWebApi from "spotify-web-api-js";
 import { defineAsyncComponent, h, inject } from "vue";
 
@@ -29,9 +31,14 @@ const AsyncActivityCard = defineAsyncComponent({
   loadingComponent: ActivityCardSkeleton,
   errorComponent: () => h("div"),
   loader: async () => {
-    const history = await $spotify.getMyRecentlyPlayedTracks({
-      limit: 50,
-    });
+    const account = localStorage.getItem("current_user");
+    const acc: Account = JSON.parse(account);
+
+    const docRef = doc(db, "users", acc.user.id);
+    const history = await getDoc(docRef);
+
+    console.log(history);
+
     return () => h(ActivityCard, { history });
   },
 });
