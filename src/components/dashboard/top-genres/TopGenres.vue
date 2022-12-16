@@ -12,6 +12,8 @@ import {
   Legend,
   Title,
   Tooltip,
+  type ChartData,
+  type ChartOptions,
 } from "chart.js";
 import { defineComponent } from "vue";
 import { Doughnut } from "vue-chartjs";
@@ -38,7 +40,7 @@ export default defineComponent({
     };
   },
   computed: {
-    chartData(): any {
+    chartData(): ChartData<"doughnut"> {
       return {
         labels: [...this.genres.slice(0, 10).map((genre) => genre[0]), "other"],
         datasets: [
@@ -52,7 +54,7 @@ export default defineComponent({
         ],
       };
     },
-    chartOptions(): any {
+    chartOptions(): ChartOptions<"doughnut"> {
       const genreSum = this.genreSum;
       return {
         radius: convertRemToPixels(12.8),
@@ -67,7 +69,7 @@ export default defineComponent({
               size: convertRemToPixels(1.2),
             },
             callbacks: {
-              label: function (context: any) {
+              label: function (context) {
                 const dataPoint = context.dataset.data[context.dataIndex];
                 const percent: string = ((dataPoint / genreSum) * 100).toFixed(
                   2
