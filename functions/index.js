@@ -21,6 +21,7 @@ export const updateUsersHistory = functions
   .onRun(async () => {
     const collection = await admin.firestore().collection("users").get();
     const documents = collection.docs.slice();
+    const bucket = admin.storage().bucket();
 
     // update user history in batches of 500 documents (batch-limit)
     while (documents.length > 0) {
@@ -28,7 +29,7 @@ export const updateUsersHistory = functions
       const writeBatch = admin.firestore().batch();
 
       for (const doc of batchDocs) {
-        await updateUserHistory(doc, writeBatch);
+        await updateUserHistory(doc, writeBatch, bucket);
       }
 
       await writeBatch.commit();
