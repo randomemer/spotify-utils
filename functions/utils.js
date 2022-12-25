@@ -123,3 +123,26 @@ export async function updateUserHistory(doc, writeBatch, bucket) {
     functions.logger.error(error);
   }
 }
+
+export async function getPlaybackRecords(filePath, options) {
+  try {
+    const before = options?.before ? new Date(options.before) : new Date();
+    const after = options?.after ? new Date(options.after) : new Date(null);
+
+    const reader = await Parquet.ParquetReader.openFile(filePath);
+    const cursor = reader.getCursor();
+
+    const items = [];
+    let record;
+    while ((record = await cursor.next())) {
+      const playedAt = new Date(record.played_at);
+      if (after < playedAt && playedAt < before) {
+        items.push(record);
+      }
+    }
+
+    return items;
+  } catch (error) {
+    functions.logger.error(error);
+  }
+}
