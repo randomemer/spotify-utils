@@ -4,7 +4,7 @@ import PopularityBar from "@/components/PopularityBar.vue";
 import AnalysisSkeleton from "@/components/playlists/AnalysisSkeleton.vue";
 import TableEl from "@/components/table/TableEl.vue";
 import TrackItem from "@/components/track/TrackItem.vue";
-import { db } from "@/main";
+import { db } from "@/backend";
 import {
   convertRemToPixels,
   dateFormat,

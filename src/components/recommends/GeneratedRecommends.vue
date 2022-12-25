@@ -1,5 +1,5 @@
 <script lang="ts">
-import { db } from "@/main";
+import { db } from "@/backend";
 import {
   doc,
   DocumentSnapshot,

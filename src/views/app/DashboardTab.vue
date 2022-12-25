@@ -9,7 +9,7 @@ import TopGenres, {
 import TopGenresSkeleton from "@/components/dashboard/top-genres/TopGenresSkeleton.vue";
 import TopTracks from "@/components/dashboard/top-tracks/TopTracks.vue";
 import TopTracksSkeleton from "@/components/dashboard/top-tracks/TopTracksSkeleton.vue";
-import { db } from "@/main";
+import { db } from "@/backend";
 import { doc, getDoc } from "@firebase/firestore";
 import type SpotifyWebApi from "spotify-web-api-js";
 import { defineAsyncComponent, h, inject } from "vue";

@@ -3,7 +3,7 @@ import ArtistItem from "@/components/ArtistItem.vue";
 import TabBar from "@/components/TabBar.vue";
 import TrackItem from "@/components/track/TrackItem.vue";
 import GenreItem from "@/components/GenreItem.vue";
-import { db } from "@/main";
+import { db } from "@/backend";
 import { IonIcon, IonSpinner } from "@ionic/vue";
 import { addDoc, collection, doc } from "firebase/firestore";
 import { add, close, musicalNote, musicalNotes } from "ionicons/icons";

@@ -1,4 +1,4 @@
-import { db } from "@/main";
+import { db } from "@/backend";
 import type { UserTopItemsSort } from "@/types/enums";
 import { doc, setDoc } from "firebase/firestore";
 import { DateTime } from "luxon";
