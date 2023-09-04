@@ -1,7 +1,8 @@
-import { functions } from ".";
-import { httpsCallable } from "firebase/functions";
+import { firebaseApp } from ".";
+import { getFunctions, httpsCallable } from "firebase/functions";
 
+const functionsAsia = getFunctions(firebaseApp, "asia-south1");
 export const fetchUserPlaybackHistory = httpsCallable(
-  functions,
+  functionsAsia,
   "fetchUserPlaybackHistory"
 );

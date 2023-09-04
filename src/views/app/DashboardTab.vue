@@ -13,6 +13,7 @@ import { db } from "@/backend";
 import { doc, getDoc } from "@firebase/firestore";
 import type SpotifyWebApi from "spotify-web-api-js";
 import { defineAsyncComponent, h, inject } from "vue";
+import { fetchUserPlaybackHistory } from "@/backend/functions";
 
 const $spotify = inject<SpotifyWebApi.SpotifyWebApiJs>("$spotify");
 if (!$spotify) {
@@ -32,14 +33,16 @@ const AsyncActivityCard = defineAsyncComponent({
   errorComponent: () => h("div"),
   loader: async () => {
     const account = localStorage.getItem("current_user");
+    if (!account) throw new Error("no-user-authenticated");
     const acc: Account = JSON.parse(account);
 
-    const docRef = doc(db, "users", acc.user.id);
-    const history = await getDoc(docRef);
+    const playback_history = await fetchUserPlaybackHistory({
+      uid: acc.user.id,
+    });
 
-    console.log(history);
+    console.log(playback_history);
 
-    return () => h(ActivityCard, { history });
+    return () => h(ActivityCard, { history: playback_history.data });
   },
 });
 

@@ -3,6 +3,7 @@ import VueCookies from "vue-cookies";
 import App from "./App.vue";
 import router from "./router";
 import spotifyApi from "./utilities/spotify-api";
+import "@/backend";
 
 // Vue Setup
 const app = createApp(App);

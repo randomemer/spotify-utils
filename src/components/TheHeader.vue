@@ -33,7 +33,7 @@ export default defineComponent({
 
       const profileImages = account.user.images;
       if (profileImages) {
-        return profileImages[profileImages.length - 1].url;
+        return profileImages[profileImages.length - 1]?.url;
       } else {
         return "";
       }
