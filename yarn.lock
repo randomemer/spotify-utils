@@ -5810,6 +5810,7 @@ __metadata:
   dependencies:
     "@nuxt/devtools": latest
     nuxt: ^3.7.0
+    primevue: ^3.33.0
   languageName: unknown
   linkType: soft
 
@@ -6578,6 +6579,15 @@ __metadata:
   version: 6.1.1
   resolution: "pretty-bytes@npm:6.1.1"
   checksum: 43d29d909d2d88072da2c3d72f8fd0f2d2523c516bfa640aff6e31f596ea1004b6601f4cabc50d14b2cf10e82635ebe5b7d9378f3d5bae1c0067131829421b8a
+  languageName: node
+  linkType: hard
+
+"primevue@npm:^3.33.0":
+  version: 3.33.0
+  resolution: "primevue@npm:3.33.0"
+  peerDependencies:
+    vue: ^3.0.0
+  checksum: d64af4371854eb6721974c9aabe147d1fec9b11e164237dd1bb2528b60aaf8bbc256629a0986e0e866182be3a422fa7c971ff257369a585ac6c49116455c329a
   languageName: node
   linkType: hard
 

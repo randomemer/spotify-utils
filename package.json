@@ -12,5 +12,8 @@
     "@nuxt/devtools": "latest",
     "nuxt": "^3.7.0"
   },
-  "packageManager": "yarn@3.6.3"
+  "packageManager": "yarn@3.6.3",
+  "dependencies": {
+    "primevue": "^3.33.0"
+  }
 }
