@@ -15,4 +15,6 @@ declare global {
     scope: string;
     expires_in: number;
   }
+
+  interface UserSession {}
 }

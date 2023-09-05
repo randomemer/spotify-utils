@@ -1,6 +1,6 @@
 import axios from "axios";
 import SpotifyWebApi from "spotify-web-api-js";
-import getAdmin from "~/server/utils/firebase";
+import { createSession } from "~/server/utils/session";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -8,7 +8,6 @@ export default defineEventHandler(async (event) => {
     const env = useRuntimeConfig(event);
     const code = query.code;
 
-    // get tokens
     const encoded = Buffer.from(
       `${env.spotifyClientId}:${env.spotifyClientSecret}`
     ).toString("base64");
@@ -30,22 +29,9 @@ export default defineEventHandler(async (event) => {
       }
     );
 
-    // get user
-    const userResp = await axios.get<SpotifyApi.CurrentUsersProfileResponse>(
-      "https://api.spotify.com/v1/me",
-      {
-        headers: { Authorization: `Bearer ${tokenResp.data.access_token}` },
-      }
-    );
+    await createSession(event, tokenResp.data);
 
-    // create and save in db
-    const admin = getAdmin(event);
-    const fbResp = await admin.firestore().listCollections();
-    for (const item of fbResp) {
-      console.log(item.path);
-    }
-
-    return userResp.data;
+    return sendRedirect(event, "/app");
   } catch (error) {
     console.error(error);
     throw error;

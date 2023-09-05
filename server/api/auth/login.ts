@@ -4,8 +4,6 @@ export default defineEventHandler(async (event) => {
     const appConfig = useAppConfig(event);
     const sessionId = getCookie(event, "session_id");
 
-    console.log(event.headers.get("host"));
-
     if (!sessionId) {
       // Redirect to the spotify auth page
       const query = new URLSearchParams({
@@ -19,7 +17,8 @@ export default defineEventHandler(async (event) => {
         `https://accounts.spotify.com/authorize?${query}`
       );
     }
-    // req.
+
+    return sendRedirect(event, "/app");
   } catch (error) {
     console.error(error);
     throw error;
