@@ -1,19 +1,21 @@
 <template>
-  <NuxtPage></NuxtPage>
+  <NuxtLayout name="dashboard">a</NuxtLayout>
 </template>
 
-<script setup>
-// import { fetchSession } from "~/server/utils/session";
+<script setup lang="ts">
+// const { data, error } = useFetch("/api/auth/token");
+// const router = useRouter();
 
-// const { data, error } = useAsyncData(async (nuxtApp) => {
-//   if (process.server) {
-//     const ctx = nuxtApp.ssrContext;
-//     return await fetchSession(ctx.event);
-//   } else {
-//     console.log("to be implemented");
-//   }
-// });
-const { data, error } = useFetch("/api/auth/token");
+// // @TODO: Fix later
+// watch(
+//   error,
+//   (newErr) => {
+//     if ([400, 401, 403].includes(newErr?.statusCode)) {
+//       router.replace("/api/auth/login");
+//     }
+//   },
+//   { immediate: true }
+// );
 
-console.log(data.value, error.value);
+// console.log(data.value, error.value);
 </script>

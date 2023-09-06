@@ -28,8 +28,12 @@ export async function createSession(
 }
 
 export async function fetchSession(event: H3Event) {
-  const sessionId = getCookie(event, "session_id")!;
   const env = useRuntimeConfig(event);
+  const sessionId = getCookie(event, "session_id");
+
+  if (!sessionId) {
+    throw createError({ statusCode: 401, statusMessage: "User not logged in" });
+  }
 
   // 1. fetch session
   const db = getAdmin(event).firestore();
@@ -43,8 +47,6 @@ export async function fetchSession(event: H3Event) {
   }
 
   const session = sessionDoc.data()!;
-
-  console.log("error", session);
 
   // 2. fetch access token using session
   const encoded = Buffer.from(

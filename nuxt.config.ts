@@ -1,8 +1,20 @@
+import vuetify from "vite-plugin-vuetify";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  css: ["primevue/resources/themes/lara-dark-purple/theme.css"],
-  build: { transpile: ["primevue"] },
+  modules: [
+    async function (_, nuxt) {
+      nuxt.hooks.hook("vite:extendConfig", (config) => {
+        config?.plugins?.push(vuetify());
+      });
+    },
+  ],
+  vite: {
+    ssr: {
+      noExternal: ["vuetify"],
+    },
+  },
   app: {
     layoutTransition: { name: "layout", mode: "out-in" },
     pageTransition: { name: "page", mode: "out-in" },
