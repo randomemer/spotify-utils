@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@ionic/vue": "^7.3.3",
     "axios": "^1.5.0",
     "firebase-admin": "^11.10.1",
     "ionicons": "^7.1.2",

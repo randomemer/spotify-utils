@@ -1,46 +1,107 @@
 <template>
-  <v-navigation-drawer class="nav-drawer" permanent location="left">
-    <p class="text-h5 text-center">Music Muse</p>
-    <v-list tag="ul" nav density="compact">
-      <v-list-item
-        v-for="link in links"
-        :key="link.route"
-        :value="link.route"
-        tag="li"
-      >
-        {{ link.name }}
-      </v-list-item>
-    </v-list>
+  <v-navigation-drawer class="sidebar" permanent location="left">
+    <div class="drawer-content">
+      <p class="text-h5 text-center">Music Muse</p>
+      <v-list nav density="compact">
+        <v-list-item
+          :active="route.path === link.route"
+          v-for="link in links"
+          :key="link.route"
+          :value="link.route"
+          color="primary"
+        >
+          <div class="nav-item">
+            <IonIcon
+              :icon="
+                route.path === link.route ? link.icon.filled : link.icon.outline
+              "
+            />
+            <span class="text-body-1">{{ link.name }}</span>
+          </div>
+        </v-list-item>
+      </v-list>
+    </div>
   </v-navigation-drawer>
 </template>
 
 <script setup lang="ts">
+import { IonIcon } from "@ionic/vue";
+import {
+  grid,
+  gridOutline,
+  personCircle,
+  personCircleOutline,
+  time,
+  timeOutline,
+  search,
+  searchOutline,
+  list,
+  listOutline,
+} from "ionicons/icons";
+
 const links = [
   {
+    icon: {
+      outline: gridOutline,
+      filled: grid,
+    },
     name: "Dashboard",
-    route: "/app/dashboard",
+    route: "/app",
   },
   {
+    icon: {
+      outline: personCircleOutline,
+      filled: personCircle,
+    },
     name: "Account",
     route: "/app/account",
   },
   {
+    icon: {
+      outline: timeOutline,
+      filled: time,
+    },
     name: "History",
+
     route: "/app/history",
   },
   {
+    icon: {
+      outline: searchOutline,
+      filled: search,
+    },
     name: "Recommendations",
     route: "/app/recommends",
   },
   {
+    icon: {
+      outline: listOutline,
+      filled: list,
+    },
     name: "Playlists",
     route: "/app/playlists",
   },
 ];
+
+const route = useRoute();
 </script>
 
 <style scoped lang="scss">
-.nav-drawer .v-navigation-drawer__content {
+.drawer-content {
+  width: 17rem;
+  display: flex;
+  gap: 4.8rem;
+  flex-direction: column;
   padding: 1.5rem;
+}
+
+.nav-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+
+  ion-icon {
+    font-size: 1.5rem;
+  }
 }
 </style>

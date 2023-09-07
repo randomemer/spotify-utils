@@ -8,8 +8,14 @@ export default defineNuxtPlugin((nuxtApp) => {
         light: {
           dark: true,
           colors: {
-            primary: "#730099",
+            primary: "#BA68C8",
+            secondary: "#3F51B5",
             background: "#191414",
+            info: "#2196F3",
+            error: "#FF5722",
+            success: "#4CAF50",
+            warning: "#FFC107",
+            "on-primary": "#bf00ff",
           },
         },
       },

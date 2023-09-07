@@ -914,6 +914,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ionic/core@npm:7.3.3":
+  version: 7.3.3
+  resolution: "@ionic/core@npm:7.3.3"
+  dependencies:
+    "@stencil/core": ^4.1.0
+    ionicons: 7.1.0
+    tslib: ^2.1.0
+  checksum: 77d639d54199bd558830d334b4fc0f6665fc74bb6cd97ac0095a77ef6bb2fc792beddc89ea8ad8c9a443f8e9d5ef1996fc01085c0638260264fa06e6f4ba5aad
+  languageName: node
+  linkType: hard
+
+"@ionic/vue@npm:^7.3.3":
+  version: 7.3.3
+  resolution: "@ionic/vue@npm:7.3.3"
+  dependencies:
+    "@ionic/core": 7.3.3
+    ionicons: ^7.0.0
+  checksum: 079825c50c73d7b64c39cda78d6cfdd45c8dc607ef961afee75ba469af2e38012febef531b9d5c91e3eaba4e71217069e03ba7d1347c0e2eaad03cf35e532662
+  languageName: node
+  linkType: hard
+
 "@ioredis/commands@npm:^1.1.1":
   version: 1.2.0
   resolution: "@ioredis/commands@npm:1.2.0"
@@ -1832,6 +1853,15 @@ __metadata:
   bin:
     stencil: bin/stencil
   checksum: b43fd0c0e10c8f6831821635de650f49c8d94eab75aa8e9214b723511cfd1f90fbf1ad33a79b4d2f165ef9ca6bee02839aac7b0a234ec6082b5959f98069f397
+  languageName: node
+  linkType: hard
+
+"@stencil/core@npm:^4.1.0":
+  version: 4.2.0
+  resolution: "@stencil/core@npm:4.2.0"
+  bin:
+    stencil: bin/stencil
+  checksum: fc96d1a96aab495919c702d2b91f33e420733032af7e283724810920d5949d7d7ab76625ac5d5a8b0a79917b9cd931a180fd7eff95c992791916f303d2ab3559
   languageName: node
   linkType: hard
 
@@ -5305,7 +5335,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ionicons@npm:^7.1.2":
+"ionicons@npm:7.1.0":
+  version: 7.1.0
+  resolution: "ionicons@npm:7.1.0"
+  dependencies:
+    "@stencil/core": ^2.18.0
+  checksum: 66e05b7d7c9625085cad9640ff2e1bb2e7737fa25855911bd2e516b50f1cf441761cec6e894dfbc2a9770e577f1d83d851d1453cb210d6bb0064ad15fa484e9c
+  languageName: node
+  linkType: hard
+
+"ionicons@npm:^7.0.0, ionicons@npm:^7.1.2":
   version: 7.1.2
   resolution: "ionicons@npm:7.1.2"
   dependencies:
@@ -6966,6 +7005,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "nuxt-app@workspace:."
   dependencies:
+    "@ionic/vue": ^7.3.3
     "@nuxt/devtools": latest
     axios: ^1.5.0
     firebase-admin: ^11.10.1
