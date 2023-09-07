@@ -2,9 +2,11 @@ import { fetchSession } from "~/server/utils/session";
 
 export default defineEventHandler(async (event) => {
   try {
-    return await fetchSession(event);
+    const sessionId = getCookie(event, "session_id");
+    const env = useRuntimeConfig(event);
+    return await fetchSession(env, sessionId);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     throw error;
   }
 });

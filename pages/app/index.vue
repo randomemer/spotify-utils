@@ -3,19 +3,29 @@
 </template>
 
 <script setup lang="ts">
-// const { data, error } = useFetch("/api/auth/token");
-// const router = useRouter();
+import cookie from "cookie";
 
-// // @TODO: Fix later
-// watch(
-//   error,
-//   (newErr) => {
-//     if ([400, 401, 403].includes(newErr?.statusCode)) {
-//       router.replace("/api/auth/login");
-//     }
-//   },
-//   { immediate: true }
-// );
+useAsyncData(async (ctx) => {
+  try {
+    if (process.server) {
+      const { fetchSession } = await import("~/server/utils/session");
+      console.log("server");
+      console.log(ctx?.ssrContext?.event.headers.get("cookie"));
+      const rawCookies = ctx?.ssrContext?.event.headers.get("cookie")!;
+      const cookies = cookie.parse(rawCookies);
 
-// console.log(data.value, error.value);
+      const res = await fetchSession(
+        ctx?.ssrContext?.runtimeConfig! as any,
+        cookies.session_id
+      );
+      console.log("YEAH MATAFNAFACKA", res);
+    } else {
+      console.log("client");
+    }
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+console.log();
 </script>

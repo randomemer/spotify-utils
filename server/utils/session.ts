@@ -13,7 +13,8 @@ export async function createSession(
     }
   );
 
-  const admin = getAdmin(event);
+  const { serviceAccKey } = useRuntimeConfig(event);
+  const admin = getAdmin(serviceAccKey);
   const db = admin.firestore();
   const ts = admin.firestore.Timestamp.now();
 
@@ -27,16 +28,18 @@ export async function createSession(
   setCookie(event, "session_id", doc.id, { httpOnly: true });
 }
 
-export async function fetchSession(event: H3Event) {
-  const env = useRuntimeConfig(event);
-  const sessionId = getCookie(event, "session_id");
+export async function fetchSession(
+  config: Record<string, string>,
+  sessionId: string | undefined | null
+) {
+  // const sessionId = getCookie(event, "session_id");
 
   if (!sessionId) {
     throw createError({ statusCode: 401, statusMessage: "User not logged in" });
   }
 
   // 1. fetch session
-  const db = getAdmin(event).firestore();
+  const db = getAdmin(config.serviceAccKey).firestore();
   const sessionDoc = await db.collection("sessions").doc(sessionId).get();
 
   if (!sessionDoc.exists) {
@@ -50,7 +53,7 @@ export async function fetchSession(event: H3Event) {
 
   // 2. fetch access token using session
   const encoded = Buffer.from(
-    `${env.spotifyClientId}:${env.spotifyClientSecret}`
+    `${config.spotifyClientId}:${config.spotifyClientSecret}`
   ).toString("base64");
 
   const formData = new URLSearchParams({

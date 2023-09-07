@@ -1,10 +1,15 @@
 <template>
-  <v-navigation-drawer class="sidebar" permanent location="left">
+  <v-navigation-drawer
+    permanent
+    location="left"
+    class="sidebar"
+    v-model="isOpen"
+  >
     <div class="drawer-content">
       <p class="text-h5 text-center">Music Muse</p>
       <v-list nav density="compact">
         <v-list-item
-          :active="route.path === link.route"
+          :active="$route.path === link.route"
           v-for="link in links"
           :key="link.route"
           :value="link.route"
@@ -13,7 +18,9 @@
           <div class="nav-item">
             <IonIcon
               :icon="
-                route.path === link.route ? link.icon.filled : link.icon.outline
+                $route.path === link.route
+                  ? link.icon.filled
+                  : link.icon.outline
               "
             />
             <span class="text-body-1">{{ link.name }}</span>
@@ -83,7 +90,7 @@ const links = [
   },
 ];
 
-const route = useRoute();
+const isOpen = ref(true);
 </script>
 
 <style scoped lang="scss">

@@ -12,13 +12,13 @@ export default defineEventHandler(async (event) => {
         scope: appConfig.scopes.join(" "),
         redirect_uri: `http://localhost:4009/api/auth/callback`,
       });
-      return sendRedirect(
-        event,
-        `https://accounts.spotify.com/authorize?${query}`
-      );
+      return {
+        status: "redirect",
+        url: `https://accounts.spotify.com/authorize?${query}`,
+      };
     }
 
-    return sendRedirect(event, "/app");
+    return sendNoContent(event);
   } catch (error) {
     console.error(error);
     throw error;
