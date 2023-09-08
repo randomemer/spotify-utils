@@ -12,7 +12,58 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import axios from "axios";
+import { callWithNuxt } from "nuxt/app";
+import useAuthStore from "~/store/auth.store";
+
+const nuxtApp = useNuxtApp();
+const route = useRoute();
+const env = useRuntimeConfig();
+const appConfig = useAppConfig();
+const authStore = useAuthStore();
+const event = useRequestEvent();
+
+onServerPrefetch(async () => {
+  try {
+    const { createSession } = await import("~/server/utils/session");
+
+    // 1. Fetch tokens
+    const encoded = Buffer.from(
+      `${env.spotifyClientId}:${env.spotifyClientSecret}`
+    ).toString("base64");
+
+    const formData = new URLSearchParams({
+      grant_type: "authorization_code",
+      code: `${route.query.code?.toString()}`,
+      redirect_uri: `${appConfig.origin}/auth/callback`,
+    });
+
+    const tokenResp = await axios.post<AccessTokenResponse>(
+      `https://accounts.spotify.com/api/token`,
+      formData.toString(),
+      {
+        headers: {
+          Authorization: `Basic ${encoded}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+
+    // 2. Create a new session and save tokens to data store
+    await createSession(event, env as any, tokenResp.data);
+    const expiry = Date.now() + tokenResp.data.expires_in * 1000;
+    authStore.setToken({
+      access_token: tokenResp.data.access_token,
+      expiry,
+    });
+    await callWithNuxt(nuxtApp, navigateTo, ["/app", { replace: true }]);
+  } catch (error) {
+    console.error(error);
+    await callWithNuxt(nuxtApp, navigateTo, ["/500", { replace: true }]);
+  }
+});
+</script>
 
 <style scoped lang="scss">
 .container {

@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
   try {
     const env = useRuntimeConfig(event);
-    const appConfig = useAppConfig(event);
+    const appConfig = useAppConfig();
     const sessionId = getCookie(event, "session_id");
 
     if (!sessionId) {
@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
         response_type: "code",
         client_id: env.spotifyClientId,
         scope: appConfig.scopes.join(" "),
-        redirect_uri: `http://localhost:4009/api/auth/callback`,
+        redirect_uri: `${appConfig.origin}/auth/callback`,
       });
       return {
         status: "redirect",
@@ -18,7 +18,11 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    return sendNoContent(event);
+    const tokenData = await fetchSession(env, sessionId);
+    return {
+      status: "success",
+      payload: tokenData,
+    };
   } catch (error) {
     console.error(error);
     throw error;

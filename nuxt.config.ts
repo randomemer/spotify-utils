@@ -4,6 +4,7 @@ import vuetify from "vite-plugin-vuetify";
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
+    "@pinia/nuxt",
     async function (_, nuxt) {
       nuxt.hooks.hook("vite:extendConfig", (config) => {
         config?.plugins?.push(vuetify());
@@ -23,6 +24,9 @@ export default defineNuxtConfig({
     spotifyClientId: process.env.SPOTIFY_CLIENT_ID,
     spotifyClientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     serviceAccKey: process.env.SERVICE_ACC_KEY,
+  },
+  imports: {
+    dirs: ["./store"],
   },
   devServer: {
     port: 4009,

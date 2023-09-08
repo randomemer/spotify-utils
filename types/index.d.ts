@@ -17,4 +17,26 @@ declare global {
   }
 
   interface UserSession {}
+
+  interface AuthToken {
+    access_token: string;
+    expiry: number;
+  }
+
+  interface AuthState {
+    token: AuthToken | null;
+  }
+
+  type LoginResp =
+    | {
+        status: "redirect";
+        url: string;
+      }
+    | {
+        status: "success";
+        payload: {
+          access_token: string;
+          expiry: number;
+        };
+      };
 }

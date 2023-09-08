@@ -1,9 +1,10 @@
 import axios from "axios";
-import type { H3Event } from "h3";
+import { setCookie, type H3Event } from "h3";
 import getAdmin from "./firebase";
 
 export async function createSession(
   event: H3Event,
+  config: Record<string, string>,
   tokenData: AccessTokenResponse
 ) {
   const userResp = await axios.get<SpotifyApi.CurrentUsersProfileResponse>(
@@ -13,7 +14,7 @@ export async function createSession(
     }
   );
 
-  const { serviceAccKey } = useRuntimeConfig(event);
+  const { serviceAccKey } = config;
   const admin = getAdmin(serviceAccKey);
   const db = admin.firestore();
   const ts = admin.firestore.Timestamp.now();
@@ -74,5 +75,6 @@ export async function fetchSession(
 
   return {
     access_token: tokenResp.data.access_token,
+    expiry: Date.now() + tokenResp.data.expires_in * 1000,
   };
 }

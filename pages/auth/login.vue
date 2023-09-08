@@ -3,24 +3,23 @@
 </template>
 
 <script setup lang="ts">
-import axios from "axios";
+import useAuthStore from "~/store/auth.store";
+
+const { $api } = useNuxtApp();
+const authStore = useAuthStore();
 
 useAsyncData(
   async (ctx) => {
-    const resp = await axios.get("/api/auth/login");
+    const resp = await $api.get<LoginResp>("/api/auth/login");
 
-    switch (resp.status) {
-      case 200:
-        if (resp.data.status === "redirect") {
-          console.log(resp.data);
-          window.location.href = resp.data.url;
-        }
+    switch (resp.data.status) {
+      case "redirect":
+        window.location.href = resp.data.url;
         break;
 
-      case 204:
-        if (resp.status == 204) {
-          await ctx?.$router.push("/app");
-        }
+      case "success":
+        authStore.setToken(resp.data.payload);
+        await ctx?.$router.replace("/app");
         break;
 
       default:
