@@ -4,7 +4,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   return {
     provide: {
       api: axios.create({
-        baseURL: nuxtApp.$config.origin,
+        baseURL: nuxtApp.$config.public.origin,
         withCredentials: true,
       }),
       spotify: axios.create({ baseURL: "https://api.spotify.com/v1" }),
