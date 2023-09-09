@@ -1,20 +1,13 @@
-import vuetify from "vite-plugin-vuetify";
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: [
-    "@pinia/nuxt",
-    async function (_, nuxt) {
-      nuxt.hooks.hook("vite:extendConfig", (config) => {
-        config?.plugins?.push(vuetify());
-      });
-    },
-  ],
-  vite: {
-    ssr: {
-      noExternal: ["vuetify"],
-    },
+  css: ["vuetify/styles"],
+  modules: ["@pinia/nuxt", "vuetify-nuxt-module"],
+  imports: {
+    dirs: ["./store"],
+  },
+  devServer: {
+    port: 4009,
   },
   app: {
     layoutTransition: { name: "layout", mode: "out-in" },
@@ -25,10 +18,10 @@ export default defineNuxtConfig({
     spotifyClientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     serviceAccKey: process.env.SERVICE_ACC_KEY,
   },
-  imports: {
-    dirs: ["./store"],
+  vuetify: {
+    vuetifyOptions: "./vuetify.config.ts",
+    moduleOptions: { styles: { configFile: "/assets/css/settings.scss" } },
   },
-  devServer: {
-    port: 4009,
-  },
+  // Disabling inlineSSRStyles as it's not compatiable with Vuetify
+  experimental: { inlineSSRStyles: false },
 });

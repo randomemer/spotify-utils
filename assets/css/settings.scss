@@ -1,4 +1,4 @@
-@use "vuetify" with (
+@forward "vuetify" with (
   $body-font-family: "lexend-deca"
 );
 

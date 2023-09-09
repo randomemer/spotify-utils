@@ -3,7 +3,9 @@
     <TheAppSidebar />
     <TheAppbar />
     <v-main>
-      <slot></slot>
+      <div class="main-content">
+        <slot></slot>
+      </div>
     </v-main>
   </v-layout>
 </template>
@@ -19,3 +21,9 @@ $spotify.interceptors.request.use((config) => {
   return config;
 });
 </script>
+
+<style scoped lang="scss">
+.main-content {
+  padding: 4rem 3rem;
+}
+</style>

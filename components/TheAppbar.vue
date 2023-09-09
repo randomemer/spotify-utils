@@ -1,6 +1,10 @@
 <template>
   <v-app-bar>
-    <v-avatar color="surface-variant" :image="pfp"></v-avatar>
+    <template v-slot:append>
+      <v-btn :icon="pfp">
+        <v-avatar color="surface-variant" :image="pfp"></v-avatar>
+      </v-btn>
+    </template>
   </v-app-bar>
 </template>
 
