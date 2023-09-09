@@ -1,6 +1,6 @@
 <template>
   <v-app-bar>
-    <v-avatar :image="pfp"></v-avatar>
+    <v-avatar color="surface-variant" :image="pfp"></v-avatar>
   </v-app-bar>
 </template>
 

@@ -19,11 +19,10 @@ export default defineNuxtRouteMiddleware(async () => {
         const tokenData = await fetchSession($config as any, cookie!);
         authStore.setToken(tokenData);
       } catch (error) {
-        console.error(error);
         if (error instanceof H3Error && error.statusCode === 401) {
-          console.log("🚨🚨🚨🚨 SERVER REDIRECT");
           return { path: "/auth/login", replace: true };
         }
+        console.error(error);
       }
     }
 
@@ -33,13 +32,13 @@ export default defineNuxtRouteMiddleware(async () => {
         const resp = await $api.get<AuthToken>("/api/auth/token");
         authStore.setToken(resp.data);
       } catch (error) {
-        // console.error(error);
         if (error instanceof AxiosError) {
           const status = error.response?.status;
           if (status && [400, 401, 403].includes(status)) {
             return { path: "/auth/login", replace: true };
           }
         }
+        console.error(error);
       }
     }
   }
