@@ -1,10 +1,12 @@
 import axios from "axios";
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(() => {
+  const appConfig = useAppConfig();
+
   return {
     provide: {
       api: axios.create({
-        baseURL: nuxtApp.$config.public.origin,
+        baseURL: appConfig.origin,
         withCredentials: true,
       }),
       spotify: axios.create({ baseURL: "https://api.spotify.com/v1" }),

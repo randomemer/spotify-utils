@@ -1,4 +1,7 @@
 export default defineAppConfig({
+  origin: process.dev
+    ? "http://localhost:4009"
+    : `https://${process.env.VERCEL_DOMAIN}`,
   scopes: [
     // user
     "user-read-email",
