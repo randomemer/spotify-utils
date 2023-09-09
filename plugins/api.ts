@@ -6,6 +6,9 @@ export default defineNuxtPlugin(() => {
     : `https://${process.env.VERCEL_DOMAIN}`;
 
   return {
-    provide: { api: axios.create({ baseURL, withCredentials: true }) },
+    provide: {
+      api: axios.create({ baseURL, withCredentials: true }),
+      spotify: axios.create({ baseURL: "https://api.spotify.com/v1" }),
+    },
   };
 });

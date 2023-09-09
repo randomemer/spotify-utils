@@ -20,7 +20,6 @@ import useAuthStore from "~/store/auth.store";
 const nuxtApp = useNuxtApp();
 const route = useRoute();
 const env = useRuntimeConfig();
-const appConfig = useAppConfig();
 const authStore = useAuthStore();
 const event = useRequestEvent();
 
@@ -36,7 +35,7 @@ onServerPrefetch(async () => {
     const formData = new URLSearchParams({
       grant_type: "authorization_code",
       code: `${route.query.code?.toString()}`,
-      redirect_uri: `${appConfig.origin}/auth/callback`,
+      redirect_uri: `${env.origin}/auth/callback`,
     });
 
     const tokenResp = await axios.post<AccessTokenResponse>(
