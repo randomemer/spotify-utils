@@ -1,5 +1,5 @@
 <template>
-  <v-layout>
+  <div>
     <TheAppSidebar />
     <TheAppbar />
     <v-main>
@@ -7,7 +7,7 @@
         <slot></slot>
       </div>
     </v-main>
-  </v-layout>
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -1,7 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  css: ["normalize.css"],
   build: { transpile: ["primevue"] },
   modules: ["@pinia/nuxt"],
   imports: {
