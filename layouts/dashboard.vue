@@ -2,11 +2,9 @@
   <div id="app-container">
     <TheAppSidebar />
     <TheAppbar />
-    <v-main>
-      <div class="main-content">
-        <slot></slot>
-      </div>
-    </v-main>
+    <div class="main-content">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -20,18 +18,16 @@ $spotify.interceptors.request.use((config) => {
   config.headers.Authorization = `Bearer ${authStore.token?.access_token}`;
   return config;
 });
-
-console.log(useRoute().matched);
 </script>
 
 <style lang="scss">
 :root {
-  --app-bar-height: 4rem;
-  --sidebar-height: 17.5rem;
+  --app-bar-height: 4.5rem;
+  --sidebar-width: 17.5rem;
 }
 
 #app-container {
-  padding-left: var(--sidebar-height);
+  padding-left: var(--sidebar-width);
   padding-top: var(--app-bar-height);
 }
 

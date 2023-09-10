@@ -104,7 +104,7 @@ const links = [
 
 <style module lang="scss">
 .sidebar {
-  width: var(--sidebar-height) !important;
+  width: var(--sidebar-width) !important;
 }
 
 .title {

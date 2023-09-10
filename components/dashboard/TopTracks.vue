@@ -1,28 +1,22 @@
 <template>
-  <v-card class="pa-6">
-    <div class="d-flex justify-space-between">
-      <h3 class="text-h5">Your Top Tracks</h3>
-      <v-select
-        hide-details
-        color="primary"
-        variant="solo-filled"
-        density="compact"
+  <Card>
+    <template #title>
+      <p>Your Top Tracks</p>
+      <Dropdown
         v-model="timeRange"
-        :items="timeRangeItems"
-        item-title="label"
-        item-value="value"
-        menu-icon="chevronDown"
-        class="flex-grow-0 flex-shrink-0"
-      >
-      </v-select>
-    </div>
-  </v-card>
+        option-label="label"
+        option-value="value"
+        :options="timeRangeItems"
+        class="time-range-select"
+      />
+    </template>
+
+    <template #content> </template>
+  </Card>
 </template>
 
 <script setup lang="ts">
 import { SpotifyTimeRange } from "~/types";
-import { IonIcon } from "@ionic/vue";
-import { chevronDown } from "ionicons/icons";
 
 const { $spotify } = useNuxtApp();
 const timeRange = ref(SpotifyTimeRange.ShortTerm);

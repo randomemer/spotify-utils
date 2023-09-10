@@ -1,15 +1,10 @@
 <template>
   <NuxtLayout name="dashboard">
-    <v-container class="pa-0">
-      <v-row>
-        <v-col><DashboardTopGenres /></v-col>
-        <v-col></v-col>
-      </v-row>
-      <v-row>
-        <v-col><DashboardTopTracks /></v-col>
-        <v-col><DashboardTopArtists /></v-col>
-      </v-row>
-    </v-container>
+    <div class="cards-grid">
+      <DashboardTopGenres />
+      <DashboardTopTracks />
+      <DashboardTopArtists />
+    </div>
   </NuxtLayout>
 </template>
 
@@ -20,3 +15,12 @@ import DashboardTopGenres from "~/components/dashboard/TopGenres.vue";
 import DashboardTopTracks from "~/components/dashboard/TopTracks.vue";
 import DashboardTopArtists from "~/components/dashboard/TopArtists.vue";
 </script>
+
+<style scoped lang="scss">
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 50fr);
+  flex-direction: column;
+  gap: 3rem;
+}
+</style>
