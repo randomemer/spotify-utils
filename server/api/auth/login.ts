@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
         response_type: "code",
         client_id: env.spotifyClientId,
         scope: appConfig.scopes.join(" "),
-        redirect_uri: `${appConfig.origin}/auth/callback`,
+        redirect_uri: `${env.public.webOrigin}/auth/callback`,
       });
       return {
         status: "redirect",

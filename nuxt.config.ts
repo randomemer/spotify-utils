@@ -17,5 +17,10 @@ export default defineNuxtConfig({
     spotifyClientId: process.env.SPOTIFY_CLIENT_ID,
     spotifyClientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     serviceAccKey: process.env.SERVICE_ACC_KEY,
+    public: {
+      webOrigin: process.dev
+        ? `http://`
+        : "https://" + process.env.VERCEL_DOMAIN,
+    },
   },
 });

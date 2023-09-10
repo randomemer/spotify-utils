@@ -1,7 +1,7 @@
 import axios from "axios";
-import SpotifyWebApi from "spotify-web-api-js";
 import { setCookie, type H3Event } from "h3";
 import getAdmin from "./firebase";
+import SpotifyWebApi from "spotify-web-api-js";
 
 export async function createSession(
   event: H3Event,

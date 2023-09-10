@@ -12,7 +12,7 @@ import Dropdown from "primevue/dropdown";
 
 export default defineNuxtPlugin((nuxtApp) => {
   const { vueApp } = nuxtApp;
-  vueApp.use(PrimeVue, { ripple: true });
+  vueApp.use(PrimeVue, { ripple: true, inputStyle: "filled" });
 
   vueApp.component("Card", Card);
   vueApp.component("ProgressSpinner", ProgressSpinner);
