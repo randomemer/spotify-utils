@@ -16,18 +16,18 @@
 
     <template #default>
       <Listbox
-        option-value="url"
+        option-value="route"
         :options="links"
         :class="$style['nav-list']"
-        :model-value="$route.path"
+        :model-value="$route.name"
         :pt="{ item: { class: $style['nav-list-item'] } }"
       >
         <template #option="{ option }">
-          <NuxtLink :class="$style['nav-link']" :to="option.url">
+          <NuxtLink :class="$style['nav-link']" :to="{ name: option.route }">
             <IonIcon
               :class="$style['nav-link-icon']"
               :icon="
-                $route.path === option.url
+                $route.name === option.route
                   ? option.icon.filled
                   : option.icon.outline
               "
@@ -55,6 +55,7 @@ import {
   listOutline,
 } from "ionicons/icons";
 
+const isOpen = ref(true);
 const isTemporary = ref(false);
 
 const links = [
@@ -63,8 +64,8 @@ const links = [
       outline: gridOutline,
       filled: grid,
     },
-    url: "/app",
     label: "Dashboard",
+    route: "app",
   },
   {
     icon: {
@@ -72,7 +73,7 @@ const links = [
       filled: personCircle,
     },
     label: "Account",
-    url: "/app/account",
+    route: "app:account",
   },
   {
     icon: {
@@ -80,7 +81,7 @@ const links = [
       filled: time,
     },
     label: "History",
-    url: "/app/history",
+    route: "app:history",
   },
   {
     icon: {
@@ -88,7 +89,7 @@ const links = [
       filled: search,
     },
     label: "Recommendations",
-    url: "/app/recommends",
+    route: "app:recommends",
   },
   {
     icon: {
@@ -96,16 +97,14 @@ const links = [
       filled: list,
     },
     label: "Playlists",
-    url: "/app/playlists",
+    route: "app:playlists",
   },
 ];
-
-const isOpen = ref(true);
 </script>
 
 <style module lang="scss">
 .sidebar {
-  width: 17.5rem !important;
+  width: var(--sidebar-height) !important;
 }
 
 .title {

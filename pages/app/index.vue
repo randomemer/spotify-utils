@@ -14,9 +14,9 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({ name: "app", middleware: "auth", alias: ["/app/dashboard"] });
+
 import DashboardTopGenres from "~/components/dashboard/TopGenres.vue";
 import DashboardTopTracks from "~/components/dashboard/TopTracks.vue";
 import DashboardTopArtists from "~/components/dashboard/TopArtists.vue";
-
-definePageMeta({ middleware: "auth" });
 </script>
