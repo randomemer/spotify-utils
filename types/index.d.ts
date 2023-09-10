@@ -1,5 +1,3 @@
-export {};
-
 declare global {
   interface AccessTokenResponse {
     access_token: string;
@@ -40,3 +38,5 @@ declare global {
         };
       };
 }
+
+export {};

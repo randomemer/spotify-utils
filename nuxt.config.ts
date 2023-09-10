@@ -1,8 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  css: ["vuetify/styles"],
-  modules: ["@pinia/nuxt", "vuetify-nuxt-module"],
+  css: ["normalize.css"],
+  build: { transpile: ["primevue"] },
+  modules: ["@pinia/nuxt"],
   imports: {
     dirs: ["./store"],
   },
@@ -18,10 +19,4 @@ export default defineNuxtConfig({
     spotifyClientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     serviceAccKey: process.env.SERVICE_ACC_KEY,
   },
-  vuetify: {
-    vuetifyOptions: "./vuetify.config.ts",
-    moduleOptions: { styles: { configFile: "/assets/css/settings.scss" } },
-  },
-  // Disabling inlineSSRStyles as it's not compatiable with Vuetify
-  experimental: { inlineSSRStyles: false },
 });

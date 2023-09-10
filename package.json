@@ -15,14 +15,15 @@
     "axios": "^1.5.0",
     "firebase-admin": "^11.10.1",
     "ionicons": "^7.1.2",
+    "normalize.css": "^8.0.1",
     "pinia": "^2.1.6",
+    "primevue": "^3.34.1",
     "spotify-web-api-js": "^1.5.2"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "h3": "^1.8.1",
     "nuxt": "^3.7.0",
-    "sass": "^1.66.1",
-    "vuetify-nuxt-module": "^0.5.7"
+    "sass": "^1.66.1"
   }
 }
