@@ -2,16 +2,6 @@
   <NuxtPage />
 </template>
 
-<script setup lang="ts">
-const appConfig = useAppConfig();
-
-onServerPrefetch(() => {
-  appConfig.webOrigin = process.dev
-    ? `http://localhost:4009`
-    : `https://${process.env.VERCEL_DOMAIN}`;
-});
-</script>
-
 <style lang="scss">
 @import "assets/css/primevue-sass-theme-3.34.1/themes/material/material-dark/standard/deeppurple/theme.scss";
 
