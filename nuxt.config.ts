@@ -1,11 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  build: { transpile: ["primevue"] },
-  modules: ["@pinia/nuxt"],
+  build: { transpile: ["primevue", "@stencil/core"] },
+  modules: ["@pinia/nuxt", "nuxt-lodash"],
   imports: {
     dirs: ["./store"],
   },
+
+  // transpile: [],
   devServer: {
     port: 4009,
   },
