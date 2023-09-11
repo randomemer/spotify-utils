@@ -1,4 +1,4 @@
-import PrimeVue from "primevue/config";
+import PrimeVue, { type PrimeVueConfiguration } from "primevue/config";
 
 // Components
 import Card from "primevue/card";
@@ -10,9 +10,15 @@ import Avatar from "primevue/avatar";
 import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
 
+// Directives
+import Tooltip from "primevue/tooltip";
+
 export default defineNuxtPlugin((nuxtApp) => {
   const { vueApp } = nuxtApp;
-  vueApp.use(PrimeVue, { ripple: true, inputStyle: "filled" });
+  vueApp.use(PrimeVue, {
+    ripple: true,
+    inputStyle: "filled",
+  } satisfies PrimeVueConfiguration);
 
   vueApp.component("Card", Card);
   vueApp.component("ProgressSpinner", ProgressSpinner);
@@ -22,4 +28,6 @@ export default defineNuxtPlugin((nuxtApp) => {
   vueApp.component("Button", Button);
   vueApp.component("Avatar", Avatar);
   vueApp.component("Dropdown", Dropdown);
+
+  vueApp.directive("tooltip", Tooltip);
 });

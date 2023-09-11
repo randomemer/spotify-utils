@@ -1,4 +1,5 @@
 export default defineAppConfig({
+  webOrigin: "",
   scopes: [
     // user
     "user-read-email",

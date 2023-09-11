@@ -3,8 +3,14 @@
 </template>
 
 <script setup lang="ts">
-// console.log("app config", useAppConfig());
-// console.log("nuxt config", useNuxtApp().$config);
+const appConfig = useAppConfig();
+
+onServerPrefetch(() => {
+  appConfig.webOrigin = process.dev
+    ? `http://localhost:4009`
+    : `https://${process.env.VERCEL_DOMAIN}`;
+});
+console.log("env", process.env);
 </script>
 
 <style lang="scss">
@@ -14,44 +20,28 @@
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
-}
-
-/* Remove default margin */
-body,
-h1,
-h2,
-h3,
-h4,
-p,
-figure,
-blockquote,
-dl,
-dd {
   margin: 0;
-}
-
-/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
-ul[role="list"],
-ol[role="list"] {
-  list-style: none;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* Set core root defaults */
 html:focus-within {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 /* Set core body defaults */
 body {
   min-height: 100vh;
   text-rendering: optimizeSpeed;
-  line-height: 1.5;
+  line-height: 1;
+  overflow-x: hidden;
 }
 
-/* A elements that don't have a class get default styles */
-a:not([class]) {
-  text-decoration-skip-ink: auto;
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
 /* Make images easier to work with */

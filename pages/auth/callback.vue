@@ -1,15 +1,5 @@
 <template>
-  <div class="container">
-    <v-card>
-      <div class="card-content">
-        <v-progress-circular indeterminate color="primary" />
-        <p class="text-body1 font-weight-regular text-center">Hang tight!</p>
-        <p class="text-body1 font-weight-regular text-center">
-          You will be redirected in a couple of seconds
-        </p>
-      </div>
-    </v-card>
-  </div>
+  <AuthLoader />
 </template>
 
 <script setup lang="ts">
@@ -35,7 +25,7 @@ onServerPrefetch(async () => {
     const formData = new URLSearchParams({
       grant_type: "authorization_code",
       code: `${route.query.code?.toString()}`,
-      redirect_uri: `${nuxtApp.$config.public.webOrigin}/auth/callback`,
+      redirect_uri: `${nuxtApp._appConfig.webOrigin}/auth/callback`,
     });
 
     const tokenResp = await axios.post<AccessTokenResponse>(
