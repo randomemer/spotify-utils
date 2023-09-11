@@ -25,7 +25,7 @@ onServerPrefetch(async () => {
     const formData = new URLSearchParams({
       grant_type: "authorization_code",
       code: `${route.query.code?.toString()}`,
-      redirect_uri: `${nuxtApp._appConfig.webOrigin}/auth/callback`,
+      redirect_uri: `${env.public.origin}/auth/callback`,
     });
 
     const tokenResp = await axios.post<AccessTokenResponse>(

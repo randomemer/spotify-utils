@@ -27,7 +27,10 @@ export async function createSession(
     updated_at: ts,
   });
 
-  setCookie(event, "session_id", doc.id, { httpOnly: true });
+  setCookie(event, "session_id", doc.id, {
+    httpOnly: true,
+    maxAge: 30 * 24 * 60 * 60,
+  });
 }
 
 export async function fetchSession(
