@@ -10,7 +10,6 @@ onServerPrefetch(() => {
     ? `http://localhost:4009`
     : `https://${process.env.VERCEL_DOMAIN}`;
 });
-console.log("env", process.env);
 </script>
 
 <style lang="scss">
