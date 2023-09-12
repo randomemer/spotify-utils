@@ -1,5 +1,5 @@
 <template>
-  <div id="app-container">
+  <div id="app-container" :key="$route.name?.toString()">
     <TheAppSidebar />
     <TheAppbar />
     <div class="main-content">

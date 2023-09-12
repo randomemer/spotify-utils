@@ -13,6 +13,8 @@ import Avatar from "primevue/avatar";
 import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
 import Chart from "primevue/chart";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
 
 export default defineNuxtPlugin((nuxtApp) => {
   const { vueApp } = nuxtApp;
@@ -30,6 +32,8 @@ export default defineNuxtPlugin((nuxtApp) => {
   vueApp.component("Avatar", Avatar);
   vueApp.component("Dropdown", Dropdown);
   vueApp.component("Chart", Chart);
+  vueApp.component("DataTable", DataTable);
+  vueApp.component("Column", Column);
 
   vueApp.directive("tooltip", Tooltip);
 });
