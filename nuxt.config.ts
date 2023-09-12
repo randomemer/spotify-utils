@@ -6,8 +6,6 @@ export default defineNuxtConfig({
   imports: {
     dirs: ["./store"],
   },
-
-  // transpile: [],
   devServer: {
     port: 4009,
   },
