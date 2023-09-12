@@ -1,5 +1,8 @@
 import PrimeVue, { type PrimeVueConfiguration } from "primevue/config";
 
+// Directives
+import Tooltip from "primevue/tooltip";
+
 // Components
 import Card from "primevue/card";
 import ProgressSpinner from "primevue/progressspinner";
@@ -9,9 +12,7 @@ import Listbox from "primevue/listbox";
 import Avatar from "primevue/avatar";
 import Button from "primevue/button";
 import Dropdown from "primevue/dropdown";
-
-// Directives
-import Tooltip from "primevue/tooltip";
+import Chart from "primevue/chart";
 
 export default defineNuxtPlugin((nuxtApp) => {
   const { vueApp } = nuxtApp;
@@ -28,6 +29,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   vueApp.component("Button", Button);
   vueApp.component("Avatar", Avatar);
   vueApp.component("Dropdown", Dropdown);
+  vueApp.component("Chart", Chart);
 
   vueApp.directive("tooltip", Tooltip);
 });
