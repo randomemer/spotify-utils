@@ -1,7 +1,7 @@
 <template>
   <Card class="card">
     <template #title>
-      <p>Your Top Tracks</p>
+      <h3>Your Top Tracks</h3>
       <Dropdown
         v-model="timeRange"
         option-label="label"
@@ -60,7 +60,8 @@ const timeRangeItems = [
     display: flex;
     justify-content: space-between;
 
-    p {
+    h3 {
+      font-size: inherit;
       line-height: 1.5;
     }
   }

@@ -28,6 +28,7 @@ const { data: artists, error } = useAsyncData(async () => {
 });
 
 const chartOptions = ref<ChartOptions>({});
+const chartColors = ref<string[]>([]);
 
 const chartData = computed<ChartData>(() => {
   if (!artists.value) return { datasets: [] };
@@ -43,7 +44,7 @@ const chartData = computed<ChartData>(() => {
 
   const data: ChartData = {
     labels,
-    datasets: [{ data: counts }],
+    datasets: [{ backgroundColor: chartColors.value, data: counts }],
   };
 
   return data;
@@ -56,11 +57,15 @@ const genreSum = computed(() => {
 });
 
 onMounted(() => {
+  chartColors.value = getChartColors(600);
   configureChart();
 });
 
 function configureChart() {
   const styles = getComputedStyle(document.body);
+
+  const textColor = styles.getPropertyValue("--text-color");
+  const fontFamily = styles.getPropertyValue("--font-family");
 
   chartOptions.value = {
     maintainAspectRatio: false,
@@ -70,9 +75,9 @@ function configureChart() {
         labels: {
           boxHeight: 14,
           boxWidth: 14,
-          color: styles.getPropertyValue("--text-color"),
+          color: textColor,
           font: {
-            family: "Lexend",
+            family: fontFamily,
             size: 12,
           },
         },
@@ -80,8 +85,7 @@ function configureChart() {
       tooltip: {
         displayColors: false,
         bodyFont: {
-          family: "Lexend",
-          // size: convertRemToPixels(1.2),
+          family: fontFamily,
         },
         callbacks: {
           label: function (context) {
@@ -114,7 +118,7 @@ function configureChart() {
   :deep(.p-card-content) {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
   }
 }
 </style>

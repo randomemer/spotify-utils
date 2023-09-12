@@ -10,8 +10,8 @@ export default defineNuxtConfig({
     port: 4009,
   },
   app: {
-    layoutTransition: { name: "layout", mode: "out-in" },
-    pageTransition: { name: "page", mode: "out-in" },
+    // layoutTransition: { name: "layout", mode: "out-in" },
+    // pageTransition: { name: "page", mode: "out-in" },
   },
   runtimeConfig: {
     spotifyClientId: process.env.SPOTIFY_CLIENT_ID,

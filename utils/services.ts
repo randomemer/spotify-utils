@@ -46,11 +46,3 @@ export async function getAllTopArtists(
 
   return artists;
 }
-
-export function getGenresFromArtists(artists: SpotifyApi.ArtistObjectFull[]) {
-  const genres = _.flatMapDeep(artists, (val) => val.genres);
-  const genreCounts = _.countBy(genres);
-
-  const pairs = _.toPairs(genreCounts);
-  return _.sortBy(pairs, (pair) => -pair[1]);
-}
