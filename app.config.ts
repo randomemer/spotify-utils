@@ -1,4 +1,12 @@
 export default defineAppConfig({
+  audioFeatures: [
+    "acousticness",
+    "danceability",
+    "valence",
+    "instrumentalness",
+    "energy",
+    "speechiness",
+  ],
   scopes: [
     // user
     "user-read-email",

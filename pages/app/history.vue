@@ -47,9 +47,9 @@ const {
   const query = new URLSearchParams({
     limit: "50",
   });
+
   const resp = await $spotify.get<SpotifyApi.UsersRecentlyPlayedTracksResponse>(
-    `/me/player/recently-played?${query}`,
-    { headers: { Authorization: `Bearer ${auth.token!.access_token}` } }
+    `/me/player/recently-played?${query}`
   );
   return resp.data;
 });
