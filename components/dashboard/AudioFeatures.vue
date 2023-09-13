@@ -18,6 +18,7 @@
 <script setup lang="ts">
 import { SpotifyTimeRange } from "~/types";
 import { ChartData, ChartOptions } from "chart.js";
+import { text } from "ionicons/icons";
 
 const appConfig = useAppConfig();
 const { $spotify } = useNuxtApp();
@@ -46,14 +47,27 @@ onMounted(() => {
 function configureChart() {
   const styles = getComputedStyle(document.documentElement);
 
+  const fontFamily = styles.getPropertyValue("--font-family");
+  const textColor = styles.getPropertyValue("--text-color");
   const textSecondaryColor = styles.getPropertyValue("--text-color-secondary");
+  const surfaceOverlay = styles.getPropertyValue("--surface-overlay");
 
   chartOptions.value = {
+    font: { family: fontFamily },
     maintainAspectRatio: false,
     scales: {
       r: {
         min: 0,
         max: 1,
+        pointLabels: {
+          color: textColor,
+          font: { size: 14 },
+        },
+        ticks: {
+          color: textSecondaryColor,
+          backdropColor: surfaceOverlay,
+          font: { family: fontFamily },
+        },
         grid: { color: textSecondaryColor },
         angleLines: { color: textSecondaryColor },
       },

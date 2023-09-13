@@ -16,12 +16,6 @@ import DashboardTopGenres from "~/components/dashboard/TopGenres.vue";
 import DashboardTopTracks from "~/components/dashboard/TopTracks.vue";
 import DashboardTopArtists from "~/components/dashboard/TopArtists.vue";
 import DashboardAudioFeatures from "~/components/dashboard/AudioFeatures.vue";
-
-onMounted(() => {
-  import("chart.js").then((res) => {
-    res.defaults.font.family = `"Lexend", sans-serif`;
-  });
-});
 </script>
 
 <style scoped lang="scss">
