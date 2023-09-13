@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout name="dashboard" :key="$route.name?.toString()">
+  <NuxtLayout name="dashboard">
     <DataTable class="history-table" :value="history?.items" :loading="pending">
       <Column header="#">
         <template #body="{ index }"> {{ index + 1 }} </template>
@@ -34,7 +34,9 @@
 definePageMeta({ name: "app:history", middleware: "auth" });
 
 import dayjs from "dayjs";
+import useAuthStore from "~/store/auth.store";
 
+const auth = useAuthStore();
 const { $spotify } = useNuxtApp();
 
 const {
@@ -46,14 +48,10 @@ const {
     limit: "50",
   });
   const resp = await $spotify.get<SpotifyApi.UsersRecentlyPlayedTracksResponse>(
-    `/me/player/recently-played?${query}`
+    `/me/player/recently-played?${query}`,
+    { headers: { Authorization: `Bearer ${auth.token!.access_token}` } }
   );
-  console.log("resp", resp.data.items.at(0));
   return resp.data;
-});
-
-watch(error, () => {
-  console.log(error);
 });
 </script>
 
