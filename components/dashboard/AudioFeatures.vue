@@ -18,7 +18,6 @@
 <script setup lang="ts">
 import { SpotifyTimeRange } from "~/types";
 import { ChartData, ChartOptions } from "chart.js";
-import { text } from "ionicons/icons";
 
 const appConfig = useAppConfig();
 const { $spotify } = useNuxtApp();

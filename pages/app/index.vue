@@ -11,6 +11,7 @@
 
 <script setup lang="ts">
 definePageMeta({ name: "app", middleware: "auth", alias: ["/app/dashboard"] });
+useHead({ title: "Dashboard | Music Muse" });
 
 import DashboardTopGenres from "~/components/dashboard/TopGenres.vue";
 import DashboardTopTracks from "~/components/dashboard/TopTracks.vue";

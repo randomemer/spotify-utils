@@ -37,6 +37,20 @@ declare global {
           expiry: number;
         };
       };
+
+  interface PlaylistAnalysis {
+    audio_features: Record<string, number>;
+    artists: { diversity_index: number; counts: Record<string, number> };
+    genres: { diversity_index: number; counts: Record<string, number> };
+    avg_popularity: number;
+    avg_track_length: number;
+  }
+
+  interface PlaylistAnalysisResponse {
+    snapshot_id: string;
+    analysis: PlaylistAnalysis;
+    updated_at: string;
+  }
 }
 
 export {};

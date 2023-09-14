@@ -50,3 +50,22 @@ export function getFeaturesFromTracks(
 
   return _.mapValues(sums, (sum) => sum / features.length);
 }
+
+export function calcDiversityIndex(counts: Record<string, number>) {
+  const values = _.values(counts);
+  const total = _.sum(values);
+
+  return _.sumBy(values, (val) => Math.pow(val / total, 2));
+}
+
+export function extractBearerToken(header: string | null | undefined) {
+  if (!header) return null;
+
+  const matches = header.match(/Bearer\s+([^\s]+)/i);
+
+  if (matches && matches.length > 1) {
+    return matches[1];
+  }
+
+  return null;
+}

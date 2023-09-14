@@ -15,15 +15,12 @@ import Dropdown from "primevue/dropdown";
 import Chart from "primevue/chart";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
+import InputText from "primevue/inputtext";
 
 export default defineNuxtPlugin({
   parallel: true,
   setup: (nuxtApp) => {
     const { vueApp } = nuxtApp;
-    vueApp.use(PrimeVue, {
-      ripple: true,
-      inputStyle: "filled",
-    } satisfies PrimeVueConfiguration);
 
     vueApp.component("Card", Card);
     vueApp.component("ProgressSpinner", ProgressSpinner);
@@ -36,7 +33,16 @@ export default defineNuxtPlugin({
     vueApp.component("Chart", Chart);
     vueApp.component("DataTable", DataTable);
     vueApp.component("Column", Column);
-
-    vueApp.directive("tooltip", Tooltip);
+    vueApp.component("InputText", InputText);
+  },
+  hooks: {
+    "app:created": (app) => {
+      // Doesn't work in setup hook
+      app.directive("tooltip", Tooltip);
+      app.use(PrimeVue, {
+        ripple: true,
+        inputStyle: "filled",
+      } satisfies PrimeVueConfiguration);
+    },
   },
 });

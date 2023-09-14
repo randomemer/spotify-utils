@@ -2,6 +2,31 @@ import type { AxiosInstance } from "axios";
 import { SpotifyTimeRange } from "~/types";
 import _ from "lodash";
 
+export async function getAllItems<T = any>(
+  axios: AxiosInstance,
+  url: string,
+  query?: Record<string, any>
+) {
+  const items: T[] = [];
+  let lastResponse: SpotifyApi.PagingObject<T>;
+
+  do {
+    const mergedQuery = _.merge(
+      { limit: "50", offset: items.length.toString() },
+      query
+    );
+    const queryString = new URLSearchParams(mergedQuery);
+    const { data } = await axios.get<SpotifyApi.PagingObject<T>>(
+      `${url}?${queryString}`
+    );
+    lastResponse = data;
+
+    items.push(...data.items);
+  } while (lastResponse.next);
+
+  return items;
+}
+
 export async function getAllTopTracks(
   axios: AxiosInstance,
   timeRange: SpotifyTimeRange
