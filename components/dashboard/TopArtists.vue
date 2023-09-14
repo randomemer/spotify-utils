@@ -20,17 +20,14 @@
     </template>
 
     <template #footer>
-      <Button text class="view-more">
-        <span>View More</span>
-        <IonIcon :icon="chevronForward" />
-      </Button>
+      <v-btn variant="tonal" color="primary" append-icon="mdi-chevron-right">
+        View More
+      </v-btn>
     </template>
   </Card>
 </template>
 
 <script setup lang="ts">
-import { IonIcon } from "@ionic/vue";
-import { chevronForward } from "ionicons/icons";
 import { SpotifyTimeRange } from "~/types";
 
 const { $spotify } = useNuxtApp();

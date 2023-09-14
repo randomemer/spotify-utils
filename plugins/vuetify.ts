@@ -8,6 +8,7 @@ import {
   VListItem,
   VAvatar,
   VIcon,
+  VMain,
 } from "vuetify/components";
 
 export default defineNuxtPlugin({
@@ -42,6 +43,7 @@ export default defineNuxtPlugin({
         VListItem,
         VAvatar,
         VIcon,
+        VMain,
       },
     });
 
