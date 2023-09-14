@@ -3,7 +3,7 @@
 </template>
 
 <style lang="scss">
-@import "assets/css/primevue-sass-theme-3.34.1/themes/material/material-dark/standard/deeppurple/theme.scss";
+@use "~/assets/sass/settings.scss";
 
 /* Box sizing rules */
 *,

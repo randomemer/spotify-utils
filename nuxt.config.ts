@@ -1,8 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  build: { transpile: ["primevue", "@stencil/core"] },
   modules: ["@pinia/nuxt", "nuxt-lodash"],
+  css: ["@mdi/font/css/materialdesignicons.min.css"],
+  build: { transpile: ["primevue", "vuetify", "@stencil/core"] },
   imports: {
     dirs: ["./store"],
   },

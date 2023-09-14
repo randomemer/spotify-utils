@@ -1,3 +1,8 @@
+// settings.scss
+@forward "vuetify" with (
+  $body-font-family: "Lexend"
+);
+
 @font-face {
   font-family: "Lexend";
   src: url("~/assets/fonts/Lexend-VariableFont_wght.ttf") format("truetype");

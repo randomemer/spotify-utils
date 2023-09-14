@@ -1,101 +1,62 @@
 <template>
-  <Sidebar
-    position="left"
-    :modal="isTemporary"
-    :dismissable="isTemporary"
-    :show-close-icon="isTemporary"
-    :visible="isOpen"
-    :pt="{
-      root: { class: $style.sidebar },
-      header: { class: $style['sidebar-header'] },
-    }"
+  <v-navigation-drawer
+    location="left"
+    :temporary="isTemporary"
+    :model-value="isOpen"
   >
-    <template #header>
+    <template #prepend>
       <p :class="$style.title">Music Muse</p>
     </template>
 
     <template #default>
-      <Listbox
-        option-value="route"
-        :options="links"
-        :class="$style['nav-list']"
-        :model-value="$route.name"
-        :pt="{ item: { class: $style['nav-list-item'] } }"
-      >
-        <template #option="{ option }">
-          <NuxtLink :class="$style['nav-link']" :to="{ name: option.route }">
-            <IonIcon
-              :class="$style['nav-link-icon']"
-              :icon="
-                $route.name === option.route
-                  ? option.icon.filled
-                  : option.icon.outline
-              "
-            />
-            <span>{{ option.label }}</span>
-          </NuxtLink>
-        </template>
-      </Listbox>
+      <v-list nav density="compact">
+        <v-list-item
+          nav
+          color="primary"
+          :active="$route.name === link.route"
+          :key="link.route"
+          :value="link.route"
+          v-for="link in links"
+          :to="link.route"
+          nuxt
+        >
+          <template #prepend>
+            <v-icon :icon="`mdi-` + link.icon" />
+          </template>
+          <template #default>{{ link.label }}</template>
+        </v-list-item>
+      </v-list>
     </template>
-  </Sidebar>
+  </v-navigation-drawer>
 </template>
 
 <script setup lang="ts">
-import { IonIcon } from "@ionic/vue";
-import {
-  grid,
-  gridOutline,
-  personCircle,
-  personCircleOutline,
-  time,
-  timeOutline,
-  search,
-  searchOutline,
-  list,
-  listOutline,
-} from "ionicons/icons";
-
 const isOpen = ref(true);
 const isTemporary = ref(false);
 
 const links = [
   {
-    icon: {
-      outline: gridOutline,
-      filled: grid,
-    },
+    icon: "view-grid",
     label: "Dashboard",
     route: "app",
   },
   {
-    icon: {
-      outline: personCircleOutline,
-      filled: personCircle,
-    },
+    icon: "account-circle",
     label: "Account",
     route: "app:account",
   },
   {
-    icon: {
-      outline: timeOutline,
-      filled: time,
-    },
+    icon: "clock",
     label: "History",
     route: "app:history",
   },
   {
-    icon: {
-      outline: searchOutline,
-      filled: search,
-    },
-    label: "Recommendations",
+    icon: "magnify",
+    label: "Recommends",
     route: "app:recommends",
   },
   {
-    icon: {
-      outline: listOutline,
-      filled: list,
-    },
+    icon: "playlist-music",
     label: "Playlists",
     route: "app:playlists",
   },
