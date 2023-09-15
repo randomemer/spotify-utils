@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ["@pinia/nuxt", "nuxt-lodash"],
   css: ["@mdi/font/css/materialdesignicons.min.css"],
-  build: { transpile: ["primevue", "vuetify"] },
+  build: { transpile: ["vuetify"] },
   imports: {
     dirs: ["./store"],
   },

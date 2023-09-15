@@ -16,12 +16,12 @@
       <v-list nav density="compact" class="pa-0">
         <v-list-item
           nav
-          nuxt
           color="primary"
           :active="$route.name === link.route"
           :key="link.route"
           :value="link.route"
           v-for="link in links"
+          @click="onRouteClicked(link.route)"
         >
           <template #prepend>
             <v-icon :icon="`mdi-` + link.icon" />
@@ -36,6 +36,7 @@
 <script setup lang="ts">
 const isOpen = ref(true);
 const isTemporary = ref(false);
+const router = useRouter();
 
 const links = [
   {
@@ -64,6 +65,10 @@ const links = [
     route: "app:playlists",
   },
 ];
+
+function onRouteClicked(route: string) {
+  router.push({ name: route });
+}
 </script>
 
 <style scoped>

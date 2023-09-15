@@ -19,7 +19,6 @@
     "lodash": "^4.17.21",
     "nuxt-lodash": "^2.5.0",
     "pinia": "^2.1.6",
-    "primevue": "^3.34.1",
     "spotify-web-api-js": "^1.5.2",
     "vue-chartjs": "^5.2.0",
     "vuetify": "^3.3.16"

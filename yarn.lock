@@ -7036,7 +7036,6 @@ __metadata:
     nuxt: ^3.7.0
     nuxt-lodash: ^2.5.0
     pinia: ^2.1.6
-    primevue: ^3.34.1
     sass: ^1.66.1
     spotify-web-api-js: ^1.5.2
     vue-chartjs: ^5.2.0
@@ -7876,15 +7875,6 @@ __metadata:
   version: 6.1.1
   resolution: "pretty-bytes@npm:6.1.1"
   checksum: 43d29d909d2d88072da2c3d72f8fd0f2d2523c516bfa640aff6e31f596ea1004b6601f4cabc50d14b2cf10e82635ebe5b7d9378f3d5bae1c0067131829421b8a
-  languageName: node
-  linkType: hard
-
-"primevue@npm:^3.34.1":
-  version: 3.34.1
-  resolution: "primevue@npm:3.34.1"
-  peerDependencies:
-    vue: ^3.0.0
-  checksum: d3fcd588b90fb15f909ae578d6e512b9fe0f1b932487b07df5e4da95b81078ae980fa3d2fe83faadd75caf845842ea8f6979704232fd28b9e887f09a2452daca
   languageName: node
   linkType: hard
 

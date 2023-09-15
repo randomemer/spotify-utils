@@ -16,6 +16,7 @@ import {
   VSelect,
   VTable,
   VTooltip,
+  VProgressCircular,
 } from "vuetify/components";
 import {
   Chart as ChartJS,
@@ -68,6 +69,7 @@ export default defineNuxtPlugin({
         VSelect,
         VTable,
         VTooltip,
+        VProgressCircular,
       },
     });
 

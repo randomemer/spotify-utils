@@ -1,16 +1,18 @@
 <template>
   <div class="container">
-    <Card class="card">
-      <template #title>
-        <p>Hang tight!</p>
-      </template>
-      <template #content>
-        <ProgressSpinner class="spinner" stroke-width="4" />
-      </template>
-      <template #footer>
+    <v-card class="card">
+      <v-card-title>
+        <p class="text-center">Hang tight!</p>
+      </v-card-title>
+
+      <v-card-text
+        class="d-flex flex-column align-center py-2"
+        style="gap: 1rem"
+      >
+        <v-progress-circular indeterminate class="spinner" color="primary" />
         <p>You will be redirected in a couple of seconds</p>
-      </template>
-    </Card>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 
@@ -26,34 +28,13 @@
 }
 
 .card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   padding: 1rem 0;
-
   width: 25rem;
-
-  :deep(.p-card-body) {
-    text-align: center;
-  }
-
-  :deep(.p-card-content) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
 }
 
 .spinner {
   $size: 2.5rem;
-  stroke-width: 500;
   width: $size;
   height: $size;
-
-  :deep(.p-progress-circle) {
-    color: var(--primary-color);
-  }
 }
 </style>
