@@ -2,8 +2,6 @@ import PrimeVue, { type PrimeVueConfiguration } from "primevue/config";
 
 // Components
 import Button from "primevue/button";
-import Column from "primevue/column";
-import DataTable from "primevue/datatable";
 import ProgressSpinner from "primevue/progressspinner";
 
 export default defineNuxtPlugin({
@@ -13,8 +11,6 @@ export default defineNuxtPlugin({
 
     vueApp.component("ProgressSpinner", ProgressSpinner);
     vueApp.component("Button", Button);
-    vueApp.component("DataTable", DataTable);
-    vueApp.component("Column", Column);
   },
   hooks: {
     "app:created": (app) => {

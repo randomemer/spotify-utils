@@ -14,6 +14,8 @@ import {
   VCardTitle,
   VCardText,
   VSelect,
+  VTable,
+  VTooltip,
 } from "vuetify/components";
 import {
   Chart as ChartJS,
@@ -64,6 +66,8 @@ export default defineNuxtPlugin({
         VCardTitle,
         VCardText,
         VSelect,
+        VTable,
+        VTooltip,
       },
     });
 

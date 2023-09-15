@@ -55,7 +55,7 @@ const trackImage = computed(() => props.track.album.images.at(-1)?.url);
 .track-artists {
   display: flex;
   list-style: none;
-  color: var(--text-color-secondary);
+  color: var(--text-secondary);
 
   li + li::before {
     content: ", ";

@@ -53,7 +53,7 @@ const artistImage = computed(() => props.artist.images.at(-1)?.url);
 .artist-genres {
   display: flex;
   list-style: none;
-  color: var(--text-color-secondary);
+  color: var(--text-secondary);
 
   li + li::before {
     content: ", ";
