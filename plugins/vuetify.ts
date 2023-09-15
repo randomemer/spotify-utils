@@ -9,7 +9,22 @@ import {
   VAvatar,
   VIcon,
   VMain,
+  VCard,
+  VCardActions,
+  VCardTitle,
+  VCardText,
+  VSelect,
 } from "vuetify/components";
+import {
+  Chart as ChartJS,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
 
 export default defineNuxtPlugin({
   parallel: true,
@@ -44,9 +59,33 @@ export default defineNuxtPlugin({
         VAvatar,
         VIcon,
         VMain,
+        VCard,
+        VCardActions,
+        VCardTitle,
+        VCardText,
+        VSelect,
       },
     });
 
     nuxtApp.vueApp.use(vuetify);
+  },
+  hooks: {
+    "app:created": () => {
+      ChartJS.register(
+        RadialLinearScale,
+        ArcElement,
+        PointElement,
+        LineElement,
+        Filler,
+        Tooltip,
+        Legend
+      );
+    },
+    "app:beforeMount": () => {
+      const styles = getComputedStyle(document.documentElement);
+
+      ChartJS.defaults.font.family = `"Lexend", sans-serif`;
+      ChartJS.defaults.color = styles.getPropertyValue("--text-primary");
+    },
   },
 });

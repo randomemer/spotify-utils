@@ -4,8 +4,8 @@
       <img :src="trackImage" :alt="`${track.album.name} album cover`" />
     </div>
     <div class="track-details">
-      <span class="track-title">{{ track.name }}</span>
-      <ul class="track-artists">
+      <span class="text-body-1">{{ track.name }}</span>
+      <ul class="track-artists text-body-2">
         <li :key="artist.id" v-for="artist in track.artists">
           <NuxtLink :href="artist.external_urls.spotify" target="_blank">
             {{ artist.name }}
@@ -52,14 +52,9 @@ const trackImage = computed(() => props.track.album.images.at(-1)?.url);
   line-height: 1.5;
 }
 
-.track-title {
-  font-size: 1rem;
-}
-
 .track-artists {
   display: flex;
   list-style: none;
-  font-size: 0.875rem;
   color: var(--text-color-secondary);
 
   li + li::before {

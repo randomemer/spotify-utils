@@ -1,30 +1,34 @@
 <template>
-  <Card class="card">
-    <template #title>
-      <p>Your Top Artists</p>
-      <Dropdown
+  <v-card :class="$style.card">
+    <v-card-title :class="$style.card_title">
+      <h3 class="text-h5 font-weight-bold">Your Top Artists</h3>
+      <v-select
+        hide-details
         v-model="timeRange"
-        option-label="label"
-        option-value="value"
-        :options="timeRangeItems"
-        class="time-range-select"
+        color="primary"
+        density="compact"
+        item-title="label"
+        item-value="value"
+        variant="solo-filled"
+        :class="$style.time_range_select"
+        :items="timeRangeItems"
       />
-    </template>
+    </v-card-title>
 
-    <template #content>
+    <v-card-text :class="$style.card_content">
       <ArtistItem
         :key="artist.id"
         v-for="artist in artists?.items.slice(0, 5)"
         :artist="artist"
       />
-    </template>
+    </v-card-text>
 
-    <template #footer>
+    <v-card-actions class="justify-end pa-4">
       <v-btn variant="tonal" color="primary" append-icon="mdi-chevron-right">
         View More
       </v-btn>
-    </template>
-  </Card>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script setup lang="ts">
@@ -51,30 +55,20 @@ const timeRangeItems = [
 ];
 </script>
 
-<style scoped lang="scss">
-.card {
-  :deep(.p-card-title) {
-    display: flex;
-    justify-content: space-between;
-
-    p {
-      line-height: 1.5;
-    }
-  }
-
-  :deep(.p-card-content) {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  :deep(.p-card-footer) {
-    display: flex;
-    justify-content: flex-end;
-  }
+<style module>
+.card_title {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
 }
 
-.view-more {
-  text-transform: uppercase;
+.card_content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.time_range_select {
+  flex: unset;
 }
 </style>

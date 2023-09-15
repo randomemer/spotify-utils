@@ -1,9 +1,17 @@
 <template>
-  <v-layout class="rounded">
+  <v-layout>
     <TheAppSidebar />
     <TheAppbar />
     <v-main>
-      <slot></slot>
+      <div class="main-content">
+        <slot></slot>
+      </div>
     </v-main>
   </v-layout>
 </template>
+
+<style scoped>
+.main-content {
+  padding: 4rem 3rem;
+}
+</style>

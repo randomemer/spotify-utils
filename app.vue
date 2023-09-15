@@ -1,6 +1,12 @@
 <template>
-  <NuxtPage />
+  <v-app>
+    <NuxtPage />
+  </v-app>
 </template>
+
+<script setup lang="ts">
+import { VApp } from "vuetify/components";
+</script>
 
 <style lang="scss">
 @use "~/assets/sass/settings.scss";
@@ -22,7 +28,6 @@ html:focus-within {
 
 /* Set core body defaults */
 body {
-  min-height: 100vh;
   text-rendering: optimizeSpeed;
   line-height: 1;
   overflow-x: hidden;

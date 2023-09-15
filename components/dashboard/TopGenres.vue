@@ -1,20 +1,22 @@
 <template>
-  <Card class="card">
+  <v-card class="card">
     <template #title>
-      <h2>Your Top Genres</h2>
+      <h2 class="text-h5 font-weight-bold">Your Top Genres</h2>
     </template>
 
-    <template #content>
+    <template #text class="card-content">
       <p>You've explored about {{ genreSum }} genres</p>
 
-      <Chart
-        type="pie"
-        :height="320"
-        :data="chartData"
-        :options="chartOptions"
-      />
+      <p>
+        <Chart
+          type="pie"
+          :height="320"
+          :data="chartData"
+          :options="chartOptions"
+        />
+      </p>
     </template>
-  </Card>
+  </v-card>
 </template>
 
 <script setup lang="ts">
@@ -104,18 +106,13 @@ function configureChart() {
 </script>
 
 <style scoped lang="scss">
-.card {
+:deep(.card) {
   :deep(.p-card-title) {
     display: flex;
     justify-content: space-between;
-
-    h2 {
-      font-size: inherit;
-      line-height: 1.5;
-    }
   }
 
-  :deep(.p-card-content) {
+  :deep(.v-card-text) {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;

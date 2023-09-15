@@ -4,8 +4,8 @@
       <img :src="artistImage" :alt="artist.name" />
     </div>
     <div class="artist-details">
-      <span class="artist-title">{{ artist.name }}</span>
-      <ul class="artist-genres">
+      <span class="text-body-1">{{ artist.name }}</span>
+      <ul class="artist-genres text-body-2">
         <li :key="genre" v-for="genre in artist.genres.slice(0, 3)">
           <span>{{ genre }}</span>
         </li>
@@ -50,14 +50,9 @@ const artistImage = computed(() => props.artist.images.at(-1)?.url);
   line-height: 1.5;
 }
 
-.artist-title {
-  font-size: 1rem;
-}
-
 .artist-genres {
   display: flex;
   list-style: none;
-  font-size: 0.875rem;
   color: var(--text-color-secondary);
 
   li + li::before {

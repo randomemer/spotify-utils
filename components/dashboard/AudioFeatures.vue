@@ -1,28 +1,24 @@
 <template>
-  <Card class="card">
-    <template #title>
-      <h2>Audio Features</h2>
-    </template>
+  <v-card class="card">
+    <v-card-title>
+      <h2 class="text-h5 font-weight-bold">Audio Features</h2>
+    </v-card-title>
 
-    <template #content>
-      <Chart
-        type="radar"
-        :height="320"
-        :data="chartData"
-        :options="chartOptions"
-      />
-    </template>
-  </Card>
+    <v-card-text>
+      <Radar :data="chartData" :options="chartOptions" style="height: 320px" />
+    </v-card-text>
+  </v-card>
 </template>
 
 <script setup lang="ts">
 import { SpotifyTimeRange } from "~/types";
+import { Radar } from "vue-chartjs";
 import { ChartData, ChartOptions } from "chart.js";
 
 const appConfig = useAppConfig();
 const { $spotify } = useNuxtApp();
 
-const chartOptions = ref<ChartOptions>({});
+const chartOptions = ref<ChartOptions<"radar">>({});
 
 const { data: features, error } = useAsyncData(async () => {
   const tracks = await getAllTopTracks($spotify, SpotifyTimeRange.LongTerm);
@@ -30,7 +26,7 @@ const { data: features, error } = useAsyncData(async () => {
   return getFeaturesFromTracks(appConfig.audioFeatures, tracksFeatures);
 });
 
-const chartData = computed<ChartData>(() => {
+const chartData = computed<ChartData<"radar">>(() => {
   if (!features.value) return { datasets: [] };
 
   return {
@@ -46,13 +42,11 @@ onMounted(() => {
 function configureChart() {
   const styles = getComputedStyle(document.documentElement);
 
-  const fontFamily = styles.getPropertyValue("--font-family");
-  const textColor = styles.getPropertyValue("--text-color");
-  const textSecondaryColor = styles.getPropertyValue("--text-color-secondary");
-  const surfaceOverlay = styles.getPropertyValue("--surface-overlay");
+  const textColor = styles.getPropertyValue("--text-primary");
+  const textSecondaryColor = styles.getPropertyValue("--text-secondary");
+  const surfaceColor = styles.getPropertyValue("--v-theme-surface-bright");
 
   chartOptions.value = {
-    font: { family: fontFamily },
     maintainAspectRatio: false,
     scales: {
       r: {
@@ -64,8 +58,7 @@ function configureChart() {
         },
         ticks: {
           color: textSecondaryColor,
-          backdropColor: surfaceOverlay,
-          font: { family: fontFamily },
+          backdropColor: surfaceColor,
         },
         grid: { color: textSecondaryColor },
         angleLines: { color: textSecondaryColor },
