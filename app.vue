@@ -1,12 +1,6 @@
 <template>
-  <v-app>
-    <NuxtPage />
-  </v-app>
+  <NuxtPage />
 </template>
-
-<script setup lang="ts">
-import { VApp } from "vuetify/components";
-</script>
 
 <style lang="scss">
 @use "~/assets/sass/settings.scss";

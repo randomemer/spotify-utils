@@ -1,8 +1,8 @@
 <template>
   <v-app-bar>
     <template #append>
-      <v-btn variant="text">
-        <v-avatar icon="" :image="pfp" />
+      <v-btn icon variant="text" color="primary">
+        <v-avatar :image="pfp" />
       </v-btn>
     </template>
   </v-app-bar>

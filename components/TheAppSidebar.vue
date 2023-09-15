@@ -1,15 +1,19 @@
 <template>
   <v-navigation-drawer
+    class="sidebar"
     location="left"
     :temporary="isTemporary"
     :model-value="isOpen"
   >
     <template #prepend>
-      <p>Music Muse</p>
+      <div class="header-content">
+        <img class="logo" src="~/assets/logo.svg" alt="music muse logo" />
+        <p class="logo-title text-h6 font-weight-medium">Music Muse</p>
+      </div>
     </template>
 
     <template #default>
-      <v-list nav density="compact">
+      <v-list nav density="compact" class="pa-0">
         <v-list-item
           nav
           nuxt
@@ -61,3 +65,31 @@ const links = [
   },
 ];
 </script>
+
+<style scoped>
+.sidebar {
+  padding-inline: 0;
+}
+
+.header-content {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  justify-content: center;
+
+  .logo {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+}
+</style>
+
+<style lang="scss">
+.v-navigation-drawer__prepend {
+  padding: 2rem 1rem;
+}
+
+.v-navigation-drawer__content {
+  padding: 1rem;
+}
+</style>

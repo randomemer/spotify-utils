@@ -1,6 +1,8 @@
 import _ from "lodash";
+// @ts-ignore
+import colors from "vuetify/lib/util/colors.mjs";
 
-export function getChartColors(shade: number) {
+export function getChartColors(shade: string) {
   let baseColors = [
     "blue",
     "green",
@@ -14,13 +16,9 @@ export function getChartColors(shade: number) {
     "red",
   ];
   baseColors = _.shuffle(baseColors);
-  baseColors.push("gray");
-  const styles = getComputedStyle(document.body);
+  baseColors.push("grey");
 
-  return baseColors.map((color) => {
-    const cssVarName = `--${color}-${shade}`;
-    return styles.getPropertyValue(cssVarName);
-  });
+  return baseColors.map((color) => colors[color][shade]);
 }
 
 export function getGenresFromArtists(artists: SpotifyApi.ArtistObjectFull[]) {

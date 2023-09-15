@@ -1,6 +1,6 @@
 <template>
-  <v-card class="card">
-    <v-card-title>
+  <v-card>
+    <v-card-title class="pa-4">
       <h2 class="text-h5 font-weight-bold">Audio Features</h2>
     </v-card-title>
 
@@ -31,7 +31,13 @@ const chartData = computed<ChartData<"radar">>(() => {
 
   return {
     labels: Object.keys(features.value),
-    datasets: [{ data: Object.values(features.value) }],
+    datasets: [
+      {
+        borderColor: "#BA68C8",
+        backgroundColor: "#BA68C877",
+        data: Object.values(features.value),
+      },
+    ],
   };
 });
 
@@ -68,17 +74,3 @@ function configureChart() {
   };
 }
 </script>
-
-<style scoped lang="scss">
-.card {
-  :deep(.p-card-title) {
-    display: flex;
-    justify-content: space-between;
-
-    h2 {
-      font-size: inherit;
-      line-height: 1.5;
-    }
-  }
-}
-</style>

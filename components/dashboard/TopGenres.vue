@@ -1,27 +1,20 @@
 <template>
-  <v-card class="card">
-    <template #title>
+  <v-card>
+    <v-card-title class="pa-4">
       <h2 class="text-h5 font-weight-bold">Your Top Genres</h2>
-    </template>
+    </v-card-title>
 
-    <template #text class="card-content">
-      <p>You've explored about {{ genreSum }} genres</p>
-
-      <p>
-        <Chart
-          type="pie"
-          :height="320"
-          :data="chartData"
-          :options="chartOptions"
-        />
-      </p>
-    </template>
+    <v-card-text :class="$style.card_content">
+      <!-- <p>You've explored about {{ genreSum }} genres</p> -->
+      <Pie style="height: 320px" :data="chartData" :options="chartOptions" />
+    </v-card-text>
   </v-card>
 </template>
 
 <script setup lang="ts">
 import { SpotifyTimeRange } from "~/types";
 import { ChartData, ChartOptions } from "chart.js";
+import { Pie } from "vue-chartjs";
 
 const { $spotify } = useNuxtApp();
 
@@ -29,10 +22,10 @@ const { data: artists, error } = useAsyncData(async () => {
   return await getAllTopArtists($spotify, SpotifyTimeRange.LongTerm);
 });
 
-const chartOptions = ref<ChartOptions>({});
+const chartOptions = ref<ChartOptions<"pie">>({});
 const chartColors = ref<string[]>([]);
 
-const chartData = computed<ChartData>(() => {
+const chartData = computed<ChartData<"pie">>(() => {
   if (!artists.value) return { datasets: [] };
 
   const genres = getGenresFromArtists(artists.value);
@@ -44,7 +37,7 @@ const chartData = computed<ChartData>(() => {
     genres.slice(10).reduce((prev, genre) => genre[1], 0),
   ];
 
-  const data: ChartData = {
+  const data: ChartData<"pie"> = {
     labels,
     datasets: [{ backgroundColor: chartColors.value, data: counts }],
   };
@@ -59,16 +52,11 @@ const genreSum = computed(() => {
 });
 
 onMounted(() => {
-  chartColors.value = getChartColors(600);
+  chartColors.value = getChartColors("darken3");
   configureChart();
 });
 
 function configureChart() {
-  const styles = getComputedStyle(document.body);
-
-  const textColor = styles.getPropertyValue("--text-color");
-  const fontFamily = styles.getPropertyValue("--font-family");
-
   chartOptions.value = {
     maintainAspectRatio: false,
     plugins: {
@@ -77,18 +65,10 @@ function configureChart() {
         labels: {
           boxHeight: 14,
           boxWidth: 14,
-          color: textColor,
-          font: {
-            family: fontFamily,
-            size: 12,
-          },
         },
       },
       tooltip: {
         displayColors: false,
-        bodyFont: {
-          family: fontFamily,
-        },
         callbacks: {
           label: function (context) {
             const dataPoint = context.dataset.data[context.dataIndex] as number;
@@ -105,17 +85,10 @@ function configureChart() {
 }
 </script>
 
-<style scoped lang="scss">
-:deep(.card) {
-  :deep(.p-card-title) {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  :deep(.v-card-text) {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
+<style module>
+.card_content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 </style>
