@@ -1,27 +1,38 @@
 import type { AxiosInstance } from "axios";
 import { SpotifyTimeRange } from "~/types";
 import _ from "lodash";
+import { LogarithmicScale } from "chart.js";
+
+interface ItemsGetterOptions {
+  url: string;
+  limit?: number | undefined;
+  offset?: number | undefined;
+  query?: Record<string, string> | undefined;
+}
 
 export async function getAllItems<T = any>(
   axios: AxiosInstance,
-  url: string,
-  query?: Record<string, any>
+  options: ItemsGetterOptions
 ) {
   const items: T[] = [];
   let lastResponse: SpotifyApi.PagingObject<T>;
 
+  const config = _.defaults(options, { limit: 50, offset: 0 });
+  let { offset } = config;
+
   do {
-    const mergedQuery = _.merge(
-      { limit: "50", offset: items.length.toString() },
-      query
-    );
+    const mergedQuery = _.merge(config.query ?? {}, {
+      limit: config.limit.toString(),
+      offset: offset.toString(),
+    });
     const queryString = new URLSearchParams(mergedQuery);
     const { data } = await axios.get<SpotifyApi.PagingObject<T>>(
-      `${url}?${queryString}`
+      `${config.url}?${queryString}`
     );
     lastResponse = data;
 
     items.push(...data.items);
+    offset += config.limit;
   } while (lastResponse.next);
 
   return items;

@@ -83,8 +83,8 @@ function onRouteClicked(route: string) {
   justify-content: center;
 
   .logo {
-    height: 2.5rem;
-    width: 2.5rem;
+    height: 2rem;
+    width: 2rem;
   }
 }
 </style>

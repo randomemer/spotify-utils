@@ -67,3 +67,20 @@ export function extractBearerToken(header: string | null | undefined) {
 
   return null;
 }
+
+export function extractPlaylistId(str: string) {
+  const url = new URL(str);
+
+  if (url.origin !== "https://open.spotify.com") {
+    throw new Error("Not a valid playlist link");
+  }
+
+  const pattern = /^\/playlist\/([\w-]+)/;
+  const match = url.pathname.match(pattern);
+
+  if (!match || match.length < 2) {
+    throw new Error("Not a valid playlist link");
+  }
+
+  return match[1];
+}
