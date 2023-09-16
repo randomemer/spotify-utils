@@ -6,6 +6,7 @@ import {
   getTracksArtists,
   getTracksAudioFeatures,
 } from "~/utils/services";
+import _ from "lodash";
 
 export default defineEventHandler(async (event) => {
   const id = event.context.params?.id;
@@ -80,10 +81,25 @@ export default defineEventHandler(async (event) => {
   // 5. Get all artists
   const artists = await getTracksArtists(spotifyApi, tracks);
 
-  return createPlaylistAnalysis({
+  // Final step : Make analysis and save in db
+  const analysis = createPlaylistAnalysis({
     artists,
     features,
     tracks,
     selectedFeatures: appConfig.audioFeatures,
   });
+
+  const resp: PlaylistAnalysisResponse = {
+    playlist_id: id,
+    snapshot_id: playlistResp.data.snapshot_id,
+    analysis,
+    artists: artists.map((artist) => _.pick(artist, ["id", "name", "images"])),
+  };
+
+  // Save to firestore async
+  (async function () {
+    await collection.add(resp);
+  })();
+
+  return resp;
 });

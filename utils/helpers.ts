@@ -94,7 +94,8 @@ export function createPlaylistAnalysis(
   const genreCounts = _.fromPairs(getGenresFromArtists(input.artists));
   const genreDiversity = calcDiversityIndex(genreCounts);
 
-  const artistCounts = _.countBy(input.artists.map((a) => a.id));
+  const artistIds = input.tracks.flatMap((t) => t.artists.map((a) => a.id));
+  const artistCounts = _.countBy(artistIds);
   const artistDiveristy = calcDiversityIndex(artistCounts);
 
   return {

@@ -47,9 +47,10 @@ declare global {
   }
 
   interface PlaylistAnalysisResponse {
+    playlist_id: string;
     snapshot_id: string;
     analysis: PlaylistAnalysis;
-    updated_at: string;
+    artists: any[];
   }
 
   interface CreatePlaylistAnalysisInput {

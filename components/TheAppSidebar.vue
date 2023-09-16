@@ -21,6 +21,7 @@
           :key="link.route"
           :value="link.route"
           v-for="link in links"
+          class="nav-link"
           @click="onRouteClicked(link.route)"
         >
           <template #prepend>
@@ -96,5 +97,11 @@ function onRouteClicked(route: string) {
 
 .v-navigation-drawer__content {
   padding: 1rem;
+
+  .nav-link {
+    .v-list-item__spacer {
+      width: 0.75rem !important;
+    }
+  }
 }
 </style>
