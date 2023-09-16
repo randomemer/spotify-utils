@@ -84,3 +84,33 @@ export function extractPlaylistId(str: string) {
 
   return match[1];
 }
+
+export function createPlaylistAnalysis(
+  input: CreatePlaylistAnalysisInput
+): PlaylistAnalysis {
+  const avg_track_length = _.meanBy(input.tracks, (track) => track.duration_ms);
+  const avg_popularity = _.meanBy(input.tracks, (track) => track.popularity);
+
+  const genreCounts = _.fromPairs(getGenresFromArtists(input.artists));
+  const genreDiversity = calcDiversityIndex(genreCounts);
+
+  const artistCounts = _.countBy(input.artists.map((a) => a.id));
+  const artistDiveristy = calcDiversityIndex(artistCounts);
+
+  return {
+    audio_features: getFeaturesFromTracks(
+      input.selectedFeatures,
+      input.features
+    ),
+    genres: {
+      counts: genreCounts,
+      diversity_index: genreDiversity,
+    },
+    artists: {
+      counts: artistCounts,
+      diversity_index: artistDiveristy,
+    },
+    avg_popularity,
+    avg_track_length,
+  };
+}

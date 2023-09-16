@@ -19,7 +19,10 @@ import { Pie } from "vue-chartjs";
 const { $spotify } = useNuxtApp();
 
 const { data: artists, error } = useAsyncData(async () => {
-  return await getAllTopArtists($spotify, SpotifyTimeRange.LongTerm);
+  return await getAllItems($spotify, {
+    url: "/me/top/artists",
+    query: { time_range: SpotifyTimeRange.LongTerm },
+  });
 });
 
 const chartOptions = ref<ChartOptions<"pie">>({});

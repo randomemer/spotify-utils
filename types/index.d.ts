@@ -51,6 +51,13 @@ declare global {
     analysis: PlaylistAnalysis;
     updated_at: string;
   }
+
+  interface CreatePlaylistAnalysisInput {
+    tracks: SpotifyApi.TrackObjectFull[];
+    artists: SpotifyApi.ArtistObjectFull[];
+    features: SpotifyApi.AudioFeaturesObject[];
+    selectedFeatures: string[];
+  }
 }
 
 export {};

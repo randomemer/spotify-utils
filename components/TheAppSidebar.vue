@@ -42,7 +42,7 @@ const links = [
   {
     icon: "view-grid",
     label: "Dashboard",
-    route: "app",
+    route: "app:dashboard",
   },
   {
     icon: "account-circle",

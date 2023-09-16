@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ name: "app", middleware: "auth", alias: ["/app/dashboard"] });
+definePageMeta({ name: "app:dashboard", middleware: "auth", alias: ["/app"] });
 useHead({ title: "Dashboard | Music Muse" });
 
 import DashboardTopGenres from "~/components/dashboard/TopGenres.vue";

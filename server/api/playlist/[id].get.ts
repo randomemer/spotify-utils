@@ -1,7 +1,11 @@
 import axios from "axios";
 import getAdmin from "~/server/utils/firebase";
-import { extractBearerToken } from "~/utils/helpers";
-import { getAllItems } from "~/utils/services";
+import { extractBearerToken, createPlaylistAnalysis } from "~/utils/helpers";
+import {
+  getAllItems,
+  getTracksArtists,
+  getTracksAudioFeatures,
+} from "~/utils/services";
 
 export default defineEventHandler(async (event) => {
   const id = event.context.params?.id;
@@ -25,6 +29,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const env = useRuntimeConfig();
+  const appConfig = useAppConfig(event);
   const admin = getAdmin(env.serviceAccKey);
 
   // 1. Check existing analysis
@@ -65,12 +70,20 @@ export default defineEventHandler(async (event) => {
     playlistItems.push(...remainingItems);
   }
 
-  console.log(playlistItems[0].track);
-  console.log("total", playlistItems.length);
+  const tracks = playlistItems
+    .filter((item) => item.track.type === "track")
+    .map((item) => item.track) as SpotifyApi.TrackObjectFull[];
 
   // 4. Get all track features
+  const features = await getTracksAudioFeatures(spotifyApi, tracks);
 
   // 5. Get all artists
+  const artists = await getTracksArtists(spotifyApi, tracks);
 
-  // console.log(tracks[0], tracks.length);
+  return createPlaylistAnalysis({
+    artists,
+    features,
+    tracks,
+    selectedFeatures: appConfig.audioFeatures,
+  });
 });

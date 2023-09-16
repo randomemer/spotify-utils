@@ -21,7 +21,10 @@ const { $spotify } = useNuxtApp();
 const chartOptions = ref<ChartOptions<"radar">>({});
 
 const { data: features, error } = useAsyncData(async () => {
-  const tracks = await getAllTopTracks($spotify, SpotifyTimeRange.LongTerm);
+  const tracks = await getAllItems($spotify, {
+    url: "/me/top/tracks",
+    query: { time_range: SpotifyTimeRange.LongTerm },
+  });
   const tracksFeatures = await getTracksAudioFeatures($spotify, tracks);
   return getFeaturesFromTracks(appConfig.audioFeatures, tracksFeatures);
 });

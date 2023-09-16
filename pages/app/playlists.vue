@@ -33,7 +33,6 @@ function onPlaylistSubmit(event: Event) {
     const id = extractPlaylistId(url.value);
     console.log(id);
 
-    console.log("getting id");
     getPlaylistAnalysis(id);
   } catch (error) {
     if (!(error instanceof Error)) return;
@@ -48,6 +47,7 @@ function onPlaylistSubmit(event: Event) {
 }
 
 async function getPlaylistAnalysis(id: string) {
+  console.time("pl");
   try {
     const resp = await $api.get("/api/playlist/" + id, {
       headers: { Authorization: `Bearer ${authStore.token?.access_token}` },
@@ -57,5 +57,6 @@ async function getPlaylistAnalysis(id: string) {
   } catch (error) {
     console.error(error);
   }
+  console.timeEnd("pl");
 }
 </script>
