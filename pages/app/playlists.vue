@@ -4,10 +4,14 @@
       <v-text-field
         clearable
         type="url"
+        v-model="url"
         variant="solo-filled"
         prepend-inner-icon="mdi-link"
         placeholder="Gimme a playlist link"
-        v-model="url"
+        :error="inputStatus === `error`"
+        :loading="inputStatus === `pending`"
+        :disabled="[`success`, `pending`].includes(inputStatus)"
+        :messages="inputMessage"
       />
     </form>
   </NuxtLayout>
@@ -20,42 +24,71 @@ definePageMeta({ name: "app:playlists", middleware: "auth" });
 
 useHead({ title: "Playlists | Music Muse" });
 
-const { $api } = useNuxtApp();
+const { $api, $spotify } = useNuxtApp();
 const authStore = useAuthStore();
 
 const url = ref("");
-const status = ref("idle");
-const message = ref("");
+const inputStatus = ref("idle");
+const inputMessage = ref("");
+const playlist = ref<SpotifyApi.PlaylistObjectFull | null>(null);
 
-function onPlaylistSubmit(event: Event) {
+const analysisStatus = ref("");
+const analysis = ref<PlaylistAnalysisResponse | null>(null);
+
+async function onPlaylistSubmit(event: Event) {
   event.preventDefault();
+  inputStatus.value = "pending";
   try {
     const id = extractPlaylistId(url.value);
-    console.log(id);
 
-    getPlaylistAnalysis(id);
+    const resp = await $spotify.get<SpotifyApi.SinglePlaylistResponse>(
+      `/playlists/${id}`
+    );
+
+    playlist.value = resp.data;
+    inputStatus.value = "success";
+    inputMessage.value = "Playlist found!";
   } catch (error) {
     if (!(error instanceof Error)) return;
 
     if (error instanceof TypeError) {
-      message.value = "Invalid link";
+      inputMessage.value = "Invalid link";
     } else {
-      message.value = error.message;
+      inputMessage.value = error.message;
     }
-    console.error(message.value);
+    inputStatus.value = "error";
+    console.error(inputMessage.value);
   }
 }
 
-async function getPlaylistAnalysis(id: string) {
+watchEffect(() => {
+  if (inputStatus.value !== "success") return;
+
+  getPlaylistAnalysis();
+});
+
+async function getPlaylistAnalysis() {
   console.time("pl");
+  analysisStatus.value = "pending";
   try {
-    const resp = await $api.get("/api/playlist/" + id, {
-      headers: { Authorization: `Bearer ${authStore.token?.access_token}` },
+    const list = playlist.value!;
+    const query = new URLSearchParams({
+      snapshot_id: list.snapshot_id,
     });
 
+    const resp = await $api.get<PlaylistAnalysisResponse>(
+      `/api/playlist/${list.id}?${query}`,
+      {
+        headers: { Authorization: `Bearer ${authStore.token?.access_token}` },
+      }
+    );
+
     console.log(resp.data);
+    analysis.value = resp.data;
+    analysisStatus.value = "success";
   } catch (error) {
     console.error(error);
+    analysisStatus.value = "error";
   }
   console.timeEnd("pl");
 }
