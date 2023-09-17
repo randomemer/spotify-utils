@@ -38,6 +38,13 @@ declare global {
         };
       };
 
+  interface ArtistItemData {
+    id: string;
+    name: string;
+    genres: string[];
+    images: SpotifyApi.ImageObject[];
+  }
+
   interface PlaylistAnalysis {
     audio_features: Record<string, number>;
     artists: { diversity_index: number; counts: Record<string, number> };

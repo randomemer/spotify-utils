@@ -93,7 +93,9 @@ export default defineEventHandler(async (event) => {
     playlist_id: id,
     snapshot_id: playlistResp.data.snapshot_id,
     analysis,
-    artists: artists.map((artist) => _.pick(artist, ["id", "name", "images"])),
+    artists: artists.map((artist) =>
+      _.pick(artist, ["id", "name", "images", "genres"])
+    ),
   };
 
   // Save to firestore async

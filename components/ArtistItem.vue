@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 interface ArtistItemProps {
-  artist: SpotifyApi.ArtistObjectFull;
+  artist: ArtistItemData;
 }
 
 const props = defineProps<ArtistItemProps>();

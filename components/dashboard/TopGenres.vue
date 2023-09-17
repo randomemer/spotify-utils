@@ -5,8 +5,10 @@
     </v-card-title>
 
     <v-card-text :class="$style.card_content">
-      <!-- <p>You've explored about {{ genreSum }} genres</p> -->
-      <Pie style="height: 320px" :data="chartData" :options="chartOptions" />
+      <p>You've explored about {{ genreSum }} genres</p>
+      <div>
+        <Pie style="height: 320px" :data="chartData" :options="chartOptions" />
+      </div>
     </v-card-text>
   </v-card>
 </template>
