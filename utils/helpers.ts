@@ -23,10 +23,7 @@ export function getChartColors(shade: string) {
 
 export function getGenresFromArtists(artists: SpotifyApi.ArtistObjectFull[]) {
   const genres = _.flatMapDeep(artists, (val) => val.genres);
-  const genreCounts = _.countBy(genres);
-
-  const pairs = _.toPairs(genreCounts);
-  return _.sortBy(pairs, (pair) => -pair[1]);
+  return _.countBy(genres);
 }
 
 export function getFeaturesFromTracks(
@@ -53,7 +50,7 @@ export function calcDiversityIndex(counts: Record<string, number>) {
   const values = _.values(counts);
   const total = _.sum(values);
 
-  return _.sumBy(values, (val) => Math.pow(val / total, 2));
+  return 1 - _.sumBy(values, (val) => Math.pow(val / total, 2));
 }
 
 export function extractBearerToken(header: string | null | undefined) {
@@ -91,7 +88,7 @@ export function createPlaylistAnalysis(
   const avg_track_length = _.meanBy(input.tracks, (track) => track.duration_ms);
   const avg_popularity = _.meanBy(input.tracks, (track) => track.popularity);
 
-  const genreCounts = _.fromPairs(getGenresFromArtists(input.artists));
+  const genreCounts = getGenresFromArtists(input.artists);
   const genreDiversity = calcDiversityIndex(genreCounts);
 
   const artistIds = input.tracks.flatMap((t) => t.artists.map((a) => a.id));

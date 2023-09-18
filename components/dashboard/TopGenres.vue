@@ -6,17 +6,19 @@
 
     <v-card-text :class="$style.card_content">
       <p>You've explored about {{ genreSum }} genres</p>
-      <div>
-        <Pie style="height: 320px" :data="chartData" :options="chartOptions" />
-      </div>
+      <GenresChart
+        id="top-genres-chart"
+        :genres="genres!"
+        :chart-options="chartOptions"
+      />
     </v-card-text>
   </v-card>
 </template>
 
 <script setup lang="ts">
+import { ChartOptions } from "chart.js";
+import _ from "lodash";
 import { SpotifyTimeRange } from "~/types";
-import { ChartData, ChartOptions } from "chart.js";
-import { Pie } from "vue-chartjs";
 
 const { $spotify } = useNuxtApp();
 
@@ -27,67 +29,23 @@ const { data: artists, error } = useAsyncData(async () => {
   });
 });
 
-const chartOptions = ref<ChartOptions<"pie">>({});
-const chartColors = ref<string[]>([]);
+const genres = computed(
+  () => artists.value && getGenresFromArtists(artists.value)
+);
 
-const chartData = computed<ChartData<"pie">>(() => {
-  if (!artists.value) return { datasets: [] };
+const genreSum = computed(() => _.sum(_.values(genres.value)));
 
-  const genres = getGenresFromArtists(artists.value);
-
-  const selected = genres.slice(0, 10);
-  const labels = [...selected.map((genre) => genre[0]), "other"];
-  const counts = [
-    ...selected.map((genre) => genre[1]),
-    genres.slice(10).reduce((prev, genre) => genre[1], 0),
-  ];
-
-  const data: ChartData<"pie"> = {
-    labels,
-    datasets: [{ backgroundColor: chartColors.value, data: counts }],
-  };
-
-  return data;
-});
-
-const genreSum = computed(() => {
-  if (!artists.value) return 0;
-  const genres = getGenresFromArtists(artists.value);
-  return genres.reduce((prev, genre) => prev + genre[1], 0);
-});
-
-onMounted(() => {
-  chartColors.value = getChartColors("darken3");
-  configureChart();
-});
-
-function configureChart() {
-  chartOptions.value = {
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "right",
-        labels: {
-          boxHeight: 14,
-          boxWidth: 14,
-        },
-      },
-      tooltip: {
-        displayColors: false,
-        callbacks: {
-          label: function (context) {
-            const dataPoint = context.dataset.data[context.dataIndex] as number;
-            const percent: string = (
-              (dataPoint / genreSum.value) *
-              100
-            ).toFixed(2);
-            return `${context.label} : ${percent}%`;
-          },
-        },
+const chartOptions: ChartOptions<"pie"> = {
+  plugins: {
+    legend: {
+      position: "right",
+      labels: {
+        boxHeight: 14,
+        boxWidth: 14,
       },
     },
-  };
-}
+  },
+};
 </script>
 
 <style module>
@@ -95,5 +53,11 @@ function configureChart() {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+</style>
+
+<style scoped>
+#top-genres-chart {
+  height: 17.5rem;
 }
 </style>

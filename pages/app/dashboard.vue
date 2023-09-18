@@ -10,13 +10,13 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ name: "app:dashboard", middleware: "auth", alias: ["/app"] });
-useHead({ title: "Dashboard | Music Muse" });
-
 import DashboardTopGenres from "~/components/dashboard/TopGenres.vue";
 import DashboardTopTracks from "~/components/dashboard/TopTracks.vue";
 import DashboardTopArtists from "~/components/dashboard/TopArtists.vue";
 import DashboardAudioFeatures from "~/components/dashboard/AudioFeatures.vue";
+
+definePageMeta({ name: "app:dashboard", middleware: "auth", alias: ["/app"] });
+useHead({ title: "Dashboard | Music Muse" });
 </script>
 
 <style scoped lang="scss">

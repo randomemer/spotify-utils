@@ -5,7 +5,11 @@
     </v-card-title>
 
     <v-card-text>
-      <Radar :data="chartData" :options="chartOptions" style="height: 320px" />
+      <FeaturesChart
+        id="features-chart"
+        :features="features!"
+        :chart-options="chartOptions"
+      />
     </v-card-text>
   </v-card>
 </template>
@@ -18,8 +22,6 @@ import { ChartData, ChartOptions } from "chart.js";
 const appConfig = useAppConfig();
 const { $spotify } = useNuxtApp();
 
-const chartOptions = ref<ChartOptions<"radar">>({});
-
 const { data: features, error } = useAsyncData(async () => {
   const tracks = await getAllItems($spotify, {
     url: "/me/top/tracks",
@@ -29,51 +31,20 @@ const { data: features, error } = useAsyncData(async () => {
   return getFeaturesFromTracks(appConfig.audioFeatures, tracksFeatures);
 });
 
-const chartData = computed<ChartData<"radar">>(() => {
-  if (!features.value) return { datasets: [] };
-
-  return {
-    labels: Object.keys(features.value),
-    datasets: [
-      {
-        borderColor: "#BA68C8",
-        backgroundColor: "#BA68C877",
-        data: Object.values(features.value),
-      },
-    ],
-  };
-});
-
-onMounted(() => {
-  configureChart();
-});
-
-function configureChart() {
-  const styles = getComputedStyle(document.documentElement);
-
-  const textColor = styles.getPropertyValue("--text-primary");
-  const textSecondaryColor = styles.getPropertyValue("--text-secondary");
-  const surfaceColor = styles.getPropertyValue("--v-theme-surface-bright");
-
-  chartOptions.value = {
-    maintainAspectRatio: false,
-    scales: {
-      r: {
-        min: 0,
-        max: 1,
-        pointLabels: {
-          color: textColor,
-          font: { size: 14 },
-        },
-        ticks: {
-          color: textSecondaryColor,
-          backdropColor: surfaceColor,
-        },
-        grid: { color: textSecondaryColor },
-        angleLines: { color: textSecondaryColor },
+const chartOptions: ChartOptions<"radar"> = {
+  scales: {
+    r: {
+      pointLabels: {
+        font: { size: 14 },
       },
     },
-    plugins: { legend: { display: false } },
-  };
-}
+  },
+  plugins: { legend: { display: false } },
+};
 </script>
+
+<style scoped>
+#features-chart {
+  height: 20rem;
+}
+</style>

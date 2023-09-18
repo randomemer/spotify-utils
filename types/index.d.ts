@@ -38,6 +38,11 @@ declare global {
         };
       };
 
+  interface TrackItemData {
+    id: string;
+    name: string;
+  }
+
   interface ArtistItemData {
     id: string;
     name: string;
@@ -57,7 +62,7 @@ declare global {
     playlist_id: string;
     snapshot_id: string;
     analysis: PlaylistAnalysis;
-    artists: any[];
+    artists: ArtistItemData[];
   }
 
   interface CreatePlaylistAnalysisInput {

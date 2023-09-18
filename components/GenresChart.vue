@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <Pie :data="chartData" :options="chartOptions" style="height: 280px" />
+  <div class="chart-wrapper">
+    <Pie class="chart" :data="chartData" :options="chartOptions" />
   </div>
 </template>
 
@@ -11,12 +11,15 @@ import _ from "lodash";
 
 interface GenresChartProps {
   genres: Record<string, number>;
+  chartOptions?: ChartOptions<"pie"> | null | undefined;
 }
 
 const props = defineProps<GenresChartProps>();
 
 const chartOptions = ref<ChartOptions<"pie">>({});
 const chartColors = ref<string[]>([]);
+
+const genreSum = computed(() => _.sum(_.values(props.genres)));
 
 const chartData = computed<ChartData<"pie">>(() => {
   let entries = Object.entries(props.genres);
@@ -48,26 +51,21 @@ onMounted(() => {
 });
 
 function configureChart() {
-  chartOptions.value = {
+  const defaultOptions: ChartOptions<"pie"> = {
     maintainAspectRatio: false,
     plugins: {
-      legend: {
-        display: false,
-      },
       tooltip: {
-        displayColors: false,
+        boxPadding: 5,
         callbacks: {
-          // label: function (context) {
-          //   const dataPoint = context.dataset.data[context.dataIndex] as number;
-          //   const percent: string = (
-          //     (dataPoint / genreSum.value) *
-          //     100
-          //   ).toFixed(2);
-          //   return `${context.label} : ${percent}%`;
-          // },
+          label(tooltipItem) {
+            const dataPoint = tooltipItem.dataset.data[tooltipItem.dataIndex];
+            const percent = (dataPoint / genreSum.value) * 100;
+            return percent.toFixed(2) + "%";
+          },
         },
       },
     },
   };
+  chartOptions.value = _.merge(defaultOptions, props.chartOptions);
 }
 </script>

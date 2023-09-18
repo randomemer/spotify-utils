@@ -39,14 +39,12 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from "dayjs";
+
 definePageMeta({ name: "app:history", middleware: "auth" });
 
 useHead({ title: "History | Music Muse" });
 
-import dayjs from "dayjs";
-import useAuthStore from "~/store/auth.store";
-
-const auth = useAuthStore();
 const { $spotify } = useNuxtApp();
 
 const {

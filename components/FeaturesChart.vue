@@ -1,15 +1,17 @@
 <template>
-  <div>
-    <Radar :data="chartData" :options="chartOptions" style="height: 280px" />
+  <div class="chart-wrapper">
+    <Radar class="chart" :data="chartData" :options="chartOptions" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ChartData, ChartOptions } from "chart.js";
 import { Radar } from "vue-chartjs";
+import _ from "lodash";
 
 interface FeaturesChartProps {
   features: Record<string, number>;
+  chartOptions?: ChartOptions<"radar"> | null | undefined;
 }
 
 const props = defineProps<FeaturesChartProps>();
@@ -40,7 +42,7 @@ function configureChart() {
   const textSecondaryColor = styles.getPropertyValue("--text-secondary");
   const surfaceColor = styles.getPropertyValue("--v-theme-surface-bright");
 
-  chartOptions.value = {
+  const defaultOptions: ChartOptions<"radar"> = {
     maintainAspectRatio: false,
     scales: {
       r: {
@@ -48,7 +50,6 @@ function configureChart() {
         max: 1,
         pointLabels: {
           color: textColor,
-          font: { size: 14 },
         },
         ticks: {
           color: textSecondaryColor,
@@ -58,7 +59,9 @@ function configureChart() {
         angleLines: { color: textSecondaryColor },
       },
     },
-    plugins: { legend: { display: false } },
+    plugins: { legend: { display: false }, tooltip: { boxPadding: 5 } },
   };
+
+  chartOptions.value = _.merge(defaultOptions, props.chartOptions);
 }
 </script>
