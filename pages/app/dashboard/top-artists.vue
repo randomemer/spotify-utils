@@ -2,6 +2,7 @@
   <NuxtLayout>
     <div class="table-wrapper">
       <v-data-table
+        fixed-header
         color="primary"
         class="rounded table"
         :items-per-page="PAGE_LIMIT"

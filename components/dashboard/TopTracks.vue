@@ -11,7 +11,7 @@
         item-value="value"
         variant="solo-filled"
         :class="$style.time_range_select"
-        :items="timeRangeItems"
+        :items="TIME_RANGE_ITEMS"
       />
     </v-card-title>
 
@@ -24,7 +24,12 @@
     </v-card-text>
 
     <v-card-actions class="justify-end pa-4">
-      <v-btn variant="tonal" color="primary" append-icon="mdi-chevron-right">
+      <v-btn
+        variant="tonal"
+        color="primary"
+        append-icon="mdi-chevron-right"
+        @click="onViewMore()"
+      >
         View More
       </v-btn>
     </v-card-actions>
@@ -34,7 +39,7 @@
 <script setup lang="ts">
 import { SpotifyTimeRange } from "~/types";
 
-const { $spotify } = useNuxtApp();
+const { $spotify, $router } = useNuxtApp();
 const timeRange = ref(SpotifyTimeRange.ShortTerm);
 
 const { data: tracks, error } = useAsyncData(
@@ -48,11 +53,9 @@ const { data: tracks, error } = useAsyncData(
   { watch: [timeRange] }
 );
 
-const timeRangeItems = [
-  { label: "All Time", value: SpotifyTimeRange.LongTerm },
-  { label: "Medium Term", value: SpotifyTimeRange.MediumTerm },
-  { label: "Short Term", value: SpotifyTimeRange.ShortTerm },
-];
+function onViewMore() {
+  $router.push("/app/dashboard/top-tracks");
+}
 </script>
 
 <style module lang="scss">
