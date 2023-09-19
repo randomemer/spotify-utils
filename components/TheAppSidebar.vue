@@ -17,7 +17,7 @@
         <v-list-item
           nav
           color="primary"
-          :active="$route.name === link.route"
+          :active="$route.name?.toString().startsWith(link.route)"
           :key="link.route"
           :value="link.route"
           v-for="link in links"

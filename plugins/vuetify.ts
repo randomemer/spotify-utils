@@ -18,6 +18,7 @@ import {
   VTooltip,
   VProgressCircular,
   VTextField,
+  VPagination,
   VSlideXTransition,
 } from "vuetify/components";
 import {
@@ -73,6 +74,7 @@ export default defineNuxtPlugin({
         VTooltip,
         VProgressCircular,
         VTextField,
+        VPagination,
         VSlideXTransition,
       },
     });

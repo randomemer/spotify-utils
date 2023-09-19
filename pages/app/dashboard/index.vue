@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout name="dashboard">
+  <NuxtLayout>
     <div class="cards-grid">
       <DashboardTopGenres />
       <DashboardAudioFeatures />
@@ -15,7 +15,12 @@ import DashboardTopTracks from "~/components/dashboard/TopTracks.vue";
 import DashboardTopArtists from "~/components/dashboard/TopArtists.vue";
 import DashboardAudioFeatures from "~/components/dashboard/AudioFeatures.vue";
 
-definePageMeta({ name: "app:dashboard", middleware: "auth", alias: ["/app"] });
+definePageMeta({
+  name: "app:dashboard",
+  middleware: "auth",
+  alias: ["/app"],
+  layout: "dashboard",
+});
 useHead({ title: "Dashboard | Music Muse" });
 </script>
 
