@@ -7,10 +7,10 @@ export default defineNuxtRouteMiddleware(async () => {
   const authStore = useAuthStore($pinia);
 
   const { token } = authStore;
-  // 1. Check token in the store
   if (!token || token.expiry <= Date.now()) {
     // Server Rutntime
     if (process.server) {
+      console.time("fetch_session_server");
       try {
         const event = useRequestEvent();
         const cookie = getCookie(event, "session_id");
@@ -24,10 +24,12 @@ export default defineNuxtRouteMiddleware(async () => {
         }
         console.error(error);
       }
+      console.timeEnd("fetch_session_server");
     }
 
     // Browser / Client runtime
     if (process.client) {
+      console.time("fetch_session_client");
       try {
         const resp = await $api.get<AuthToken>("/api/auth/token");
         authStore.setToken(resp.data);
@@ -40,6 +42,7 @@ export default defineNuxtRouteMiddleware(async () => {
         }
         console.error(error);
       }
+      console.timeEnd("fetch_session_client");
     }
   }
 });
