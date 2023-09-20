@@ -1,7 +1,7 @@
 import axios from "axios";
 import { setCookie, type H3Event } from "h3";
-import getAdmin from "./firebase";
 import SpotifyWebApi from "spotify-web-api-js";
+import { kv } from "@vercel/kv";
 
 export async function createSession(
   event: H3Event,
@@ -15,19 +15,19 @@ export async function createSession(
     }
   );
 
-  const { serviceAccKey } = config;
-  const admin = getAdmin(serviceAccKey);
-  const db = admin.firestore();
-  const ts = admin.firestore.Timestamp.now();
+  const ts = Date.now();
 
-  const doc = await db.collection("sessions").add({
+  const session = {
     user_id: userResp.data.id,
     refresh_token: tokenData.refresh_token,
     created_at: ts,
     updated_at: ts,
-  });
+  };
 
-  setCookie(event, "session_id", doc.id, {
+  const kvRes = await kv.set(userResp.data.id, session);
+  console.log("kvRes", kvRes);
+
+  setCookie(event, "session_id", userResp.data.id, {
     httpOnly: true,
     maxAge: 30 * 24 * 60 * 60,
   });
@@ -37,24 +37,21 @@ export async function fetchSession(
   config: Record<string, string>,
   sessionId: string
 ) {
-  // const sessionId = getCookie(event, "session_id");
-
   if (!sessionId) {
     throw createError({ statusCode: 401, statusMessage: "User not logged in" });
   }
 
   // 1. fetch session
-  const db = getAdmin(config.serviceAccKey).firestore();
-  const sessionDoc = await db.collection("sessions").doc(sessionId).get();
+  console.time("kv");
+  const session = await kv.get(sessionId);
+  console.timeEnd("kv");
 
-  if (!sessionDoc.exists) {
+  if (!session) {
     throw createError({
       statusCode: 401,
       statusMessage: "User not logged in",
     });
   }
-
-  const session = sessionDoc.data()!;
 
   // 2. fetch access token using session
   const encoded = Buffer.from(
