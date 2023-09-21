@@ -20,6 +20,8 @@ import {
   VTextField,
   VPagination,
   VSlideXTransition,
+  VChipGroup,
+  VChip,
 } from "vuetify/components";
 import {
   Chart as ChartJS,
@@ -76,6 +78,8 @@ export default defineNuxtPlugin({
         VTextField,
         VPagination,
         VSlideXTransition,
+        VChipGroup,
+        VChip,
       },
     });
 
