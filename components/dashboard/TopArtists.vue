@@ -69,7 +69,7 @@ function onViewMore() {
 .card_content {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .time_range_select {
