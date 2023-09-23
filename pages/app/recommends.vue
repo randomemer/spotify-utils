@@ -13,7 +13,7 @@
             v-model="q"
           />
         </form>
-        <v-chip-group filter v-model="filter">
+        <v-chip-group filter mandatory v-model="filter">
           <v-chip
             v-for="item in SPOTIFY_SEARCH_FILTERS"
             color="primary"
@@ -23,7 +23,20 @@
             :value="item.value"
           />
         </v-chip-group>
+
+        <v-list>
+          <template :key="i" v-for="(item, i) in results">
+            <TrackItem
+              v-if="item.type === `track`"
+              :track="item"
+              append-icon="mdi-link"
+            />
+            <ArtistItem v-if="item.type === `artist`" :artist="item" />
+            <GenreItem v-if="item.type === `genre`" :genre="item" />
+          </template>
+        </v-list>
       </div>
+
       <v-card class="seeds-card">
         <v-card-title>Selected Seeds</v-card-title>
         <v-card-text>
@@ -39,6 +52,9 @@
 </template>
 
 <script setup lang="ts">
+import MiniSearch from "minisearch";
+import _, { map } from "lodash";
+
 definePageMeta({
   name: "app:recommends",
   middleware: "auth",
@@ -49,43 +65,83 @@ useHead({ title: "Recommends | Music Muse" });
 
 const { $spotify } = useNuxtApp();
 
-const q = ref<string>("");
-const filter = ref<string>();
-const seeds = ref<SpotifySearchSeed[]>([]);
+const miniSearch = new MiniSearch<GenreObject>({
+  fields: ["genre"],
+  storeFields: ["genre"],
+  searchOptions: { fuzzy: 0.5, boost: { genre: 2 } },
+});
 
-const {
-  data: results,
-  status,
-  refresh: search,
-} = useAsyncData(
+const q = ref<string>("");
+const filter = ref<"track" | "artist" | "genre">("track");
+const page = ref(1);
+
+const seeds = ref<SpotifySearchSeed[]>([]);
+const results = ref<SearchResult[]>([]);
+
+const { data: allGenres } = useAsyncData(
   async () => {
-    if (!q.value) return;
+    const resp = await $spotify.get<SpotifyApi.AvailableGenreSeedsResponse>(
+      "/recommendations/available-genre-seeds"
+    );
+    const genreDocs = resp.data.genres.map<GenreObject>((genre, i) => ({
+      id: genre,
+      type: "genre",
+      genre,
+    }));
+
+    return genreDocs;
+  },
+  {
+    default: () => [] as GenreObject[],
+  }
+);
+
+const { status, refresh: searchSpotify } = useAsyncData(
+  async () => {
+    if (!q.value) return null;
+    if (filter.value === "genre") return null;
+
     const query = new URLSearchParams({
       q: q.value,
-      type: filter.value ?? "track,artist",
+      type: filter.value,
+      limit: `${PAGE_LIMIT}`,
+      offset: `${(page.value - 1) * PAGE_LIMIT}`,
     });
     const resp = await $spotify.get<SpotifyApi.SearchResponse>(
       `/search?${query}`
     );
 
-    return resp.data;
+    const searchResp = resp.data[`${filter.value}s`];
+    results.value = searchResp!.items;
   },
-  { server: false, immediate: false, lazy: true, watch: [filter] }
+  { server: false, immediate: false, lazy: true, watch: [page, filter] }
 );
 
 function onSearch(event: Event) {
   event.preventDefault();
   if (status.value === `pending`) return;
-  search();
+  searchSpotify();
 }
 
 watchEffect(() => {
-  console.log(results.value);
+  miniSearch.removeAll();
+  miniSearch.addAll(allGenres.value);
 });
 
 watchEffect(() => {
-  console.log(filter.value);
+  if (filter.value !== "genre") return;
+  if (q.value === "") {
+    results.value = allGenres.value;
+  }
 });
+
+function searchGenres() {
+  const res = miniSearch.search(q.value);
+  const mapepdRes = res.map((resItem) => {
+    return allGenres.value.find((genre) => genre.id === resItem.id)!;
+  });
+  results.value = mapepdRes;
+}
 </script>
 
 <style scoped lang="scss">
@@ -93,6 +149,13 @@ watchEffect(() => {
   display: grid;
   gap: 3rem;
   grid-template-columns: 3fr 2fr;
+}
+
+.seeds-card {
+  align-self: flex-start;
+  position: sticky;
+  top: 0;
+  height: auto;
 }
 
 .empty-seeds {

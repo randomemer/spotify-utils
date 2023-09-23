@@ -93,6 +93,17 @@ declare global {
   type SpotifySearchSeed = TrackSeed | ArtistSeed | GenreSeed;
 
   type ElementType<T extends any[]> = T extends (infer U)[] ? U : never;
+
+  interface GenreObject {
+    id: string;
+    type: "genre";
+    genre: string;
+  }
+
+  type SearchResult =
+    | SpotifyApi.TrackObjectFull
+    | SpotifyApi.ArtistObjectFull
+    | GenreObject;
 }
 
 export {};
