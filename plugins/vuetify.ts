@@ -52,7 +52,6 @@ export default defineNuxtPlugin({
               error: "#FF5722",
               success: "#4CAF50",
               warning: "#FFC107",
-              "on-primary": "#bf00ff",
             },
           },
         },

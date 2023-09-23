@@ -12,6 +12,10 @@
         </li>
       </ul>
     </template>
+
+    <template #append>
+      <slot name="append"></slot>
+    </template>
   </v-list-item>
 </template>
 
@@ -29,9 +33,11 @@ const artistImage = computed(() => props.artist.images.at(-1)?.url);
 .artist-genres {
   display: flex;
   list-style: none;
+  flex-wrap: wrap;
 
-  li + li::before {
+  li:not(:last-of-type)::after {
     content: ", ";
+    white-space: pre;
   }
 }
 </style>

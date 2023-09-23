@@ -13,7 +13,7 @@
             v-model="q"
           />
         </form>
-        <v-chip-group filter mandatory v-model="filter">
+        <v-chip-group filter mandatory v-model="filter" class="chips">
           <v-chip
             v-for="item in SPOTIFY_SEARCH_FILTERS"
             color="primary"
@@ -26,12 +26,32 @@
 
         <v-list>
           <template :key="i" v-for="(item, i) in results">
-            <TrackItem
-              v-if="item.type === `track`"
-              :track="item"
-              append-icon="mdi-link"
-            />
-            <ArtistItem v-if="item.type === `artist`" :artist="item" />
+            <TrackItem v-if="item.type === `track`" :track="item">
+              <template #append>
+                <v-btn
+                  density="comfortable"
+                  variant="tonal"
+                  icon="mdi-plus"
+                  color="primary"
+                  @click="addSeed(item)"
+                  :disabled="seeds.has(item.id) || seeds.size === 5"
+                />
+              </template>
+            </TrackItem>
+
+            <ArtistItem v-if="item.type === `artist`" :artist="item">
+              <template #append>
+                <v-btn
+                  density="comfortable"
+                  variant="tonal"
+                  icon="mdi-plus"
+                  color="primary"
+                  @click="addSeed(item)"
+                  :disabled="seeds.has(item.id) || seeds.size === 5"
+                />
+              </template>
+            </ArtistItem>
+
             <GenreItem v-if="item.type === `genre`" :genre="item" />
           </template>
         </v-list>
@@ -40,12 +60,52 @@
       <v-card class="seeds-card">
         <v-card-title>Selected Seeds</v-card-title>
         <v-card-text>
-          <v-list v-if="seeds.length > 0"> </v-list>
+          <v-list v-if="seeds.size > 0">
+            <template :key="i" v-for="(item, i) in seeds.values()">
+              <TrackItem v-if="item.type === `track`" :track="item">
+                <template #append>
+                  <v-btn
+                    density="comfortable"
+                    variant="tonal"
+                    icon="mdi-minus"
+                    color="primary"
+                    @click="removeSeed(item.id)"
+                  />
+                </template>
+              </TrackItem>
+
+              <ArtistItem v-if="item.type === `artist`" :artist="item">
+                <template #append>
+                  <v-btn
+                    density="comfortable"
+                    variant="tonal"
+                    icon="mdi-minus"
+                    color="primary"
+                    @click="removeSeed(item.id)"
+                  />
+                </template>
+              </ArtistItem>
+
+              <GenreItem
+                v-if="item.type === `genre`"
+                :genre="item"
+              /> </template
+          ></v-list>
           <div v-else class="empty-seeds">
             <v-icon icon="mdi-music-note" />
             <span>No seeds. Add upto 5 seeds</span>
           </div>
         </v-card-text>
+        <v-card-actions class="seeds-actions">
+          <v-btn
+            :disabled="seeds.size === 0"
+            variant="elevated"
+            color="primary"
+            @click="generate()"
+          >
+            Generate
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </div>
   </NuxtLayout>
@@ -53,7 +113,7 @@
 
 <script setup lang="ts">
 import MiniSearch from "minisearch";
-import _, { map } from "lodash";
+import _ from "lodash";
 
 definePageMeta({
   name: "app:recommends",
@@ -75,7 +135,7 @@ const q = ref<string>("");
 const filter = ref<"track" | "artist" | "genre">("track");
 const page = ref(1);
 
-const seeds = ref<SpotifySearchSeed[]>([]);
+const seeds = ref<Map<string, SearchResult>>(new Map());
 const results = ref<SearchResult[]>([]);
 
 const { data: allGenres } = useAsyncData(
@@ -117,12 +177,6 @@ const { status, refresh: searchSpotify } = useAsyncData(
   { server: false, immediate: false, lazy: true, watch: [page, filter] }
 );
 
-function onSearch(event: Event) {
-  event.preventDefault();
-  if (status.value === `pending`) return;
-  searchSpotify();
-}
-
 watchEffect(() => {
   miniSearch.removeAll();
   miniSearch.addAll(allGenres.value);
@@ -135,12 +189,32 @@ watchEffect(() => {
   }
 });
 
+function onSearch(event: Event) {
+  event.preventDefault();
+  if (status.value === `pending`) return;
+  searchSpotify();
+}
+
 function searchGenres() {
   const res = miniSearch.search(q.value);
   const mapepdRes = res.map((resItem) => {
     return allGenres.value.find((genre) => genre.id === resItem.id)!;
   });
   results.value = mapepdRes;
+}
+
+function addSeed(seed: SearchResult) {
+  if (seeds.value.has(seed.id) || seeds.value.size === 5) return;
+  seeds.value.set(seed.id, seed);
+}
+
+function removeSeed(id: string) {
+  seeds.value.delete(id);
+}
+
+async function generate() {
+  try {
+  } catch (error) {}
 }
 </script>
 
@@ -156,6 +230,14 @@ function searchGenres() {
   position: sticky;
   top: 0;
   height: auto;
+
+  .seeds-actions {
+    padding: 1rem;
+
+    :deep(.v-btn) {
+      width: 100%;
+    }
+  }
 }
 
 .empty-seeds {
@@ -168,5 +250,9 @@ function searchGenres() {
   .v-icon {
     font-size: 3rem;
   }
+}
+
+.chips {
+  margin-bottom: 1.5rem;
 }
 </style>

@@ -72,26 +72,6 @@ declare global {
     selectedFeatures: string[];
   }
 
-  interface TrackSeed {
-    type: "track";
-    id: string;
-    seed: SpotifyApi.TrackObjectFull;
-  }
-
-  interface ArtistSeed {
-    type: "artist";
-    id: string;
-    seed: SpotifyApi.ArtistObjectFull;
-  }
-
-  interface GenreSeed {
-    type: "genre";
-    id: string;
-    seed: string;
-  }
-
-  type SpotifySearchSeed = TrackSeed | ArtistSeed | GenreSeed;
-
   type ElementType<T extends any[]> = T extends (infer U)[] ? U : never;
 
   interface GenreObject {

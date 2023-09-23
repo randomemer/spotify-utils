@@ -14,6 +14,10 @@
         </li>
       </ul>
     </template>
+
+    <template #append>
+      <slot name="append"></slot>
+    </template>
   </v-list-item>
 </template>
 
@@ -31,9 +35,11 @@ const trackImage = computed(() => props.track.album.images.at(-1)?.url);
 .track-artists {
   display: flex;
   list-style: none;
+  flex-wrap: wrap;
 
-  li + li::before {
+  li:not(:last-of-type)::after {
     content: ", ";
+    white-space: pre;
   }
 }
 </style>
