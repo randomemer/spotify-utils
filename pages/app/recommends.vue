@@ -26,7 +26,7 @@
           />
         </v-chip-group>
 
-        <template v-if="status === `success`">
+        <template v-if="filter === `genre` || status === `success`">
           <v-list
             class="results-list"
             bg-color="transparent"
@@ -113,9 +113,8 @@ const miniSearch = new MiniSearch<GenreObject>({
   searchOptions: { fuzzy: 0.5, boost: { genre: 2 } },
 });
 
-const q = ref<string>("");
-const filter = ref<"track" | "artist" | "genre">("track");
-const page = ref(1);
+const q = ref<string | null>("");
+const filter = ref<SearchResult["type"]>("track");
 
 const seeds = ref<Map<string, SearchResult>>(new Map());
 const results = ref<SearchResult[]>([]);
@@ -125,7 +124,7 @@ const { data: allGenres } = useAsyncData(
     const resp = await $spotify.get<SpotifyApi.AvailableGenreSeedsResponse>(
       "/recommendations/available-genre-seeds"
     );
-    const genreDocs = resp.data.genres.map<GenreObject>((genre, i) => ({
+    const genreDocs = resp.data.genres.map<GenreObject>((genre) => ({
       id: genre,
       type: "genre",
       genre,
@@ -140,30 +139,28 @@ const { data: allGenres } = useAsyncData(
 
 const { status, refresh: searchSpotify } = useAsyncData(
   async () => {
-    if (!q.value) return null;
-    if (filter.value === "genre") return null;
-
     const query = new URLSearchParams({
-      q: q.value,
+      q: q.value!,
       type: filter.value,
       limit: `${PAGE_LIMIT}`,
-      offset: `${(page.value - 1) * PAGE_LIMIT}`,
+      offset: `${results.value.length}`,
     });
     const resp = await $spotify.get<SpotifyApi.SearchResponse>(
       `/search?${query}`
     );
 
+    if (filter.value === "genre") return null; // Only for ts type inference
     const searchResp = resp.data[`${filter.value}s`];
     results.value = searchResp!.items;
   },
-  { server: false, immediate: false, lazy: true, watch: [page, filter] }
+  { server: false, immediate: false, lazy: true }
 );
 
 onMounted(() => {
   filter.value = "track";
 });
 
-watchEffect(() => {
+watch(allGenres, () => {
   miniSearch.removeAll();
   miniSearch.addAll(allGenres.value);
 });
@@ -171,15 +168,31 @@ watchEffect(() => {
 watch([filter], () => {
   results.value = [];
 
-  if (filter.value !== "genre") return;
-  if (q.value.trim() === "") return;
+  switch (filter.value) {
+    case "genre":
+      if (!q.value?.trim()) {
+        results.value = allGenres.value;
+      } else {
+        searchGenres();
+      }
+      break;
 
-  results.value = allGenres.value;
+    case "artist":
+    case "track":
+      if (!q.value?.trim()) return null;
+      searchSpotify();
+      break;
+
+    default:
+      break;
+  }
 });
 
 function onSearch(event: Event) {
   event.preventDefault();
   if (status.value === `pending`) return;
+  console.log(q.value);
+  if (!q.value?.trim()) return;
 
   if (filter.value !== "genre") {
     searchSpotify();
@@ -188,8 +201,8 @@ function onSearch(event: Event) {
   }
 }
 
-function searchGenres() {
-  const res = miniSearch.search(q.value);
+async function searchGenres() {
+  const res = miniSearch.search(q.value!);
   const mappedRes = res.map((resItem) => {
     return allGenres.value.find((genre) => genre.id === resItem.id)!;
   });
