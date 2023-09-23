@@ -4,10 +4,6 @@
       <v-avatar size="large" icon="mdi-music-note" />
     </template>
     <template #title>{{ genre.genre }}</template>
-
-    <template #append>
-      <slot name="append"></slot>
-    </template>
   </v-list-item>
 </template>
 

@@ -6,6 +6,7 @@
         type="url"
         v-model="url"
         variant="solo-filled"
+        density="comfortable"
         prepend-inner-icon="mdi-link"
         placeholder="Gimme a playlist link"
         :error="inputStatus === `error`"

@@ -12,10 +12,6 @@
         </li>
       </ul>
     </template>
-
-    <template #append>
-      <slot name="append"></slot>
-    </template>
   </v-list-item>
 </template>
 

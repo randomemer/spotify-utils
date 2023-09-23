@@ -5,14 +5,16 @@
         <form @submit="onSearch($event)">
           <v-text-field
             clearable
-            variant="solo-filled"
             color="primary"
             placeholder="Search"
+            density="comfortable"
+            variant="solo-filled"
             prepend-inner-icon="mdi-magnify"
             :loading="status === `pending`"
             v-model="q"
           />
         </form>
+
         <v-chip-group filter mandatory v-model="filter" class="chips">
           <v-chip
             v-for="item in SPOTIFY_SEARCH_FILTERS"
@@ -24,73 +26,53 @@
           />
         </v-chip-group>
 
-        <v-list>
-          <template :key="i" v-for="(item, i) in results">
-            <TrackItem v-if="item.type === `track`" :track="item">
-              <template #append>
-                <v-btn
-                  density="comfortable"
-                  variant="tonal"
-                  icon="mdi-plus"
-                  color="primary"
-                  @click="addSeed(item)"
-                  :disabled="seeds.has(item.id) || seeds.size === 5"
-                />
-              </template>
-            </TrackItem>
+        <template v-if="status === `success`">
+          <v-list
+            class="results-list"
+            bg-color="transparent"
+            v-if="results.length > 0"
+          >
+            <div :key="item.id" class="result-item" v-for="item in results">
+              <TrackItem v-if="item.type === `track`" :track="item" />
+              <ArtistItem v-else-if="item.type === `artist`" :artist="item" />
+              <GenreItem v-else-if="item.type === `genre`" :genre="item" />
 
-            <ArtistItem v-if="item.type === `artist`" :artist="item">
-              <template #append>
-                <v-btn
-                  density="comfortable"
-                  variant="tonal"
-                  icon="mdi-plus"
-                  color="primary"
-                  @click="addSeed(item)"
-                  :disabled="seeds.has(item.id) || seeds.size === 5"
-                />
-              </template>
-            </ArtistItem>
-
-            <GenreItem v-if="item.type === `genre`" :genre="item" />
-          </template>
-        </v-list>
+              <v-btn
+                density="comfortable"
+                variant="tonal"
+                icon="mdi-plus"
+                color="primary"
+                @click="addSeed(item)"
+                :disabled="seeds.has(item.id) || seeds.size === 5"
+              />
+            </div>
+          </v-list>
+          <v-card v-else> Nothing :9 </v-card>
+        </template>
       </div>
 
       <v-card class="seeds-card">
         <v-card-title>Selected Seeds</v-card-title>
         <v-card-text>
-          <v-list v-if="seeds.size > 0">
-            <template :key="i" v-for="(item, i) in seeds.values()">
-              <TrackItem v-if="item.type === `track`" :track="item">
-                <template #append>
-                  <v-btn
-                    density="comfortable"
-                    variant="tonal"
-                    icon="mdi-minus"
-                    color="primary"
-                    @click="removeSeed(item.id)"
-                  />
-                </template>
-              </TrackItem>
+          <v-list class="results-list" v-if="seeds.size > 0">
+            <div
+              class="result-item"
+              :key="item.id"
+              v-for="item in seeds.values()"
+            >
+              <TrackItem v-if="item.type === `track`" :track="item" />
+              <ArtistItem v-else-if="item.type === `artist`" :artist="item" />
+              <GenreItem v-else-if="item.type === `genre`" :genre="item" />
 
-              <ArtistItem v-if="item.type === `artist`" :artist="item">
-                <template #append>
-                  <v-btn
-                    density="comfortable"
-                    variant="tonal"
-                    icon="mdi-minus"
-                    color="primary"
-                    @click="removeSeed(item.id)"
-                  />
-                </template>
-              </ArtistItem>
-
-              <GenreItem
-                v-if="item.type === `genre`"
-                :genre="item"
-              /> </template
-          ></v-list>
+              <v-btn
+                density="comfortable"
+                variant="tonal"
+                icon="mdi-minus"
+                color="primary"
+                @click="removeSeed(item.id)"
+              />
+            </div>
+          </v-list>
           <div v-else class="empty-seeds">
             <v-icon icon="mdi-music-note" />
             <span>No seeds. Add upto 5 seeds</span>
@@ -177,30 +159,41 @@ const { status, refresh: searchSpotify } = useAsyncData(
   { server: false, immediate: false, lazy: true, watch: [page, filter] }
 );
 
+onMounted(() => {
+  filter.value = "track";
+});
+
 watchEffect(() => {
   miniSearch.removeAll();
   miniSearch.addAll(allGenres.value);
 });
 
-watchEffect(() => {
+watch([filter], () => {
+  results.value = [];
+
   if (filter.value !== "genre") return;
-  if (q.value === "") {
-    results.value = allGenres.value;
-  }
+  if (q.value.trim() === "") return;
+
+  results.value = allGenres.value;
 });
 
 function onSearch(event: Event) {
   event.preventDefault();
   if (status.value === `pending`) return;
-  searchSpotify();
+
+  if (filter.value !== "genre") {
+    searchSpotify();
+  } else {
+    searchGenres();
+  }
 }
 
 function searchGenres() {
   const res = miniSearch.search(q.value);
-  const mapepdRes = res.map((resItem) => {
+  const mappedRes = res.map((resItem) => {
     return allGenres.value.find((genre) => genre.id === resItem.id)!;
   });
-  results.value = mapepdRes;
+  results.value = mappedRes;
 }
 
 function addSeed(seed: SearchResult) {
@@ -225,11 +218,31 @@ async function generate() {
   grid-template-columns: 3fr 2fr;
 }
 
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+
+  :deep(.v-list-item) {
+    padding: 0;
+  }
+}
+
 .seeds-card {
   align-self: flex-start;
   position: sticky;
   top: 0;
-  height: auto;
+
+  :deep(.v-card-text) {
+    padding-bottom: 0;
+  }
 
   .seeds-actions {
     padding: 1rem;
