@@ -1,5 +1,6 @@
 import type { AxiosInstance } from "axios";
 import _ from "lodash";
+import { PAGE_LIMIT } from "./constants";
 
 interface ItemsGetterOptions {
   url: string;
@@ -76,4 +77,77 @@ export async function getTracksArtists(
   }
 
   return artists;
+}
+
+export async function getFullRecommendsData(
+  axios: AxiosInstance,
+  data: SpotifyApi.RecommendationsObject
+) {
+  const ids: Record<string, string[]> = {
+    tracks: [],
+    artists: [],
+  };
+
+  data.seeds.forEach((seed) => {
+    if (seed.type.toLowerCase() === "track") {
+      ids.tracks.push(seed.id);
+    }
+    if (seed.type.toLowerCase() === "artist") {
+      ids.artists.push(seed.id);
+    }
+  });
+
+  data.tracks.forEach((track) => {
+    ids.tracks.push(track.id);
+  });
+
+  const tracksAll: SpotifyApi.TrackObjectFull[] = [];
+  const artistsAll: SpotifyApi.ArtistObjectFull[] = [];
+
+  // Get tracks
+  while (ids.tracks.length > 0) {
+    const trackIds = ids.tracks.splice(0, PAGE_LIMIT);
+    const query = new URLSearchParams({
+      ids: trackIds.join(","),
+    });
+
+    const resp = await axios.get<SpotifyApi.MultipleTracksResponse>(
+      `tracks?${query}`
+    );
+
+    tracksAll.push(...resp.data.tracks);
+  }
+
+  // Get artists (if any)
+  if (ids.artists.length > 0) {
+    const artistsQuery = new URLSearchParams({
+      ids: ids.artists.join(","),
+    });
+    const {
+      data: { artists },
+    } = await axios.get<SpotifyApi.MultipleArtistsResponse>(
+      `/artists?${artistsQuery}`
+    );
+    artistsAll.push(...artists);
+  }
+
+  // Structure the data
+  const seeds = data.seeds.map((s) => {
+    if (s.type.toLowerCase() === "track") {
+      return tracksAll.find((t) => t.id === s.id)!;
+    } else if (s.type.toLowerCase() === "artist") {
+      return artistsAll.find((a) => a.id === s.id)!;
+    } else {
+      return { id: s.id, type: s.type.toLowerCase(), genre: s.id };
+    }
+  }) as SeedSearchResult[];
+
+  const tracks = data.tracks.map(
+    (track) => tracksAll.find((t) => t.id === track.id)!
+  );
+
+  return {
+    seeds,
+    tracks,
+  };
 }

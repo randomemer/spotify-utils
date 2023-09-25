@@ -7,6 +7,12 @@ declare global {
     refresh_token: string;
   }
 
+  interface BasicTokenResponse {
+    access_token: string;
+    token_type: string;
+    expires_in: number;
+  }
+
   interface RefreshedAccessTokenResponse {
     access_token: string;
     token_type: string;
@@ -14,7 +20,12 @@ declare global {
     expires_in: number;
   }
 
-  interface UserSession {}
+  interface UserSession {
+    user_id: string;
+    refresh_token: string;
+    created_at: number;
+    updated_at: number;
+  }
 
   interface AuthToken {
     access_token: string;
@@ -80,10 +91,15 @@ declare global {
     genre: string;
   }
 
-  type SearchResult =
+  type SeedSearchResult =
     | SpotifyApi.TrackObjectFull
     | SpotifyApi.ArtistObjectFull
     | GenreObject;
+
+  interface RecommendsData {
+    id: string;
+    data: SpotifyApi.RecommendationsObject;
+  }
 }
 
 export {};

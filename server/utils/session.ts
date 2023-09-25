@@ -43,7 +43,7 @@ export async function fetchSession(
 
   // 1. fetch session
   console.time("kv");
-  const session = await kv.get(sessionId);
+  const session = await kv.get<UserSession>(sessionId);
   console.timeEnd("kv");
 
   if (!session) {

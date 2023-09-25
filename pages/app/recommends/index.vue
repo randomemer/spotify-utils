@@ -81,6 +81,7 @@
         <v-card-actions class="seeds-actions">
           <v-btn
             :disabled="seeds.size === 0"
+            :loading="feedPending"
             variant="elevated"
             color="primary"
             @click="generate()"
@@ -96,6 +97,7 @@
 <script setup lang="ts">
 import MiniSearch from "minisearch";
 import _ from "lodash";
+import useAuthStore from "~/store/auth.store";
 
 definePageMeta({
   name: "app:recommends",
@@ -105,19 +107,23 @@ definePageMeta({
 
 useHead({ title: "Recommends | Music Muse" });
 
-const { $spotify } = useNuxtApp();
-
 const miniSearch = new MiniSearch<GenreObject>({
   fields: ["genre"],
   storeFields: ["genre"],
   searchOptions: { fuzzy: 0.5, boost: { genre: 2 } },
 });
 
-const q = ref<string | null>("");
-const filter = ref<SearchResult["type"]>("track");
+// Global composables
+const authStore = useAuthStore();
+const { $spotify, $api } = useNuxtApp();
 
-const seeds = ref<Map<string, SearchResult>>(new Map());
-const results = ref<SearchResult[]>([]);
+// State
+const q = ref<string | null>("");
+const filter = ref<SeedSearchResult["type"]>("track");
+
+const seeds = ref<Map<string, SeedSearchResult>>(new Map());
+const results = ref<SeedSearchResult[]>([]);
+const feedPending = ref(false);
 
 const { data: allGenres } = useAsyncData(
   async () => {
@@ -209,7 +215,7 @@ async function searchGenres() {
   results.value = mappedRes;
 }
 
-function addSeed(seed: SearchResult) {
+function addSeed(seed: SeedSearchResult) {
   if (seeds.value.has(seed.id) || seeds.value.size === 5) return;
   seeds.value.set(seed.id, seed);
 }
@@ -219,8 +225,33 @@ function removeSeed(id: string) {
 }
 
 async function generate() {
+  feedPending.value = true;
   try {
-  } catch (error) {}
+    const [trackSeeds, artistSeeds, genreSeeds] = [[], [], []] as string[][];
+    seeds.value.forEach((val, id) => {
+      if (val.type === "track") trackSeeds.push(id);
+      else if (val.type === "artist") artistSeeds.push(id);
+      else genreSeeds.push(id);
+    });
+
+    const qObj = _.pickBy({
+      seed_tracks: trackSeeds.join(","),
+      seed_genres: genreSeeds.join(","),
+      seed_artists: artistSeeds.join(","),
+    });
+
+    const query = new URLSearchParams(qObj);
+
+    const resp = await $api.get<RecommendsData>(`/api/recommends?${query}`, {
+      headers: { Authorization: `Bearer ${authStore.accessToken}` },
+    });
+    console.log(resp.data);
+
+    await navigateTo(`/app/recommends/${resp.data.id}`);
+  } catch (error) {
+    console.error(error);
+  }
+  feedPending.value = false;
 }
 </script>
 
