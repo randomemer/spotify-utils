@@ -1,4 +1,3 @@
-import axios from "axios";
 import getAdmin from "~/server/utils/firebase";
 import { apiClientPrivate } from "~/server/utils/spotify";
 import { extractBearerToken } from "~/utils/helpers";

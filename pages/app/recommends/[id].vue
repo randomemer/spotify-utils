@@ -3,6 +3,8 @@
 </template>
 
 <script setup lang="ts">
+import useCacheStore from "~/store/cache.store";
+
 definePageMeta({
   name: "app:recommends:id",
   layout: "dashboard",
@@ -13,14 +15,20 @@ useHead({ title: "Recommends | Music Muse" });
 
 const route = useRoute();
 const { $api } = useNuxtApp();
+const cache = useCacheStore();
 
 const { data } = useAsyncData(async () => {
   const id = route.params.id as string;
 
-  // @TODO: add pinia store checking
+  const cached = cache.getCachedRecommend(id);
+  console.log("wwas cached");
+  if (cached) return cached;
 
-  const resp = await $api.get<RecommendsData>("/recommends/" + id);
+  const resp = await $api.get<RecommendsDataFull>("/recommends/" + id);
+  return resp.data;
+});
 
-  // const { getAdmin };
+watchEffect(() => {
+  console.log("data", data.value);
 });
 </script>

@@ -97,6 +97,7 @@
 import MiniSearch from "minisearch";
 import _ from "lodash";
 import useAuthStore from "~/store/auth.store";
+import useCacheStore from "~/store/cache.store";
 
 definePageMeta({
   name: "app:recommends",
@@ -113,6 +114,7 @@ const miniSearch = new MiniSearch<GenreObject>({
 });
 
 // Global composables
+const cache = useCacheStore();
 const authStore = useAuthStore();
 const { $spotify, $api } = useNuxtApp();
 
@@ -196,7 +198,6 @@ watch([filter], () => {
 function onSearch(event: Event) {
   event.preventDefault();
   if (status.value === `pending`) return;
-  console.log(q.value);
   if (!q.value?.trim()) return;
 
   if (filter.value !== "genre") {
@@ -238,13 +239,16 @@ async function generate() {
       seed_genres: genreSeeds.join(","),
       seed_artists: artistSeeds.join(","),
     });
-
     const query = new URLSearchParams(qObj);
+    const resp = await $api.get<RecommendsDataFull>(
+      `/api/recommends?${query}`,
+      {
+        headers: { Authorization: `Bearer ${authStore.accessToken}` },
+      }
+    );
 
-    const resp = await $api.get<RecommendsData>(`/api/recommends?${query}`, {
-      headers: { Authorization: `Bearer ${authStore.accessToken}` },
-    });
-    console.log(resp.data);
+    // Cache to pinia store to avoid network calls again in next route
+    cache.cacheRecommendData(resp.data);
 
     await navigateTo(`/app/recommends/${resp.data.id}`);
   } catch (error) {

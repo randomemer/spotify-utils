@@ -100,6 +100,18 @@ declare global {
     id: string;
     data: SpotifyApi.RecommendationsObject;
   }
+
+  interface RecommendsDataFull {
+    id: string;
+    data: {
+      seeds: SeedSearchResult[];
+      tracks: SpotifyApi.TrackObjectFull[];
+    };
+  }
+
+  interface CacheStoreState {
+    recommends: Record<string, RecommendsDataFull | undefined>;
+  }
 }
 
 export {};
