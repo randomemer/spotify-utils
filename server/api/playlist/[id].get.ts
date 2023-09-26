@@ -45,12 +45,7 @@ export default defineEventHandler(async (event) => {
     return docSnapshot;
   }
 
-  const spotifyApi = axios.create({
-    baseURL: "https://api.spotify.com/v1",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const spotifyApi = apiClientPrivate(token);
 
   // 2. Get playlist details
   const playlistResp = await spotifyApi.get<SpotifyApi.PlaylistObjectFull>(

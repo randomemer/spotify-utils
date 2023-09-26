@@ -7,8 +7,9 @@
     <v-card-text :class="$style.card_content">
       <p>You've explored about {{ genreSum }} genres</p>
       <GenresChart
+        v-if="genres"
         id="top-genres-chart"
-        :genres="genres!"
+        :genres="genres"
         :chart-options="chartOptions"
       />
     </v-card-text>

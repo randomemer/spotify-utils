@@ -1,5 +1,6 @@
 <template>
-  <v-layout>
+  <v-app>
+    <NuxtLoadingIndicator />
     <TheAppSidebar />
     <TheAppbar />
     <v-main>
@@ -7,7 +8,7 @@
         <slot></slot>
       </div>
     </v-main>
-  </v-layout>
+  </v-app>
 </template>
 
 <style scoped>

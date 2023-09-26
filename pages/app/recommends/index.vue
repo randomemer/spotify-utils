@@ -13,18 +13,17 @@
             :loading="status === `pending`"
             v-model="q"
           />
+          <v-chip-group filter mandatory v-model="filter" class="chips">
+            <v-chip
+              v-for="item in SPOTIFY_SEARCH_FILTERS"
+              color="primary"
+              size="large"
+              :key="item.value"
+              :text="item.label"
+              :value="item.value"
+            />
+          </v-chip-group>
         </form>
-
-        <v-chip-group filter mandatory v-model="filter" class="chips">
-          <v-chip
-            v-for="item in SPOTIFY_SEARCH_FILTERS"
-            color="primary"
-            size="large"
-            :key="item.value"
-            :text="item.label"
-            :value="item.value"
-          />
-        </v-chip-group>
 
         <template v-if="filter === `genre` || status === `success`">
           <v-list
@@ -279,10 +278,21 @@ async function generate() {
   }
 }
 
+.search-pane {
+  form {
+    z-index: 4;
+    position: sticky;
+    top: calc(var(--v-layout-top));
+    padding-top: 2rem;
+    margin-top: -2rem;
+    background-color: rgb(var(--v-theme-background));
+  }
+}
+
 .seeds-card {
   align-self: flex-start;
   position: sticky;
-  top: 0;
+  top: calc(var(--v-layout-top) + 2rem);
 
   :deep(.v-card-text) {
     padding-bottom: 0;

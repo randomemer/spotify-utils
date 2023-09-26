@@ -6,8 +6,9 @@
 
     <v-card-text>
       <FeaturesChart
+        v-if="features"
         id="features-chart"
-        :features="features!"
+        :features="features"
         :chart-options="chartOptions"
       />
     </v-card-text>

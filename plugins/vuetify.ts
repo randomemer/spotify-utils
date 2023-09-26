@@ -1,6 +1,7 @@
 import { createVuetify } from "vuetify";
 import {
   VBtn,
+  VApp,
   VLayout,
   VAppBar,
   VNavigationDrawer,
@@ -79,6 +80,7 @@ export default defineNuxtPlugin({
         VSlideXTransition,
         VChipGroup,
         VChip,
+        VApp,
       },
     });
 
