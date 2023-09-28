@@ -9,3 +9,22 @@ export default function getAdmin(serviceAccKey: string) {
 
   return admin;
 }
+
+export async function createUserIfNotExists(
+  serviceAccKey: string,
+  profile: SpotifyApi.CurrentUsersProfileResponse
+) {
+  const db = getAdmin(serviceAccKey).firestore();
+
+  await db.runTransaction(async (trx) => {
+    const docRef = db.doc(`users/${profile.id}`);
+    const docSnap = await trx.get(docRef);
+
+    if (docSnap.exists && docSnap.data()) return;
+
+    trx.create(docRef, {
+      display_name: profile.display_name,
+      friends: [],
+    });
+  });
+}

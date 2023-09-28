@@ -3,10 +3,11 @@ import useAuthStore from "~/store/auth.store";
 
 export default defineNuxtPlugin({
   parallel: true,
-  setup: (nuxtApp) => {
+  setup: () => {
     return {
       provide: {
         api: axios.create({
+          baseURL: "/api",
           withCredentials: true,
         }),
         spotify: axios.create({ baseURL: "https://api.spotify.com/v1" }),

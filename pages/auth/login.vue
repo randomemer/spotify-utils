@@ -10,7 +10,7 @@ const authStore = useAuthStore();
 
 useAsyncData(
   async (ctx) => {
-    const resp = await $api.get<LoginResp>("/api/auth/login");
+    const resp = await $api.get<LoginResp>("/auth/login");
 
     switch (resp.data.status) {
       case "redirect":
@@ -19,10 +19,11 @@ useAsyncData(
 
       case "success":
         authStore.setToken(resp.data.payload);
-        await ctx?.$router.replace("/app");
+        await ctx?.$router.replace("/app/dashboard");
         break;
 
       default:
+        throw new Error("Something went wrong");
         break;
     }
   },

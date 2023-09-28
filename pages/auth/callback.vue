@@ -40,13 +40,17 @@ onServerPrefetch(async () => {
     );
 
     // 2. Create a new session and save tokens to data store
-    await createSession(event, env as any, tokenResp.data);
+    await createSession(event, env, tokenResp.data);
     const expiry = Date.now() + tokenResp.data.expires_in * 1000;
     authStore.setToken({
       access_token: tokenResp.data.access_token,
       expiry,
     });
-    await callWithNuxt(nuxtApp, navigateTo, ["/app", { replace: true }]);
+
+    await callWithNuxt(nuxtApp, navigateTo, [
+      "/app/dashboard",
+      { replace: true },
+    ]);
   } catch (error) {
     console.error(error);
     await callWithNuxt(nuxtApp, navigateTo, ["/500", { replace: true }]);

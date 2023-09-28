@@ -31,7 +31,7 @@ export default defineNuxtRouteMiddleware(async () => {
     if (process.client) {
       console.time("fetch_session_client");
       try {
-        const resp = await $api.get<AuthToken>("/api/auth/token");
+        const resp = await $api.get<AuthToken>("/auth/token");
         authStore.setToken(resp.data);
       } catch (error) {
         if (error instanceof AxiosError) {

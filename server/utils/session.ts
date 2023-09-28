@@ -1,36 +1,46 @@
+import { kv } from "@vercel/kv";
 import axios from "axios";
 import { setCookie, type H3Event } from "h3";
-import SpotifyWebApi from "spotify-web-api-js";
-import { kv } from "@vercel/kv";
+import type { RuntimeConfig } from "nuxt/schema";
+import type {} from "spotify-web-api-js";
+import getAdmin, { createUserIfNotExists } from "./firebase";
 
 export async function createSession(
   event: H3Event,
-  config: Record<string, string>,
+  config: RuntimeConfig,
   tokenData: AccessTokenResponse
 ) {
+  console.time("create-session");
+  // 1. Get user data from spotify
   const userResp = await axios.get<SpotifyApi.CurrentUsersProfileResponse>(
     "https://api.spotify.com/v1/me",
     {
       headers: { Authorization: `Bearer ${tokenData.access_token}` },
     }
   );
+  const profile = userResp.data;
 
+  // 2. Create a session in kv redis
   const ts = Date.now();
-
   const session = {
-    user_id: userResp.data.id,
+    user_id: profile.id,
     refresh_token: tokenData.refresh_token,
     created_at: ts,
     updated_at: ts,
   };
-
-  const kvRes = await kv.set(userResp.data.id, session);
+  const kvRes = await kv.set(profile.id, session);
   console.log("kvRes", kvRes);
 
+  // 3. Set account info (if not present)
+  const { serviceAccKey } = config;
+  await createUserIfNotExists(serviceAccKey, profile);
+
+  // 4. Set cookie with session details
   setCookie(event, "session_id", userResp.data.id, {
     httpOnly: true,
     maxAge: 30 * 24 * 60 * 60,
   });
+  console.timeEnd("create-session");
 }
 
 export async function fetchSession(
