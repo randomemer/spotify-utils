@@ -240,12 +240,9 @@ async function generate() {
       seed_artists: artistSeeds.join(","),
     });
     const query = new URLSearchParams(qObj);
-    const resp = await $api.get<RecommendsDataFull>(
-      `/api/recommends?${query}`,
-      {
-        headers: { Authorization: `Bearer ${authStore.accessToken}` },
-      }
-    );
+    const resp = await $api.get<RecommendsDataFull>(`/recommends?${query}`, {
+      headers: { Authorization: `Bearer ${authStore.accessToken}` },
+    });
 
     // Cache to pinia store to avoid network calls again in next route
     cache.cacheRecommendData(resp.data);

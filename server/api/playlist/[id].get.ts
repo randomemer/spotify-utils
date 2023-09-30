@@ -84,7 +84,7 @@ export default defineEventHandler(async (event) => {
     selectedFeatures: appConfig.audioFeatures,
   });
 
-  const resp: PlaylistAnalysisResponse = {
+  const resp: PlaylistDocument = {
     playlist_id: id,
     snapshot_id: playlistResp.data.snapshot_id,
     analysis,

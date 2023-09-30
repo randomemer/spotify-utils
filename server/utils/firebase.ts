@@ -10,21 +10,26 @@ export default function getAdmin(serviceAccKey: string) {
   return admin;
 }
 
-export async function createUserIfNotExists(
+export async function createUser(
   serviceAccKey: string,
   profile: SpotifyApi.CurrentUsersProfileResponse
 ) {
   const db = getAdmin(serviceAccKey).firestore();
 
-  await db.runTransaction(async (trx) => {
+  try {
     const docRef = db.doc(`users/${profile.id}`);
-    const docSnap = await trx.get(docRef);
-
-    if (docSnap.exists && docSnap.data()) return;
-
-    trx.create(docRef, {
-      display_name: profile.display_name,
+    const docData: UserDocument = {
+      username: profile.id,
+      display_name: profile.display_name ?? "",
       friends: [],
-    });
-  });
+    };
+
+    await docRef.create(docData);
+  } catch (error) {
+    if (!(error instanceof Error)) return;
+    // Firebase does not provide an instance class to check the
+    // error's instance type, hence using this hack instead
+    if (error.message.includes("ALREADY_EXISTS")) return;
+    throw error;
+  }
 }

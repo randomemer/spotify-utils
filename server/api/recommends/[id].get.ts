@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     const db = getAdmin(serviceAccKey).firestore();
 
     const docRef = await db.doc(`recommends/${params!.id}`).get();
-    const docData = docRef.data()!;
+    const docData = docRef.data() as RecommendsDocumentSerialized;
 
     // 2. Get spotify client
     const spotifyApi = await apiClientPublic(

@@ -3,7 +3,7 @@ import axios from "axios";
 import { setCookie, type H3Event } from "h3";
 import type { RuntimeConfig } from "nuxt/schema";
 import type {} from "spotify-web-api-js";
-import getAdmin, { createUserIfNotExists } from "./firebase";
+import { createUser } from "./firebase";
 
 export async function createSession(
   event: H3Event,
@@ -33,7 +33,7 @@ export async function createSession(
 
   // 3. Set account info (if not present)
   const { serviceAccKey } = config;
-  await createUserIfNotExists(serviceAccKey, profile);
+  createUser(serviceAccKey, profile);
 
   // 4. Set cookie with session details
   setCookie(event, "session_id", userResp.data.id, {

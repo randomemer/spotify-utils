@@ -1,37 +1,4 @@
 declare global {
-  interface AccessTokenResponse {
-    access_token: string;
-    token_type: string;
-    scope: string;
-    expires_in: number;
-    refresh_token: string;
-  }
-
-  interface BasicTokenResponse {
-    access_token: string;
-    token_type: string;
-    expires_in: number;
-  }
-
-  interface RefreshedAccessTokenResponse {
-    access_token: string;
-    token_type: string;
-    scope: string;
-    expires_in: number;
-  }
-
-  interface UserSession {
-    user_id: string;
-    refresh_token: string;
-    created_at: number;
-    updated_at: number;
-  }
-
-  interface AuthToken {
-    access_token: string;
-    expiry: number;
-  }
-
   interface AuthState {
     token: AuthToken | null;
   }
@@ -67,13 +34,6 @@ declare global {
     genres: { diversity_index: number; counts: Record<string, number> };
     avg_popularity: number;
     avg_track_length: number;
-  }
-
-  interface PlaylistAnalysisResponse {
-    playlist_id: string;
-    snapshot_id: string;
-    analysis: PlaylistAnalysis;
-    artists: ArtistItemData[];
   }
 
   interface CreatePlaylistAnalysisInput {

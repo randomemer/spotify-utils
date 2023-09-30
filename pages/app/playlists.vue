@@ -141,7 +141,7 @@ const inputMessage = ref("");
 const playlist = ref<SpotifyApi.PlaylistObjectFull | null>(null);
 
 const analysisStatus = ref("");
-const analysis = ref<PlaylistAnalysisResponse | null>(null);
+const analysis = ref<PlaylistDocument | null>(null);
 
 const avgDuration = computed(() => {
   const ms = analysis.value?.analysis.avg_track_length;
@@ -201,8 +201,8 @@ async function getPlaylistAnalysis() {
       snapshot_id: list.snapshot_id,
     });
 
-    const resp = await $api.get<PlaylistAnalysisResponse>(
-      `/api/playlist/${list.id}?${query}`,
+    const resp = await $api.get<PlaylistDocument>(
+      `/playlist/${list.id}?${query}`,
       {
         headers: { Authorization: `Bearer ${authStore.token?.access_token}` },
       }
