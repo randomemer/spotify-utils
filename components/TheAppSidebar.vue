@@ -20,7 +20,7 @@
           :active="$route.name?.toString().startsWith(link.route)"
           :key="link.route"
           :value="link.route"
-          v-for="link in links"
+          v-for="link in NAV_LINKS"
           class="nav-link"
           @click="onRouteClicked(link.route)"
         >
@@ -35,37 +35,11 @@
 </template>
 
 <script setup lang="ts">
+import { NAV_LINKS } from "~/utils/constants";
+
 const isOpen = ref(true);
 const isTemporary = ref(false);
 const router = useRouter();
-
-const links = [
-  {
-    icon: "view-grid",
-    label: "Dashboard",
-    route: "app:dashboard",
-  },
-  {
-    icon: "account-circle",
-    label: "Account",
-    route: "app:account",
-  },
-  {
-    icon: "clock",
-    label: "History",
-    route: "app:history",
-  },
-  {
-    icon: "magnify",
-    label: "Recommends",
-    route: "app:recommends",
-  },
-  {
-    icon: "playlist-music",
-    label: "Playlists",
-    route: "app:playlists",
-  },
-];
 
 function onRouteClicked(route: string) {
   router.push({ name: route });

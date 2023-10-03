@@ -238,6 +238,7 @@ async function generate() {
       seed_tracks: trackSeeds.join(","),
       seed_genres: genreSeeds.join(","),
       seed_artists: artistSeeds.join(","),
+      limit: "100",
     });
     const query = new URLSearchParams(qObj);
     const resp = await $api.get<RecommendsDataFull>(`/recommends?${query}`, {

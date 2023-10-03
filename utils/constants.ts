@@ -13,3 +13,31 @@ export const SPOTIFY_SEARCH_FILTERS = [
   { label: "Artists", value: "artist" },
   { label: "Genres", value: "genre" },
 ] as const;
+
+export const NAV_LINKS = [
+  {
+    icon: "view-grid",
+    label: "Dashboard",
+    route: "app:dashboard",
+  },
+  {
+    icon: "account-circle",
+    label: "Account",
+    route: "app:account",
+  },
+  {
+    icon: "clock",
+    label: "History",
+    route: "app:history",
+  },
+  {
+    icon: "magnify",
+    label: "Recommends",
+    route: "app:recommends",
+  },
+  {
+    icon: "playlist-music",
+    label: "Playlists",
+    route: "app:playlists",
+  },
+];

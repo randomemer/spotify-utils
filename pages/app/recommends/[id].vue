@@ -13,19 +13,46 @@
       <SeedsCard v-if="data" :seeds="data.data.seeds" />
     </div>
 
-    <SpeedDial class="fabs">
-      <template #fab>
+    <div class="fabs">
+      <v-tooltip text="Save as playlist" #activator="{ props: tooltipProps }">
         <v-btn
+          v-bind:="tooltipProps"
           color="secondary"
-          size="large"
           variant="elevated"
-          icon="mdi-share-variant"
+          icon="mdi-content-save"
+          @click="isSaveOpen = true"
         />
-      </template>
-      <template #actions>
-        <v-btn color="secondary" variant="elevated" icon="mdi-content-save" />
-      </template>
-    </SpeedDial>
+      </v-tooltip>
+
+      <SpeedDial>
+        <template #fab>
+          <v-tooltip text="Share" #activator="{ props: tooltipProps }">
+            <v-btn
+              v-bind="tooltipProps"
+              color="secondary"
+              variant="elevated"
+              icon="mdi-share-variant"
+            />
+          </v-tooltip>
+        </template>
+        <template #actions>
+          <v-btn
+            size="small"
+            color="secondary"
+            variant="elevated"
+            icon="mdi-facebook"
+          />
+          <v-btn
+            size="small"
+            color="secondary"
+            variant="elevated"
+            icon="mdi-twitter"
+          />
+        </template>
+      </SpeedDial>
+    </div>
+
+    <SavePlaylistDialog v-model="isSaveOpen" />
   </NuxtLayout>
 </template>
 
@@ -43,6 +70,7 @@ useHead({ title: "Recommends | Music Muse" });
 const route = useRoute();
 const { $api } = useNuxtApp();
 const cache = useCacheStore();
+const isSaveOpen = ref(false);
 
 const { data, error } = useAsyncData(async () => {
   const id = route.params.id as string;
@@ -51,15 +79,7 @@ const { data, error } = useAsyncData(async () => {
   if (cached) return cached;
 
   const resp = await $api.get<RecommendsDataFull>(`/recommends/${id}`);
-  console.log("from backend", resp.data);
   return resp.data;
-});
-
-console.log(error.value);
-
-watchEffect(() => {
-  // console.log("data", data.value);
-  console.log("err", error.value);
 });
 </script>
 
@@ -80,5 +100,9 @@ watchEffect(() => {
   position: fixed;
   bottom: 1.5rem;
   right: 1.5rem;
+
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 1rem;
 }
 </style>

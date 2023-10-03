@@ -25,6 +25,10 @@ import {
   VChip,
   VFabTransition,
   VHover,
+  VDialog,
+  VTextarea,
+  VImg,
+  VCheckbox,
 } from "vuetify/components";
 import {
   Chart as ChartJS,
@@ -85,6 +89,10 @@ export default defineNuxtPlugin({
         VChip,
         VApp,
         VHover,
+        VDialog,
+        VTextarea,
+        VImg,
+        VCheckbox,
       },
     });
 
