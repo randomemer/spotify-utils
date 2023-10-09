@@ -52,7 +52,11 @@
       </SpeedDial>
     </div>
 
-    <SavePlaylistDialog v-model="isSaveOpen" />
+    <SavePlaylistDialog
+      v-model="isSaveOpen"
+      default-desc="My recommendations from Music Muse"
+      :tracks="data?.data.tracks ?? []"
+    />
   </NuxtLayout>
 </template>
 

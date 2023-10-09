@@ -23,7 +23,8 @@
     "pinia": "^2.1.6",
     "spotify-web-api-js": "^1.5.2",
     "vue-chartjs": "^5.2.0",
-    "vuetify": "^3.3.16"
+    "vuetify": "^3.3.16",
+    "vuetify-toast-snackbar": "^0.6.1"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",

@@ -1,10 +1,10 @@
 import { AxiosError } from "axios";
-import useAuthStore from "~/store/auth.store";
+import useUserStore from "~/store/user.store";
 import { H3Error, getCookie } from "h3";
 
 export default defineNuxtRouteMiddleware(async () => {
   const { $api, $pinia, $config } = useNuxtApp();
-  const authStore = useAuthStore($pinia);
+  const authStore = useUserStore($pinia);
 
   const { token } = authStore;
   if (!token || token.expiry <= Date.now()) {

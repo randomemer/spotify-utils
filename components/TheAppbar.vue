@@ -12,16 +12,15 @@
 </template>
 
 <script setup lang="ts">
+import useUserStore from "~/store/user.store";
 import { NAV_LINKS } from "~/utils/constants";
 
 const route = useRoute();
 const { $spotify } = useNuxtApp();
+const userStore = useUserStore();
 
 const { data: profile, error } = useAsyncData(async () => {
-  const resp = await $spotify.get<SpotifyApi.CurrentUsersProfileResponse>(
-    "/me"
-  );
-  return resp.data;
+  return await userStore.fetchSpotifyProfile($spotify);
 });
 
 const pfp = computed(() => profile.value?.images?.at(-1)?.url);

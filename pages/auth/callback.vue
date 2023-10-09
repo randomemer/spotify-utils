@@ -5,12 +5,12 @@
 <script setup lang="ts">
 import axios from "axios";
 import { callWithNuxt } from "nuxt/app";
-import useAuthStore from "~/store/auth.store";
+import useUserStore from "~/store/user.store";
 
 const nuxtApp = useNuxtApp();
 const route = useRoute();
 const env = useRuntimeConfig();
-const authStore = useAuthStore();
+const authStore = useUserStore();
 const event = useRequestEvent();
 
 onServerPrefetch(async () => {

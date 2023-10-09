@@ -124,7 +124,7 @@ import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import _ from "lodash";
 import GenresChart from "~/components/GenresChart.vue";
-import useAuthStore from "~/store/auth.store";
+import useUserStore from "~/store/user.store";
 
 definePageMeta({ name: "app:playlists", middleware: "auth" });
 
@@ -133,7 +133,7 @@ useHead({ title: "Playlists | Music Muse" });
 dayjs.extend(duration);
 
 const { $api, $spotify } = useNuxtApp();
-const authStore = useAuthStore();
+const authStore = useUserStore();
 
 const url = ref("");
 const inputStatus = ref("idle");

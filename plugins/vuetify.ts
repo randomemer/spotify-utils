@@ -29,6 +29,7 @@ import {
   VTextarea,
   VImg,
   VCheckbox,
+  VSnackbar,
 } from "vuetify/components";
 import {
   Chart as ChartJS,
@@ -40,6 +41,8 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
+import VuetifyToast from "vuetify-toast-snackbar";
+import { app } from "firebase-admin";
 
 export default defineNuxtPlugin({
   parallel: true,
@@ -93,13 +96,16 @@ export default defineNuxtPlugin({
         VTextarea,
         VImg,
         VCheckbox,
+        VSnackbar,
       },
     });
 
     nuxtApp.vueApp.use(vuetify);
   },
   hooks: {
-    "app:created": () => {
+    "app:created": (app) => {
+      app.use(VuetifyToast);
+
       ChartJS.register(
         RadialLinearScale,
         ArcElement,

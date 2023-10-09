@@ -96,7 +96,7 @@
 <script setup lang="ts">
 import MiniSearch from "minisearch";
 import _ from "lodash";
-import useAuthStore from "~/store/auth.store";
+import useUserStore from "~/store/user.store";
 import useCacheStore from "~/store/cache.store";
 
 definePageMeta({
@@ -115,7 +115,7 @@ const miniSearch = new MiniSearch<GenreObject>({
 
 // Global composables
 const cache = useCacheStore();
-const authStore = useAuthStore();
+const authStore = useUserStore();
 const { $spotify, $api } = useNuxtApp();
 
 // State

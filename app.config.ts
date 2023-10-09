@@ -8,6 +8,8 @@ export default defineAppConfig({
     "speechiness",
   ],
   scopes: [
+    // cover images
+    "ugc-image-upload",
     // playlist
     "playlist-read-private",
     "playlist-read-collaborative",

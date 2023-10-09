@@ -1,5 +1,5 @@
 import axios from "axios";
-import useAuthStore from "~/store/auth.store";
+import useUserStore from "~/store/user.store";
 
 export default defineNuxtPlugin({
   parallel: true,
@@ -16,7 +16,7 @@ export default defineNuxtPlugin({
   },
   hooks: {
     "app:created": ({ $nuxt }) => {
-      const authStore = useAuthStore();
+      const authStore = useUserStore();
 
       $nuxt.$spotify.interceptors.request.use((config) => {
         config.headers.Authorization = `Bearer ${authStore.token?.access_token}`;

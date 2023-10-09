@@ -3,10 +3,10 @@
 </template>
 
 <script setup lang="ts">
-import useAuthStore from "~/store/auth.store";
+import useUserStore from "~/store/user.store";
 
 const { $api } = useNuxtApp();
-const authStore = useAuthStore();
+const authStore = useUserStore();
 
 useAsyncData(
   async (ctx) => {

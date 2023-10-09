@@ -1,6 +1,7 @@
 declare global {
-  interface AuthState {
+  interface UserState {
     token: AuthToken | null;
+    spotifyProfile: SpotifyApi.CurrentUsersProfileResponse | null;
   }
 
   type LoginResp =

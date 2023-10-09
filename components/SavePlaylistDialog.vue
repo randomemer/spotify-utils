@@ -1,5 +1,5 @@
 <template>
-  <v-dialog max-width="600px">
+  <v-dialog max-width="37.5rem">
     <v-card>
       <v-card-title>Save Playlist</v-card-title>
 
@@ -14,12 +14,13 @@
               <input
                 id="playlist-img"
                 type="file"
-                accept="image/*"
+                accept="image/jpeg"
                 @input="onImageInput($event)"
               />
             </label>
 
             <v-checkbox
+              class="align-self-center"
               density="compact"
               v-model="isPublic"
               true-icon="mdi-eye"
@@ -29,22 +30,60 @@
           </div>
 
           <div class="text-fields">
-            <v-text-field color="primary" density="compact" label="Name" />
-            <v-textarea color="primary" density="compact" label="Description" />
+            <v-text-field
+              v-model="name"
+              color="primary"
+              density="compact"
+              label="Name"
+            />
+            <v-textarea
+              v-model="desc"
+              color="primary"
+              density="compact"
+              label="Description"
+            />
           </div>
         </form>
       </v-card-text>
 
       <v-card-actions class="justify-end pa-4">
-        <v-btn color="primary" variant="flat">Save</v-btn>
+        <v-btn
+          :loading="saving"
+          color="primary"
+          variant="flat"
+          @click="onSave()"
+        >
+          Save
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script setup lang="ts">
+import useUserStore from "~/store/user.store";
+// import
+
+interface SavePlaylistDialogProps {
+  defaultDesc?: string | null;
+  tracks: (
+    | SpotifyApi.TrackObjectFull
+    | SpotifyApi.TrackObjectSimplified
+    | SpotifyApi.TrackLinkObject
+  )[];
+}
+
+const props = defineProps<SavePlaylistDialogProps>();
+
+const { $spotify } = useNuxtApp();
+const userStore = useUserStore();
+
 const file = ref<File | null>();
 const isPublic = ref(true);
+const name = ref("");
+const desc = ref(props.defaultDesc ?? "");
+
+const saving = ref(false);
 
 const img = computed(() => {
   if (!file.value) return;
@@ -54,6 +93,47 @@ const img = computed(() => {
 function onImageInput(event: Event) {
   const input = event.target as HTMLInputElement;
   file.value = input.files?.item(0);
+}
+
+async function onSave() {
+  saving.value = true;
+  try {
+    // 1. Create playlist
+    const { data: playlist } = await $spotify.post(
+      `/users/${userStore.spotifyProfile!.id}/playlists`,
+      {
+        name: name.value,
+        public: isPublic.value,
+        description: desc.value,
+      }
+    );
+    console.log(playlist);
+
+    // 2. Add cover image (if provided)
+    if (file.value) {
+      const imgData = await imgBase64(file.value);
+      await $spotify.post("/playlists/{playlist_id}/images", imgData);
+    }
+
+    // 3. Add tracks
+    const uris = props.tracks.map((track) => track.uri);
+    await $spotify.post(`/playlists/${playlist.id}/tracks`, uris);
+  } catch (error) {
+    console.error(error);
+  }
+  saving.value = false;
+}
+
+async function imgBase64(file: Blob) {
+  return new Promise<string>((resolve, reject) => {
+    try {
+      const reader = new FileReader();
+      reader.onload = (event) => resolve(event.target!.result as string);
+      reader.readAsDataURL(file);
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 </script>
 
