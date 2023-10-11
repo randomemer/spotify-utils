@@ -4,7 +4,7 @@
       <v-card-title>Save Playlist</v-card-title>
 
       <v-card-text>
-        <form>
+        <form @submit.prevent="onSave()">
           <div class="form-left">
             <label class="playlist-img-label" for="playlist-img">
               <div class="empty-img" v-if="!img">
@@ -62,7 +62,6 @@
 
 <script setup lang="ts">
 import useUserStore from "~/store/user.store";
-// import
 
 interface SavePlaylistDialogProps {
   defaultDesc?: string | null;
@@ -92,27 +91,36 @@ const img = computed(() => {
 
 function onImageInput(event: Event) {
   const input = event.target as HTMLInputElement;
-  file.value = input.files?.item(0);
+  const temp = input.files?.item(0);
+
+  if (!temp) return;
+  if (temp.size > 256_000) {
+    // @TODO : Show an error snackbar
+    return;
+  }
+
+  file.value = temp;
 }
 
 async function onSave() {
   saving.value = true;
   try {
     // 1. Create playlist
-    const { data: playlist } = await $spotify.post(
-      `/users/${userStore.spotifyProfile!.id}/playlists`,
-      {
-        name: name.value,
-        public: isPublic.value,
-        description: desc.value,
-      }
-    );
+    const { data: playlist } =
+      await $spotify.post<SpotifyApi.CreatePlaylistResponse>(
+        `/users/${userStore.spotifyProfile!.id}/playlists`,
+        {
+          name: name.value,
+          public: isPublic.value,
+          description: desc.value,
+        }
+      );
     console.log(playlist);
 
     // 2. Add cover image (if provided)
     if (file.value) {
       const imgData = await imgBase64(file.value);
-      await $spotify.post("/playlists/{playlist_id}/images", imgData);
+      await $spotify.put(`/playlists/${playlist.id}/images`, imgData);
     }
 
     // 3. Add tracks

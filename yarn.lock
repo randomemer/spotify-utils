@@ -1297,7 +1297,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nuxt/kit@npm:^3.5.0, @nuxt/kit@npm:^3.6.0":
+"@nuxt/kit@npm:^3.5.0":
   version: 3.7.1
   resolution: "@nuxt/kit@npm:3.7.1"
   dependencies:
@@ -2014,22 +2014,6 @@ __metadata:
   version: 3.0.3
   resolution: "@types/linkify-it@npm:3.0.3"
   checksum: a734becc4e7476833b0e6951ec133c006a34809639c722d3e28b7cf88f5f6ccbb433f195788be5e56209b1e9e6e0778879291dd2db401acee3bb585c44dcc329
-  languageName: node
-  linkType: hard
-
-"@types/lodash-es@npm:^4.17.7":
-  version: 4.17.9
-  resolution: "@types/lodash-es@npm:4.17.9"
-  dependencies:
-    "@types/lodash": "*"
-  checksum: a2c7ab8da13892f89ab86b61dd9a0125c767b9db7b9bdaac7fd8508c9fa884bbb19a9760dbdc1e7e698e3322b7a8ba03daa80832371da32a8bd42da0920be838
-  languageName: node
-  linkType: hard
-
-"@types/lodash@npm:*":
-  version: 4.14.198
-  resolution: "@types/lodash@npm:4.14.198"
-  checksum: b290e4480707151bcec738bca40527915defe52a0d8e26c83685c674163a265e1a88cb2ee56b0fb587a89819d0cd5df86ada836aec3e9c2e4bf516e7d348d524
   languageName: node
   linkType: hard
 
@@ -6032,13 +6016,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash-es@npm:^4.17.21":
-  version: 4.17.21
-  resolution: "lodash-es@npm:4.17.21"
-  checksum: 05cbffad6e2adbb331a4e16fbd826e7faee403a1a04873b82b42c0f22090f280839f85b95393f487c1303c8a3d2a010048bf06151a6cbe03eee4d388fb0a12d2
-  languageName: node
-  linkType: hard
-
 "lodash.camelcase@npm:^4.3.0":
   version: 4.3.0
   resolution: "lodash.camelcase@npm:4.3.0"
@@ -7071,26 +7048,13 @@ __metadata:
     lodash: ^4.17.21
     minisearch: ^6.1.0
     nuxt: ^3.7.0
-    nuxt-lodash: ^2.5.0
     pinia: ^2.1.6
     sass: ^1.66.1
     spotify-web-api-js: ^1.5.2
     vue-chartjs: ^5.2.0
     vuetify: ^3.3.16
-    vuetify-toast-snackbar: ^0.6.1
   languageName: unknown
   linkType: soft
-
-"nuxt-lodash@npm:^2.5.0":
-  version: 2.5.0
-  resolution: "nuxt-lodash@npm:2.5.0"
-  dependencies:
-    "@nuxt/kit": ^3.6.0
-    "@types/lodash-es": ^4.17.7
-    lodash-es: ^4.17.21
-  checksum: 38d7d882c512742289a11088af56f1573a5c1fffae66d1a8b0e5db3c35b3a7ad6fa1659f22361a048fd68eb4f60133a370fe8d38581edbb7be92fad63ded2e4d
-  languageName: node
-  linkType: hard
 
 "nuxt@npm:^3.7.0":
   version: 3.7.0
@@ -9824,16 +9788,6 @@ __metadata:
     "@vue/server-renderer": 3.3.4
     "@vue/shared": 3.3.4
   checksum: 58b6c62a66a375ce5df460fcb7ba41b37c8637c635faf06ef472ae4197f412cf9ad83586cd8e3f66c486404fbe8550e694f90ff724a571d1ba78830791099c59
-  languageName: node
-  linkType: hard
-
-"vuetify-toast-snackbar@npm:^0.6.1":
-  version: 0.6.1
-  resolution: "vuetify-toast-snackbar@npm:0.6.1"
-  peerDependencies:
-    vue: "*"
-    vuetify: "*"
-  checksum: 17f72c57cdca96fc713f59746674bddd5ae40d2bfba01c017d2ea56e3be3aa90f00f2e7ca1cef64b7c3056abb99ae5359272d96b36127434648f2576672622c2
   languageName: node
   linkType: hard
 
