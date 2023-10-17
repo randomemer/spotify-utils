@@ -72,7 +72,8 @@ definePageMeta({
 useHead({ title: "Recommends | Music Muse" });
 
 const route = useRoute();
-const { $api } = useNuxtApp();
+const nuxtApp = useNuxtApp();
+const { $api } = nuxtApp;
 const cache = useCacheStore();
 const isSaveOpen = ref(false);
 

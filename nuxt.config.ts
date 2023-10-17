@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ["@pinia/nuxt"],
   css: ["@mdi/font/css/materialdesignicons.min.css"],
-  build: { transpile: ["vuetify"] },
+  build: { transpile: ["vuetify", "vuetify-toast-plugin"] },
   imports: {
     dirs: ["./store"],
   },

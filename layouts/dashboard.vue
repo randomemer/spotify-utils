@@ -1,14 +1,12 @@
 <template>
-  <v-app>
-    <NuxtLoadingIndicator />
-    <TheAppSidebar />
-    <TheAppbar />
-    <v-main>
-      <div class="main-content">
-        <slot></slot>
-      </div>
-    </v-main>
-  </v-app>
+  <NuxtLoadingIndicator />
+  <TheAppSidebar />
+  <TheAppbar />
+  <v-main>
+    <div class="main-content">
+      <slot></slot>
+    </div>
+  </v-main>
 </template>
 
 <style scoped>

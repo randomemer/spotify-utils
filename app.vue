@@ -1,5 +1,8 @@
 <template>
-  <NuxtPage />
+  <v-app>
+    <NuxtPage />
+    <ProvidersToastProvider />
+  </v-app>
 </template>
 
 <style lang="scss">

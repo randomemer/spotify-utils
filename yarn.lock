@@ -7053,6 +7053,7 @@ __metadata:
     spotify-web-api-js: ^1.5.2
     vue-chartjs: ^5.2.0
     vuetify: ^3.3.16
+    vuetify-toast-snackbar: ^0.6.1
   languageName: unknown
   linkType: soft
 
@@ -9788,6 +9789,16 @@ __metadata:
     "@vue/server-renderer": 3.3.4
     "@vue/shared": 3.3.4
   checksum: 58b6c62a66a375ce5df460fcb7ba41b37c8637c635faf06ef472ae4197f412cf9ad83586cd8e3f66c486404fbe8550e694f90ff724a571d1ba78830791099c59
+  languageName: node
+  linkType: hard
+
+"vuetify-toast-snackbar@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "vuetify-toast-snackbar@npm:0.6.1"
+  peerDependencies:
+    vue: "*"
+    vuetify: "*"
+  checksum: 17f72c57cdca96fc713f59746674bddd5ae40d2bfba01c017d2ea56e3be3aa90f00f2e7ca1cef64b7c3056abb99ae5359272d96b36127434648f2576672622c2
   languageName: node
   linkType: hard
 
