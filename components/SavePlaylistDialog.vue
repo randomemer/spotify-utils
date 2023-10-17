@@ -74,7 +74,7 @@ interface SavePlaylistDialogProps {
 
 const props = defineProps<SavePlaylistDialogProps>();
 
-const { $spotify } = useNuxtApp();
+const { $api, $spotify } = useNuxtApp();
 const userStore = useUserStore();
 
 const file = ref<File | null>();
@@ -105,43 +105,24 @@ function onImageInput(event: Event) {
 async function onSave() {
   saving.value = true;
   try {
-    // 1. Create playlist
-    const { data: playlist } =
-      await $spotify.post<SpotifyApi.CreatePlaylistResponse>(
-        `/users/${userStore.spotifyProfile!.id}/playlists`,
-        {
-          name: name.value,
-          public: isPublic.value,
-          description: desc.value,
-        }
-      );
-    console.log(playlist);
-
-    // 2. Add cover image (if provided)
-    if (file.value) {
-      const imgData = await imgBase64(file.value);
-      await $spotify.put(`/playlists/${playlist.id}/images`, imgData);
-    }
-
-    // 3. Add tracks
     const uris = props.tracks.map((track) => track.uri);
-    await $spotify.post(`/playlists/${playlist.id}/tracks`, uris);
+    const data: CreatePlaylistForm = {
+      user_id: userStore.spotifyProfile!.id,
+      name: name.value,
+      public: isPublic.value,
+      description: desc.value,
+      image: file.value,
+      tracks: uris,
+    };
+
+    const resp = await $api.postForm("/playlist", data, {
+      headers: { Authorization: `Bearer ${userStore.token!.access_token}` },
+    });
+    console.log(resp.data);
   } catch (error) {
     console.error(error);
   }
   saving.value = false;
-}
-
-async function imgBase64(file: Blob) {
-  return new Promise<string>((resolve, reject) => {
-    try {
-      const reader = new FileReader();
-      reader.onload = (event) => resolve(event.target!.result as string);
-      reader.readAsDataURL(file);
-    } catch (error) {
-      reject(error);
-    }
-  });
 }
 </script>
 

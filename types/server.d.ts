@@ -65,6 +65,15 @@ declare global {
   }
 
   type ProtectedRoute = string | RegExp | ProtectedRouteObject;
+
+  interface CreatePlaylistForm {
+    user_id: string;
+    name: string;
+    public?: boolean | null;
+    description?: string | null;
+    tracks: string[];
+    image?: File | null;
+  }
 }
 
 export {};
