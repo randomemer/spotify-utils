@@ -1,26 +1,18 @@
-import axios from "axios";
+import _ from "lodash";
 import getAdmin from "~/server/utils/firebase";
-import { extractBearerToken, createPlaylistAnalysis } from "~/utils/helpers";
+import { createPlaylistAnalysis } from "~/utils/helpers";
 import {
   getAllItems,
   getTracksArtists,
   getTracksAudioFeatures,
 } from "~/utils/services";
-import _ from "lodash";
 
 export default defineEventHandler(async (event) => {
   const id = event.context.params?.id;
-  const token = extractBearerToken(event.headers.get("Authorization"));
+  const token = event.context.token;
 
   const query = getQuery(event);
   const snapshot_id = query.snapshot_id?.toString();
-
-  if (!token) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: "Invalid or absent token",
-    });
-  }
 
   if (!id) {
     throw createError({

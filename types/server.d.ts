@@ -1,3 +1,5 @@
+import { HTTPMethod } from "h3";
+
 declare global {
   // Auth
   interface AccessTokenResponse {
@@ -56,6 +58,13 @@ declare global {
     analysis: PlaylistAnalysis;
     artists: ArtistItemData[];
   }
+
+  interface ProtectedRouteObject {
+    path: string;
+    methods?: HTTPMethod[];
+  }
+
+  type ProtectedRoute = string | RegExp | ProtectedRouteObject;
 }
 
 export {};

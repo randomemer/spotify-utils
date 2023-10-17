@@ -1,18 +1,10 @@
 import getAdmin from "~/server/utils/firebase";
 import { apiClientPrivate } from "~/server/utils/spotify";
-import { extractBearerToken } from "~/utils/helpers";
 import { getFullRecommendsData } from "~/utils/services";
 
 export default defineEventHandler(async (event) => {
+  const token: string = event.context.token;
   const query = event.path.split("?").at(-1);
-  const token = extractBearerToken(event.headers.get("Authorization"));
-
-  if (!token) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: "Invalid or absent token",
-    });
-  }
 
   if (!query) {
     throw createError({

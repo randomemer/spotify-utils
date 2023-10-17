@@ -2017,6 +2017,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash@npm:^4.14.199":
+  version: 4.14.199
+  resolution: "@types/lodash@npm:4.14.199"
+  checksum: e68d1fcbbfce953ed87b296a628573f62939227bcda0c934954e862b421e8a34c5e71cad6fea27b9980567909e6a4698f09025692958e36d64ea9ed99ec6fb2e
+  languageName: node
+  linkType: hard
+
 "@types/long@npm:^4.0.0":
   version: 4.0.2
   resolution: "@types/long@npm:4.0.2"
@@ -7039,6 +7046,7 @@ __metadata:
     "@mdi/font": ^7.2.96
     "@nuxt/devtools": latest
     "@pinia/nuxt": ^0.4.11
+    "@types/lodash": ^4.14.199
     "@vercel/kv": ^0.2.3
     axios: ^1.5.0
     chart.js: ^4.4.0
