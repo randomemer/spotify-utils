@@ -29,7 +29,7 @@ const chartData = computed<ChartData<"pie">>(() => {
   const maxItems = _.clamp(entries.length, 0, 10);
   labels.splice(maxItems);
   counts.splice(maxItems);
-  const colors = chartColors.value.splice(0, maxItems);
+  const colors = chartColors.value.slice(0, maxItems);
 
   if (entries.length > 10) {
     labels.push("other");
@@ -46,7 +46,10 @@ const chartData = computed<ChartData<"pie">>(() => {
 });
 
 onMounted(() => {
-  chartColors.value = getChartColors("darken3");
+  const colours = getChartColors("darken3");
+  chartColors.value = colours;
+  console.log("hot computed", colours);
+  console.log("chart colors :", chartColors.value);
   configureChart();
 });
 
@@ -66,6 +69,7 @@ function configureChart() {
       },
     },
   };
+  // @ts-ignore
   chartOptions.value = _.merge(defaultOptions, props.chartOptions);
 }
 </script>
