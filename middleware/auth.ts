@@ -8,7 +8,7 @@ export default defineNuxtRouteMiddleware(async () => {
 
   const { token } = authStore;
   if (!token || token.expiry <= Date.now()) {
-    // Server Rutntime
+    // Server Runtime
     if (process.server) {
       console.time("fetch_session_server");
       try {

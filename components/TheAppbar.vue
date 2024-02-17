@@ -5,7 +5,7 @@
     </template>
     <template #append>
       <v-btn icon variant="text" color="primary">
-        <v-avatar :image="pfp" />
+        <v-avatar size="36" :image="pfp" />
       </v-btn>
     </template>
   </v-app-bar>

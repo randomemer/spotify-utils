@@ -40,6 +40,7 @@ declare global {
     username: string;
     display_name: string;
     friends: string[];
+    created_at: number;
   }
 
   interface RecommendsDocument {
@@ -59,12 +60,14 @@ declare global {
     artists: ArtistItemData[];
   }
 
+  type PathLike = string | RegExp;
+
   interface ProtectedRouteObject {
-    path: string;
+    path: PathLike;
     methods?: HTTPMethod[];
   }
 
-  type ProtectedRoute = string | RegExp | ProtectedRouteObject;
+  type ProtectedRoute = PathLike | ProtectedRouteObject;
 
   interface CreatePlaylistForm {
     user_id: string;

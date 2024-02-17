@@ -24,7 +24,6 @@ useAsyncData(
 
       default:
         throw new Error("Something went wrong");
-        break;
     }
   },
   { server: false }

@@ -26,6 +26,11 @@ export const NAV_LINKS = [
     route: "app:account",
   },
   {
+    icon: "account-multiple",
+    label: "Friends",
+    route: "friends",
+  },
+  {
     icon: "clock",
     label: "History",
     route: "app:history",

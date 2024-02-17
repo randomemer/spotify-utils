@@ -47,4 +47,9 @@ export default defineNuxtConfig({
       origin: process.env.ORIGIN,
     },
   },
+  nitro: {
+    hooks: {
+      "dev:reload": () => require("sharp"),
+    },
+  },
 });
