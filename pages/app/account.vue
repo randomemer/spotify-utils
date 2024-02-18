@@ -15,6 +15,7 @@
           v-model="username"
           type="text"
           color="primary"
+          variant="solo-filled"
           density="compact"
           label="Username"
           :disabled="isSavingUsername"

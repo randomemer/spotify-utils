@@ -30,6 +30,10 @@ import {
   VImg,
   VCheckbox,
   VSnackbar,
+  VTabs,
+  VTab,
+  VWindow,
+  VWindowItem,
 } from "vuetify/components";
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -83,6 +87,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       VImg,
       VCheckbox,
       VSnackbar,
+      VTabs,
+      VTab,
+      VWindow,
+      VWindowItem,
     },
   });
 
