@@ -48,8 +48,8 @@ const chartData = computed<ChartData<"pie">>(() => {
 onMounted(() => {
   const colours = getChartColors("darken3");
   chartColors.value = colours;
-  console.log("hot computed", colours);
-  console.log("chart colors :", chartColors.value);
+  // console.log("hot computed", colours);
+  // console.log("chart colors :", chartColors.value);
   configureChart();
 });
 

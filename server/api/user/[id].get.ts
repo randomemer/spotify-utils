@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   if (!id) {
     throw createError({
       statusCode: 400,
-      statusMessage: "No playlist ID was provided",
+      statusMessage: "Invalid User ID",
     });
   }
 

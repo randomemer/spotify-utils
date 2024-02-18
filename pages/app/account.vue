@@ -17,8 +17,19 @@
           color="primary"
           density="compact"
           label="Username"
-          :disabled="!canEditUsername"
-        />
+          :disabled="isSavingUsername"
+          :loading="isSavingUsername"
+        >
+          <template #append-inner>
+            <v-btn
+              color="primary"
+              variant="text"
+              icon="mdi-content-save-edit"
+              :disabled="username === user?.username"
+              @click="saveUsername()"
+            />
+          </template>
+        </v-text-field>
       </div>
     </v-card>
   </NuxtLayout>
@@ -35,6 +46,7 @@ definePageMeta({ name: "app:account", middleware: "auth" });
 
 const { data: user } = useAsyncData(async () => {
   const id = userStore.spotifyProfile?.id;
+  console.log("current user", id);
   const resp = await $api.get<UserDocument>(`user/${id}`);
   return resp.data;
 });
@@ -44,10 +56,28 @@ const createdAt = computed(() =>
 );
 
 const pfp = computed(() => userStore.spotifyProfile?.images?.at(-1)?.url);
-const name = computed(() => userStore.spotifyProfile?.display_name);
+const name = computed(() => user.value?.display_name);
 
-const username = ref(userStore.spotifyProfile?.id);
-const canEditUsername = ref(false);
+const username = ref(user.value?.username);
+const isSavingUsername = ref(false);
+
+async function saveUsername() {
+  if (isSavingUsername.value) return;
+  isSavingUsername.value = true;
+
+  try {
+    const newUsername = username.value!.trim();
+    await $api.patch(`user/${userStore.spotifyProfile?.id}`, {
+      username: newUsername,
+    });
+    user.value!.username = newUsername;
+  } catch (error) {
+    // Show error message
+    console.error(error);
+  }
+
+  isSavingUsername.value = false;
+}
 </script>
 
 <style scoped lang="scss">

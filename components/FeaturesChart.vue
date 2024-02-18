@@ -62,6 +62,7 @@ function configureChart() {
     plugins: { legend: { display: false }, tooltip: { boxPadding: 5 } },
   };
 
+  // @ts-ignore
   chartOptions.value = _.merge(defaultOptions, props.chartOptions);
 }
 </script>
