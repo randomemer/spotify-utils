@@ -22,7 +22,8 @@ export async function createUser(
       username: profile.id,
       display_name: profile.display_name ?? "",
       friends: [],
-      created_at: Date.now()
+      created_at: Date.now(),
+      picture: profile.images?.at(-1)?.url ?? null,
     };
 
     await docRef.create(docData);

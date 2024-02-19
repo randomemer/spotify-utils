@@ -41,6 +41,7 @@ declare global {
     display_name: string;
     friends: string[];
     created_at: number;
+    picture: string | null;
   }
 
   interface RecommendsDocument {
