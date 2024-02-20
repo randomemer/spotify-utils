@@ -4,20 +4,20 @@ import { H3Error, getCookie } from "h3";
 
 export default defineNuxtRouteMiddleware(async () => {
   const { $api, $pinia, $config } = useNuxtApp();
-  const authStore = useUserStore($pinia);
+  const userStore = useUserStore($pinia);
 
-  const { token } = authStore;
-  if (!token || token.expiry <= Date.now()) {
+  // 1. Session management
+  if (userStore.isTokenExpired) {
     // Server Runtime
     if (process.server) {
       console.time("fetch_session_server");
       try {
         const event = useRequestEvent();
-        const cookie = getCookie(event, "session_id");
+        const cookie = getCookie(event!, "session_id");
 
         const { fetchSession } = await import("~/server/utils/session");
-        const tokenData = await fetchSession($config as any, cookie!);
-        authStore.setToken(tokenData);
+        const session = await fetchSession($config as any, cookie!);
+        userStore.setSession(session);
       } catch (error) {
         if (error instanceof H3Error && error.statusCode === 401) {
           return { path: "/auth/login", replace: true };
@@ -31,8 +31,8 @@ export default defineNuxtRouteMiddleware(async () => {
     if (process.client) {
       console.time("fetch_session_client");
       try {
-        const resp = await $api.get<AuthToken>("/auth/token");
-        authStore.setToken(resp.data);
+        const resp = await $api.get<UserSession>("/auth/token");
+        userStore.setSession(resp.data);
       } catch (error) {
         if (error instanceof AxiosError) {
           const status = error.response?.status;
@@ -44,5 +44,12 @@ export default defineNuxtRouteMiddleware(async () => {
       }
       console.timeEnd("fetch_session_client");
     }
+  }
+
+  // 2. Fetching user profile
+  if (userStore.session && !userStore.profile) {
+    console.time("user_document");
+    await userStore.fetchProfile($api);
+    console.timeEnd("user_document");
   }
 });

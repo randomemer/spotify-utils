@@ -1,39 +1,55 @@
 <template>
-  <NuxtLayout name="dashboard">
-    <v-card class="profile-card pa-6">
-      <v-avatar size="128" :image="pfp" />
-
-      <div class="right">
-        <h2>{{ name }}</h2>
-
-        <div class="created-at">
-          <v-icon icon="mdi-calendar-account" />
-          <span>Member since {{ createdAt }}</span>
-        </div>
-
-        <v-text-field
-          v-model="username"
-          type="text"
+  <div>
+    <NuxtLayout name="dashboard">
+      <v-card class="profile-card pa-6">
+        <v-btn
           color="primary"
-          variant="solo-filled"
-          density="compact"
-          label="Username"
-          :disabled="isSavingUsername"
-          :loading="isSavingUsername"
+          icon
+          width="128"
+          height="128"
+          v-on:mouseover="isHoveringPfp = true"
+          v-on:mouseout="isHoveringPfp = false"
         >
-          <template #append-inner>
-            <v-btn
-              color="primary"
-              variant="text"
-              icon="mdi-content-save-edit"
-              :disabled="username === user?.username"
-              @click="saveUsername()"
-            />
-          </template>
-        </v-text-field>
-      </div>
-    </v-card>
-  </NuxtLayout>
+          <v-avatar size="128" :image="pfp" />
+          <v-icon
+            icon="mdi-pencil"
+            class="avatar-edit-icon"
+            v-show="isHoveringPfp"
+          />
+        </v-btn>
+
+        <div class="right">
+          <h2>{{ name }}</h2>
+
+          <div class="created-at">
+            <v-icon icon="mdi-calendar-account" />
+            <span>Member since {{ createdAt }}</span>
+          </div>
+
+          <v-text-field
+            v-model="username"
+            type="text"
+            color="primary"
+            variant="solo-filled"
+            density="compact"
+            label="Username"
+            :disabled="isSavingUsername"
+            :loading="isSavingUsername"
+          >
+            <template #append-inner>
+              <v-btn
+                color="primary"
+                variant="text"
+                icon="mdi-content-save-edit"
+                :disabled="username === profile?.username"
+                @click="saveUsername()"
+              />
+            </template>
+          </v-text-field>
+        </div>
+      </v-card>
+    </NuxtLayout>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -41,26 +57,19 @@ import dayjs from "dayjs";
 import useUserStore from "~/store/user.store";
 
 const { $api } = useNuxtApp();
-const userStore = useUserStore();
+const { profile, session } = useUserStore();
 
 definePageMeta({ name: "app:account", middleware: "auth" });
 
-const { data: user } = useAsyncData(async () => {
-  const id = userStore.spotifyProfile?.id;
-  console.log("current user", id);
-  const resp = await $api.get<UserDocument>(`user/${id}`);
-  return resp.data;
-});
-
-const createdAt = computed(() =>
-  dayjs(user.value?.created_at, { utc: true }).format("d MMM YYYY")
-);
-
-const pfp = computed(() => userStore.spotifyProfile?.images?.at(-1)?.url);
-const name = computed(() => user.value?.display_name);
-
-const username = ref(user.value?.username);
+const username = ref(profile?.username);
 const isSavingUsername = ref(false);
+const isHoveringPfp = ref(false);
+
+const pfp = computed(() => profile?.picture ?? undefined);
+const name = computed(() => profile?.display_name);
+const createdAt = computed(() =>
+  dayjs(profile?.created_at, { utc: true }).format("d MMM YYYY")
+);
 
 async function saveUsername() {
   if (isSavingUsername.value) return;
@@ -68,10 +77,10 @@ async function saveUsername() {
 
   try {
     const newUsername = username.value!.trim();
-    await $api.patch(`user/${userStore.spotifyProfile?.id}`, {
+    await $api.patch(`user/${session?.kv_data.user_id}`, {
       username: newUsername,
     });
-    user.value!.username = newUsername;
+    profile!.username = newUsername;
   } catch (error) {
     // Show error message
     console.error(error);
@@ -98,5 +107,12 @@ async function saveUsername() {
       align-items: center;
     }
   }
+}
+
+.avatar-edit-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

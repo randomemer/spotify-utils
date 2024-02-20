@@ -15,6 +15,9 @@ export default defineEventHandler(async (event) => {
 
   try {
     const data = await readBody(event);
+    // const formData = await readMultipartFormData(event);
+    // console.log(formData)
+
     const docRef = admin.firestore().doc(`users/${id}`);
     const resp = await docRef.update(data);
     return sendNoContent(event);

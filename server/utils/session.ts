@@ -9,7 +9,7 @@ export async function createSession(
   event: H3Event,
   config: RuntimeConfig,
   tokenData: AccessTokenResponse
-) {
+): Promise<KVUserSession> {
   console.time("create-session");
   // 1. Get user data from spotify
   const userResp = await axios.get<SpotifyApi.CurrentUsersProfileResponse>(
@@ -22,7 +22,7 @@ export async function createSession(
 
   // 2. Create a session in kv redis
   const ts = Date.now();
-  const session = {
+  const session: KVUserSession = {
     user_id: profile.id,
     refresh_token: tokenData.refresh_token,
     created_at: ts,
@@ -41,19 +41,21 @@ export async function createSession(
     maxAge: 30 * 24 * 60 * 60,
   });
   console.timeEnd("create-session");
+
+  return session;
 }
 
 export async function fetchSession(
   config: Record<string, string>,
   sessionId: string
-) {
+): Promise<UserSession> {
   if (!sessionId) {
     throw createError({ statusCode: 401, statusMessage: "User not logged in" });
   }
 
   // 1. fetch session
   console.time("kv");
-  const session = await kv.get<UserSession>(sessionId);
+  const session = await kv.get<KVUserSession>(sessionId);
   console.timeEnd("kv");
 
   if (!session) {
@@ -85,7 +87,10 @@ export async function fetchSession(
   );
 
   return {
-    access_token: tokenResp.data.access_token,
-    expiry: Date.now() + tokenResp.data.expires_in * 1000,
+    token: {
+      access_token: tokenResp.data.access_token,
+      expiry: Date.now() + tokenResp.data.expires_in * 1000,
+    },
+    kv_data: session,
   };
 }

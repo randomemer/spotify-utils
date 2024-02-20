@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChartData, ChartOptions } from "chart.js";
+import type { ChartData, ChartOptions } from "chart.js";
 import { Pie } from "vue-chartjs";
 import _ from "lodash";
 

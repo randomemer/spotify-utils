@@ -23,7 +23,7 @@ declare global {
     expires_in: number;
   }
 
-  interface UserSession {
+  interface KVUserSession {
     user_id: string;
     refresh_token: string;
     created_at: number;
@@ -33,6 +33,11 @@ declare global {
   interface AuthToken {
     access_token: string;
     expiry: number;
+  }
+
+  interface UserSession {
+    token: AuthToken;
+    kv_data: KVUserSession;
   }
 
   // Documents

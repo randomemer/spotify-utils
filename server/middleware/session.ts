@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const session = await kv.get<UserSession>(sessionId);
+  const session = await kv.get<KVUserSession>(sessionId);
   if (!session) {
     throw createError({
       statusCode: 401,

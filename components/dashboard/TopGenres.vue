@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChartOptions } from "chart.js";
+import type { ChartOptions } from "chart.js";
 import _ from "lodash";
 import { SpotifyTimeRange } from "~/types";
 

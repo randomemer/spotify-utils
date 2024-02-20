@@ -16,14 +16,9 @@ import useUserStore from "~/store/user.store";
 import { NAV_LINKS } from "~/utils/constants";
 
 const route = useRoute();
-const { $spotify } = useNuxtApp();
 const userStore = useUserStore();
 
-const { data: profile, error } = useAsyncData(async () => {
-  return await userStore.fetchSpotifyProfile($spotify);
-});
-
-const pfp = computed(() => profile.value?.images?.at(-1)?.url);
+const pfp = computed(() => userStore.profile?.picture ?? undefined);
 
 const getRouteTitle = () =>
   NAV_LINKS.find((link) => String(route.name).startsWith(link.route))?.label;

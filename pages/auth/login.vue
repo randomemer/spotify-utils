@@ -18,7 +18,7 @@ useAsyncData(
         break;
 
       case "success":
-        authStore.setToken(resp.data.payload);
+        authStore.setSession(resp.data.payload);
         await ctx?.$router.replace("/app/dashboard");
         break;
 

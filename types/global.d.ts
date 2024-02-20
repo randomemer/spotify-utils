@@ -1,7 +1,7 @@
 declare global {
   interface UserState {
-    token: AuthToken | null;
-    spotifyProfile: SpotifyApi.CurrentUsersProfileResponse | null;
+    session: UserSession | null;
+    profile: UserDocument | null;
   }
 
   type LoginResp =
@@ -11,10 +11,7 @@ declare global {
       }
     | {
         status: "success";
-        payload: {
-          access_token: string;
-          expiry: number;
-        };
+        payload: UserSession;
       };
 
   interface TrackItemData {

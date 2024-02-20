@@ -19,7 +19,7 @@ export default defineNuxtPlugin({
       const authStore = useUserStore();
 
       $nuxt.$spotify.interceptors.request.use((config) => {
-        config.headers.Authorization = `Bearer ${authStore.token?.access_token}`;
+        config.headers.Authorization = `Bearer ${authStore.accessToken}`;
         return config;
       });
     },

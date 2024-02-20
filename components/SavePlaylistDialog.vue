@@ -116,7 +116,7 @@ async function onSave() {
     };
 
     const resp = await $api.postForm("/playlist", data, {
-      headers: { Authorization: `Bearer ${userStore.token!.access_token}` },
+      headers: { Authorization: `Bearer ${userStore.accessToken}` },
     });
     console.log(resp.data);
   } catch (error) {

@@ -1,63 +1,65 @@
 <template>
-  <NuxtLayout>
-    <div class="grid">
-      <v-list class="rounded">
-        <TrackItem
-          :key="track.id"
-          v-for="track in data?.data.tracks"
-          class=""
-          :track="track"
-        />
-      </v-list>
+  <div>
+    <NuxtLayout>
+      <div class="grid">
+        <v-list class="rounded">
+          <TrackItem
+            :key="track.id"
+            v-for="track in data?.data.tracks"
+            class=""
+            :track="track"
+          />
+        </v-list>
 
-      <SeedsCard v-if="data" :seeds="data.data.seeds" />
-    </div>
+        <SeedsCard v-if="data" :seeds="data.data.seeds" />
+      </div>
 
-    <div class="fabs">
-      <v-tooltip text="Save as playlist" #activator="{ props: tooltipProps }">
-        <v-btn
-          v-bind:="tooltipProps"
-          color="secondary"
-          variant="elevated"
-          icon="mdi-content-save"
-          @click="isSaveOpen = true"
-        />
-      </v-tooltip>
+      <div class="fabs">
+        <v-tooltip text="Save as playlist" #activator="{ props: tooltipProps }">
+          <v-btn
+            v-bind:="tooltipProps"
+            color="secondary"
+            variant="elevated"
+            icon="mdi-content-save"
+            @click="isSaveOpen = true"
+          />
+        </v-tooltip>
 
-      <SpeedDial>
-        <template #fab>
-          <v-tooltip text="Share" #activator="{ props: tooltipProps }">
+        <SpeedDial>
+          <template #fab>
+            <v-tooltip text="Share" #activator="{ props: tooltipProps }">
+              <v-btn
+                v-bind="tooltipProps"
+                color="secondary"
+                variant="elevated"
+                icon="mdi-share-variant"
+              />
+            </v-tooltip>
+          </template>
+          <template #actions>
             <v-btn
-              v-bind="tooltipProps"
+              size="small"
               color="secondary"
               variant="elevated"
-              icon="mdi-share-variant"
+              icon="mdi-facebook"
             />
-          </v-tooltip>
-        </template>
-        <template #actions>
-          <v-btn
-            size="small"
-            color="secondary"
-            variant="elevated"
-            icon="mdi-facebook"
-          />
-          <v-btn
-            size="small"
-            color="secondary"
-            variant="elevated"
-            icon="mdi-twitter"
-          />
-        </template>
-      </SpeedDial>
-    </div>
+            <v-btn
+              size="small"
+              color="secondary"
+              variant="elevated"
+              icon="mdi-twitter"
+            />
+          </template>
+        </SpeedDial>
+      </div>
 
-    <SavePlaylistDialog
-      v-model="isSaveOpen"
-      default-desc="My recommendations from Music Muse"
-      :tracks="data?.data.tracks ?? []"
-    />
-  </NuxtLayout>
+      <SavePlaylistDialog
+        v-model="isSaveOpen"
+        default-desc="My recommendations from Music Muse"
+        :tracks="data?.data.tracks ?? []"
+      />
+    </NuxtLayout>
+  </div>
 </template>
 
 <script setup lang="ts">

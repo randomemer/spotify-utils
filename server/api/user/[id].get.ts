@@ -10,8 +10,6 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  console.log("Retrieving user :", id);
-
   const env = useRuntimeConfig();
   const admin = getAdmin(env.serviceAccKey);
 

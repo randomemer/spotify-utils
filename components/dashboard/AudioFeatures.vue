@@ -17,8 +17,7 @@
 
 <script setup lang="ts">
 import { SpotifyTimeRange } from "~/types";
-import { Radar } from "vue-chartjs";
-import { ChartData, ChartOptions } from "chart.js";
+import type { ChartOptions } from "chart.js";
 
 const appConfig = useAppConfig();
 const { $spotify } = useNuxtApp();

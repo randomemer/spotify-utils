@@ -1,54 +1,55 @@
 <template>
-  <NuxtLayout>
-    <div class="table-wrapper">
-      <v-data-table
-        fixed-header
-        color="primary"
-        class="rounded table"
-        :items-per-page="PAGE_LIMIT"
-        :headers="headers"
-        :items="data?.items"
-        :loading="pending && `primary`"
-      >
-        <template #top>
-          <div class="table-header">
-            <v-select
-              hide-details
-              v-model="timeRange"
-              color="primary"
-              density="compact"
-              item-title="label"
-              item-value="value"
-              variant="solo-filled"
-              :class="$style.time_range_select"
-              :items="TIME_RANGE_ITEMS"
-            />
-          </div>
-        </template>
-        <template #item="{ index, item }">
-          <tr>
-            <td>{{ index + 1 }}</td>
-            <td><ArtistItem :artist="item.raw" /></td>
-          </tr>
-        </template>
-        <template #bottom>
-          <div class="table-footer text-center">
-            <v-pagination
-              rounded="circle"
-              density="comfortable"
-              active-color="primary"
-              v-model="page"
-              :length="data ? Math.ceil(data.total / PAGE_LIMIT) : undefined"
-            />
-          </div>
-        </template>
-      </v-data-table>
-    </div>
-  </NuxtLayout>
+  <div>
+    <NuxtLayout>
+      <div class="table-wrapper">
+        <v-data-table
+          fixed-header
+          color="primary"
+          class="rounded table"
+          :items-per-page="PAGE_LIMIT"
+          :headers="headers"
+          :items="data?.items"
+          :loading="pending && `primary`"
+        >
+          <template #top>
+            <div class="table-header">
+              <v-select
+                hide-details
+                v-model="timeRange"
+                color="primary"
+                density="compact"
+                item-title="label"
+                item-value="value"
+                variant="solo-filled"
+                :class="$style.time_range_select"
+                :items="TIME_RANGE_ITEMS"
+              />
+            </div>
+          </template>
+          <template #item="{ index, item }">
+            <tr>
+              <td>{{ index + 1 }}</td>
+              <td><ArtistItem :artist="item.raw" /></td>
+            </tr>
+          </template>
+          <template #bottom>
+            <div class="table-footer text-center">
+              <v-pagination
+                rounded="circle"
+                density="comfortable"
+                active-color="primary"
+                v-model="page"
+                :length="data ? Math.ceil(data.total / PAGE_LIMIT) : undefined"
+              />
+            </div>
+          </template>
+        </v-data-table>
+      </div>
+    </NuxtLayout>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { VDataTable } from "vuetify/labs/VDataTable";
 import { SpotifyTimeRange } from "~/types";
 
 definePageMeta({

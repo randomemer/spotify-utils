@@ -18,10 +18,10 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    const tokenData = await fetchSession(env, sessionId);
+    const session = await fetchSession(env, sessionId);
     return {
       status: "success",
-      payload: tokenData,
+      payload: session,
     };
   } catch (error) {
     console.error(error);
