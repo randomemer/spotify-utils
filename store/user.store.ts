@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import type { AxiosInstance } from "axios";
+import _ from "lodash";
 
 const useUserStore = defineStore("auth", {
   state: () => {
@@ -14,11 +15,11 @@ const useUserStore = defineStore("auth", {
       !state.session?.token.expiry || state.session?.token.expiry <= Date.now(),
   },
   actions: {
-    setSession(session: UserSession) {
-      this.session = session;
+    setSession(session: Partial<UserSession>) {
+      this.session = _.merge(this.session, session);
     },
-    setProfile(profile: UserDocument) {
-      this.profile = profile;
+    setProfile(profile: Partial<UserDocument>) {
+      this.profile = _.merge(this.profile, profile);
     },
     async fetchProfile(api: AxiosInstance) {
       if (!this.session) throw new Error("No session in store");

@@ -22,13 +22,17 @@
     "pinia": "^2.1.6",
     "sharp": "^0.32.6",
     "spotify-web-api-js": "^1.5.2",
+    "uuid": "^9.0.1",
     "vue-chartjs": "^5.2.0",
+    "vue-cropperjs": "^5.0.0",
     "vuetify": "^3.3.16",
     "vuetify-toast-snackbar": "^0.6.1"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@types/lodash": "^4.14.199",
+    "@types/uuid": "^9.0.8",
+    "@types/vue-cropperjs": "^4.1.6",
     "h3": "^1.8.1",
     "nuxt": "^3.10.2",
     "sass": "^1.66.1"

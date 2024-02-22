@@ -28,8 +28,8 @@
           </template>
           <template #item="{ index, item }">
             <tr>
-              <td>{{ index + 1 }}</td>
-              <td><TrackItem :track="item.raw" /></td>
+              <td>{{ (page - 1) * 50 + index + 1 }}</td>
+              <td><TrackItem :track="item" /></td>
             </tr>
           </template>
           <template #bottom>

@@ -1,26 +1,43 @@
 import getAdmin from "~/server/utils/firebase";
+import { v4 as uuidv4 } from "uuid";
 
 export default defineEventHandler(async (event) => {
-  const id = event.context.params?.id;
-
-  if (!id) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "No playlist ID was provided",
-    });
-  }
+  const session: KVUserSession = event.context.session;
 
   const env = useRuntimeConfig();
   const admin = getAdmin(env.serviceAccKey);
 
   try {
-    const data = await readBody(event);
-    // const formData = await readMultipartFormData(event);
-    // console.log(formData)
+    const formData = await readMultipartFormData(event);
+    if (!formData) return;
 
-    const docRef = admin.firestore().doc(`users/${id}`);
-    const resp = await docRef.update(data);
-    return sendNoContent(event);
+    const data = new Map();
+    for (const field of formData) {
+      // Upload to bucket and set URL
+      if (field.name === "picture") {
+        const ext = field.type?.split("/").at(-1);
+
+        const url = await uploadObject(
+          `images/${session.user_id}/${uuidv4()}.${ext}`,
+          field.data,
+          env.serviceAccKey,
+          env.storageBucket
+        );
+        data.set(field.name, url);
+      }
+      if (field.name === "username") {
+        data.set(field.filename, field.data.toString("utf8"));
+      }
+    }
+
+    if (data.size === 0) return;
+
+    // Update firestore document
+    const json = Object.fromEntries(data.entries());
+    const docRef = admin.firestore().doc(`users/${session.user_id}`);
+
+    await docRef.update(json);
+    return json;
   } catch (error) {
     console.error(error);
     if (!(error instanceof Error)) return;
