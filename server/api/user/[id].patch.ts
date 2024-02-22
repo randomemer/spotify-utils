@@ -2,10 +2,9 @@ import getAdmin from "~/server/utils/firebase";
 import { v4 as uuidv4 } from "uuid";
 
 export default defineEventHandler(async (event) => {
-  const session: KVUserSession = event.context.session;
-
   const env = useRuntimeConfig();
   const admin = getAdmin(env.serviceAccKey);
+  const session: KVUserSession = event.context.session;
 
   try {
     const formData = await readMultipartFormData(event);
@@ -26,14 +25,16 @@ export default defineEventHandler(async (event) => {
         data.set(field.name, url);
       }
       if (field.name === "username") {
-        data.set(field.filename, field.data.toString("utf8"));
+        data.set(field.name, field.data.toString("utf8"));
       }
     }
 
     if (data.size === 0) return;
 
     // Update firestore document
-    const json = Object.fromEntries(data.entries());
+    const json: Partial<PatchProfileResponse> = Object.fromEntries(
+      data.entries()
+    );
     const docRef = admin.firestore().doc(`users/${session.user_id}`);
 
     await docRef.update(json);

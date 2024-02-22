@@ -66,6 +66,14 @@ declare global {
     artists: ArtistItemData[];
   }
 
+  interface FriendReqDocument {
+    sender: string;
+    recipient: string;
+    status: "pending" | "accepted";
+    created_at: number;
+    updated_at: number;
+  }
+
   type PathLike = string | RegExp;
 
   interface ProtectedRouteObject {
@@ -82,6 +90,11 @@ declare global {
     description?: string | null;
     tracks: string[];
     image?: File | null;
+  }
+
+  interface PatchProfileResponse {
+    username: string;
+    picture: string;
   }
 }
 

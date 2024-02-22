@@ -91,6 +91,7 @@ const userStore = useUserStore();
 const { profile, session } = userStore;
 
 definePageMeta({ name: "app:account", middleware: "auth" });
+useHead({ title: "Account | Music Muse" });
 
 const username = ref(profile?.username);
 const isSavingUsername = ref(false);
@@ -114,10 +115,10 @@ async function saveUsername() {
 
   try {
     const newUsername = username.value!.trim();
-    await $api.patch(`user/${session?.kv_data.user_id}`, {
+    await $api.patchForm(`user/${session?.kv_data.user_id}`, {
       username: newUsername,
     });
-    profile!.username = newUsername;
+    userStore.setProfile({ username: newUsername });
   } catch (error) {
     // Show error message
     console.error(error);
@@ -153,10 +154,12 @@ function onCropAndUpload() {
     try {
       if (!blob) throw new Error("Something went wrong");
 
-      const resp = await $api.patchForm(`user/${session?.kv_data.user_id}`, {
-        picture: blob,
-      });
-      console.log("resp", resp.data);
+      const resp = await $api.patchForm<Partial<PatchProfileResponse>>(
+        `user/${session?.kv_data.user_id}`,
+        {
+          picture: blob,
+        }
+      );
       userStore.setProfile({ picture: resp.data.picture });
     } catch (error) {
       console.error(error);
