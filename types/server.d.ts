@@ -96,6 +96,32 @@ declare global {
     username: string;
     picture: string;
   }
+
+  interface FriendReqInput {
+    recipient: string;
+  }
+
+  interface IncomingFriendReq {
+    id: string;
+    sender_id: string;
+    profile: UserDocument;
+    created_at: number;
+    updated_at: number;
+  }
+
+  interface OutgoingFriendReq {
+    id: string;
+    recipient_id: string;
+    profile: UserDocument;
+    created_at: number;
+    updated_at: number;
+  }
+
+  interface FriendsListResponse {
+    friends: UserDocument[];
+    incoming: IncomingFriendReq[];
+    outgoing: OutgoingFriendReq[];
+  }
 }
 
 export {};

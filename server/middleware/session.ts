@@ -3,11 +3,12 @@ import { isProtectedRoute } from "~/server/utils";
 
 const PROTECTED_ROUTES: ProtectedRoute[] = [
   "/api/recommends",
-  /^\/api\/playlist(\/)?[^/]*$/,
+  /^\/api\/playlist(\/)?[^/]+$/,
   {
-    path: /^\/api\/user(\/)?[^/]*$/,
+    path: /^\/api\/user(\/)?[^/]+$/,
     methods: ["PATCH"],
   },
+  /^\/api\/user(\/)?[^/]+\/friends$/,
 ];
 
 export default defineEventHandler(async (event) => {

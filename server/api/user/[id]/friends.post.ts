@@ -4,8 +4,8 @@ import getAdmin from "~/server/utils/firebase";
 export default defineEventHandler(async (event) => {
   const session: KVUserSession = event.context.session;
   const senderId = session.user_id;
-  const body = await readBody(event);
-  const recipientId = body.receiver;
+  const body: FriendReqInput = await readBody(event);
+  const recipientId = body.recipient;
 
   const env = useRuntimeConfig();
   const admin = getAdmin(env.serviceAccKey);
@@ -30,11 +30,16 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  const { Filter } = admin.firestore;
   // Check 3 : Duplicate friend request
   const queryRef = firestore
     .collection("friend_requests")
-    .where("sender", "==", senderId)
-    .where("recipient", "==", senderId);
+    .where(
+      Filter.and(
+        Filter.where("sender", "==", senderId),
+        Filter.where("recipient", "==", recipientId)
+      )
+    );
   const querySnap = await queryRef.get();
 
   if (!querySnap.empty) {
