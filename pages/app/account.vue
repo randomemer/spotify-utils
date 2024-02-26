@@ -115,7 +115,7 @@ async function saveUsername() {
 
   try {
     const newUsername = username.value!.trim();
-    await $api.patchForm(`user/${session?.kv_data.user_id}`, {
+    await $api.patchForm("me", {
       username: newUsername,
     });
     userStore.setProfile({ username: newUsername });
@@ -154,12 +154,9 @@ function onCropAndUpload() {
     try {
       if (!blob) throw new Error("Something went wrong");
 
-      const resp = await $api.patchForm<Partial<PatchProfileResponse>>(
-        `user/${session?.kv_data.user_id}`,
-        {
-          picture: blob,
-        }
-      );
+      const resp = await $api.patchForm<Partial<PatchProfileResponse>>("me", {
+        picture: blob,
+      });
       userStore.setProfile({ picture: resp.data.picture });
     } catch (error) {
       console.error(error);
