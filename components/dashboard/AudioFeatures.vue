@@ -22,14 +22,17 @@ import type { ChartOptions } from "chart.js";
 const appConfig = useAppConfig();
 const { $spotify } = useNuxtApp();
 
-const { data: features, error } = useAsyncData(async () => {
-  const tracks = await getAllItems($spotify, {
-    url: "/me/top/tracks",
-    query: { time_range: SpotifyTimeRange.LongTerm },
-  });
-  const tracksFeatures = await getTracksAudioFeatures($spotify, tracks);
-  return getFeaturesFromTracks(appConfig.audioFeatures, tracksFeatures);
-});
+const { data: features, error } = useAsyncData(
+  async () => {
+    const tracks = await getAllItems($spotify, {
+      url: "/me/top/tracks",
+      query: { time_range: SpotifyTimeRange.LongTerm },
+    });
+    const tracksFeatures = await getTracksAudioFeatures($spotify, tracks);
+    return getFeaturesFromTracks(appConfig.audioFeatures, tracksFeatures);
+  },
+  { server: false }
+);
 
 const chartOptions: ChartOptions<"radar"> = {
   scales: {

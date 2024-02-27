@@ -51,7 +51,7 @@ const { data: artists, error } = useAsyncData(
     );
     return resp.data;
   },
-  { watch: [timeRange] }
+  { watch: [timeRange], server: false }
 );
 
 function onViewMore() {

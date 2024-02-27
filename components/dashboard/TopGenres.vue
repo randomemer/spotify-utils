@@ -23,12 +23,15 @@ import { SpotifyTimeRange } from "~/types";
 
 const { $spotify } = useNuxtApp();
 
-const { data: artists, error } = useAsyncData(async () => {
-  return await getAllItems($spotify, {
-    url: "/me/top/artists",
-    query: { time_range: SpotifyTimeRange.LongTerm },
-  });
-});
+const { data: artists, error } = useAsyncData(
+  async () => {
+    return await getAllItems($spotify, {
+      url: "/me/top/artists",
+      query: { time_range: SpotifyTimeRange.LongTerm },
+    });
+  },
+  { server: false }
+);
 
 const genres = computed(
   () => artists.value && getGenresFromArtists(artists.value)

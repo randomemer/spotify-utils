@@ -116,6 +116,8 @@
 </template>
 
 <script setup lang="ts">
+import { AxiosError } from "axios";
+
 const { $api } = useNuxtApp();
 
 definePageMeta({
@@ -153,11 +155,13 @@ async function sendFriendReq() {
 
 async function acceptFriendReq(req: IncomingFriendReq) {
   try {
-    const resp = await $api.patch(`friend-requests/${req.id}`, {
+    await $api.patch(`friend-requests/${req.id}`, {
       action: "accept",
     });
   } catch (error) {
     console.error(error);
+    if (error instanceof AxiosError) {
+    }
   }
 }
 

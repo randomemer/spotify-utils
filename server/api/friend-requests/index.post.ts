@@ -12,9 +12,11 @@ export default defineEventHandler(async (event) => {
   const firestore = admin.firestore();
 
   // Check 1 : Existence of recipient
-  const docRef = firestore.doc(`users/${recipientId}`);
-  const recipientDoc = await docRef.get();
-  if (!recipientDoc.exists) {
+  const userQueryRef = firestore
+    .collection("users")
+    .where("", "==", recipientId);
+  const userQuerySnap = await userQueryRef.get();
+  if (userQuerySnap.empty) {
     throw createError({
       statusCode: 400,
       statusMessage: "This user doesn't exist",
@@ -22,8 +24,9 @@ export default defineEventHandler(async (event) => {
   }
 
   // Check 2 : Already friended
-  const recipient = recipientDoc.data() as UserDocument;
-  if (recipient.friends.includes(senderId)) {
+  const recipientDoc = userQuerySnap.docs[0];
+  const recipientData = recipientDoc.data() as UserDocument;
+  if (recipientData.friends.includes(senderId)) {
     throw createError({
       statusCode: 400,
       statusMessage: "This user is already friended",
@@ -37,7 +40,7 @@ export default defineEventHandler(async (event) => {
     .where(
       Filter.and(
         Filter.where("sender", "==", senderId),
-        Filter.where("recipient", "==", recipientId)
+        Filter.where("recipient", "==", recipientDoc.id)
       )
     );
   const querySnap = await queryRef.get();

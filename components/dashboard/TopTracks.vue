@@ -50,7 +50,7 @@ const { data: tracks, error } = useAsyncData(
     );
     return resp.data;
   },
-  { watch: [timeRange] }
+  { watch: [timeRange], server: false }
 );
 
 function onViewMore() {
