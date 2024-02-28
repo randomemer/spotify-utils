@@ -11,12 +11,12 @@ export default defineEventHandler(async (event) => {
   if (!id) {
     throw createError({
       statusCode: 400,
-      statusMessage: "No playlist ID was provided",
+      statusMessage: "No friend request ID was provided",
     });
   }
 
   try {
-    const doc = await firestore.doc(`friend-requests/${id}`).get();
+    const doc = await firestore.doc(`friend_requests/${id}`).get();
 
     // Check 1 : Existence
     if (!doc.exists) throw new Error("NOT_FOUND");

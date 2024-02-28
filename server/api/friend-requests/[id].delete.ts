@@ -16,8 +16,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const doc = await firestore.doc(`friend-requests/${id}`).get();
-
+    const doc = await firestore.doc(`friend_requests/${id}`).get();
     // Check 1 : Existence
     if (!doc.exists) throw new Error("NOT_FOUND");
 

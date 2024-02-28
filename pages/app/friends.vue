@@ -25,7 +25,7 @@
               v-for="(friend, i) in friends.friends"
             >
               <template #prepend>
-                <v-avatar size="large" :image="friend.picture" />
+                <v-avatar size="large" :image="friend.picture ?? undefined" />
               </template>
               <template #title>{{ friend.display_name }}</template>
               <template #append>
@@ -33,7 +33,7 @@
                   size="x-large"
                   variant="tonal"
                   color="error"
-                  icon="mdi-cancel"
+                  icon="mdi-account-minus"
                 />
               </template>
             </v-list-item>
@@ -51,14 +51,28 @@
               :key="i"
               class="list-item"
               variant="flat"
-              v-for="(req, i) in friends.outgoing"
+              v-for="(req, i) in friends.incoming"
             >
               <template #prepend>
-                <v-avatar size="large" :image="req.profile.picture" />
+                <v-avatar
+                  size="large"
+                  :image="req.profile.picture ?? undefined"
+                />
               </template>
               <template #title>{{ req.profile.display_name }}</template>
               <template #append>
-                <v-btn variant="tonal" color="error" icon="mdi-cancel" />
+                <v-btn
+                  variant="tonal"
+                  color="success"
+                  icon="mdi-check"
+                  @click="acceptFriendReq(req)"
+                />
+                <v-btn
+                  variant="tonal"
+                  color="error"
+                  icon="mdi-close"
+                  @click="deleteFriendReq(req)"
+                />
               </template>
             </v-list-item>
           </template>
@@ -78,11 +92,19 @@
               v-for="(req, i) in friends.outgoing"
             >
               <template #prepend>
-                <v-avatar size="large" :image="req.profile.picture" />
+                <v-avatar
+                  size="large"
+                  :image="req.profile.picture ?? undefined"
+                />
               </template>
               <template #title>{{ req.profile.display_name }}</template>
               <template #append>
-                <v-btn variant="tonal" color="error" icon="mdi-cancel" />
+                <v-btn
+                  variant="tonal"
+                  color="error"
+                  icon="mdi-cancel"
+                  @click="deleteFriendReq(req)"
+                />
               </template>
             </v-list-item>
           </template>
@@ -111,6 +133,17 @@
           </v-text-field>
         </v-window-item>
       </v-window>
+
+      <v-dialog v-model="isUnfriendOpen">
+        <v-card>
+          <v-card-title></v-card-title>
+          <v-card-text> </v-card-text>
+          <v-card-actions class="justify-end pa-4">
+            <v-btn @click="isUnfriendOpen = false">Cancel</v-btn>
+            <v-btn color="error">Unfriend</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </NuxtLayout>
   </div>
 </template>
@@ -139,6 +172,8 @@ const tab = ref(0);
 const isSendingReq = ref(false);
 const recipient = ref("");
 
+const isUnfriendOpen = ref(false);
+
 async function sendFriendReq() {
   if (isSendingReq.value) return;
   isSendingReq.value = true;
@@ -146,7 +181,6 @@ async function sendFriendReq() {
     const res = await $api.post<FriendReqDocument>(`/friend-requests`, {
       recipient: recipient.value,
     });
-    console.log("res", res.data);
   } catch (error) {
     console.error(error);
     if (error instanceof AxiosError) {
@@ -176,6 +210,12 @@ async function acceptFriendReq(req: IncomingFriendReq) {
 async function deleteFriendReq(req: IncomingFriendReq | OutgoingFriendReq) {
   try {
     await $api.delete(`friend-requests/${req.id}`);
+    friends.value!.incoming = friends.value!.incoming.filter(
+      (r) => r.id !== req.id
+    );
+    friends.value!.outgoing = friends.value!.outgoing.filter(
+      (r) => r.id !== req.id
+    );
   } catch (error) {
     console.error(error);
   }
@@ -185,15 +225,6 @@ async function deleteFriendReq(req: IncomingFriendReq | OutgoingFriendReq) {
 <style lang="scss">
 .tabs {
   margin-bottom: 1.5rem;
-
-  // .v-tab {
-  //   font-size: 1rem;
-  //   text-transform: none;
-  //   letter-spacing: normal;
-
-  //   display: flex;
-  //   gap: 0.625rem;
-  // }
 }
 
 .list-item {
