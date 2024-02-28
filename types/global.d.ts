@@ -73,16 +73,13 @@ declare global {
 
   interface ToastProps {
     message: string;
-    x?: string;
-    y?: string;
+    location?: string;
     color?: string;
     icon?: string;
     iconColor?: string;
     classes?: string | object | Array<object | string>;
     timeout?: number;
     dismissable?: boolean;
-    multiLine?: boolean;
-    vertical?: boolean;
     showClose?: boolean;
     closeText?: string;
     closeIcon?: string;

@@ -1,22 +1,16 @@
 <template>
   <v-snackbar
+    :location="$props.location"
+    :variant="variant"
     :timeout="timeout"
     :color="color"
-    :bottom="y === 'bottom'"
-    :top="y === 'top'"
-    :left="x === 'left'"
-    :right="x === 'right'"
-    :multi-line="multiLine"
-    :vertical="vertical"
     v-model="active"
     class="vts"
     :class="classes"
     @click="dismiss"
     role="alert"
   >
-    <v-icon dark left v-if="!!icon" class="vts__icon" :color="iconColor">
-      {{ icon }}
-    </v-icon>
+    <v-icon v-if="!!icon" class="vts__icon" :icon="icon" :color="iconColor" />
 
     <div
       class="vts__message"
@@ -44,13 +38,9 @@
 <script>
 export default {
   props: {
-    x: {
+    location: {
       type: String,
-      default: "right",
-    },
-    y: {
-      type: String,
-      default: "bottom",
+      default: "bottom right",
     },
     color: {
       type: String,
@@ -104,6 +94,10 @@ export default {
       type: String,
       default: "",
     },
+    variant: {
+      type: String,
+      default: "tonal",
+    },
   },
 
   data: () => ({
@@ -111,6 +105,7 @@ export default {
   }),
 
   mounted() {
+    console.log(this.$props);
     this.$nextTick(() => this.show());
   },
 
@@ -138,20 +133,22 @@ export default {
 };
 </script>
 
-<style>
-/* .vts {
+<style lang="scss">
+.vts {
   max-width: none !important;
   width: auto !important;
 }
 
-.vts .v-snack__content {
+.vts .v-snackbar__content {
+  display: flex;
   justify-content: flex-start;
 }
 
 .vts__icon {
-  margin-right: 12px;
+  margin-right: 0.5rem;
 }
 
+/*
 .vts__message {
   margin-right: auto;
 }

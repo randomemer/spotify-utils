@@ -153,6 +153,8 @@ import { AxiosError } from "axios";
 
 const { $api, $toast } = useNuxtApp();
 
+console.log("toast", $toast);
+
 definePageMeta({
   name: "app:friends",
   layout: "dashboard",
@@ -188,7 +190,8 @@ async function sendFriendReq() {
       $toast.show({
         message: data.message,
         color: "error",
-        queueable: true,
+        icon: "mdi-alert-circle",
+        timeout: 20_000,
       });
     }
   }
