@@ -7,6 +7,7 @@ interface ItemsGetterOptions {
   limit?: number | undefined;
   offset?: number | undefined;
   query?: Record<string, string> | undefined;
+  max?: number | undefined;
 }
 
 export async function getAllItems<T = any>(
@@ -32,6 +33,7 @@ export async function getAllItems<T = any>(
 
     items.push(...data.items);
     offset += config.limit;
+    if (options.max && offset >= options.max) break;
   } while (lastResponse.next);
 
   return items;

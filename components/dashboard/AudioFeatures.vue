@@ -27,6 +27,7 @@ const { data: features, error } = useAsyncData(
     const tracks = await getAllItems($spotify, {
       url: "/me/top/tracks",
       query: { time_range: SpotifyTimeRange.LongTerm },
+      max: 50,
     });
     const tracksFeatures = await getTracksAudioFeatures($spotify, tracks);
     return getFeaturesFromTracks(appConfig.audioFeatures, tracksFeatures);

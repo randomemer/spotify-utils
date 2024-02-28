@@ -118,7 +118,7 @@
 <script setup lang="ts">
 import { AxiosError } from "axios";
 
-const { $api } = useNuxtApp();
+const { $api, $toast } = useNuxtApp();
 
 definePageMeta({
   name: "app:friends",
@@ -149,6 +149,14 @@ async function sendFriendReq() {
     console.log("res", res.data);
   } catch (error) {
     console.error(error);
+    if (error instanceof AxiosError) {
+      const data = error.response?.data;
+      $toast.show({
+        message: data.message,
+        color: "error",
+        queueable: true,
+      });
+    }
   }
   isSendingReq.value = false;
 }

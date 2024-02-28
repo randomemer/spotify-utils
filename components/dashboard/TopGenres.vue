@@ -28,6 +28,7 @@ const { data: artists, error } = useAsyncData(
     return await getAllItems($spotify, {
       url: "/me/top/artists",
       query: { time_range: SpotifyTimeRange.LongTerm },
+      max: 50,
     });
   },
   { server: false }

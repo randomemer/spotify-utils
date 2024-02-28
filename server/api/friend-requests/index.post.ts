@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const session: KVUserSession = event.context.session;
   const senderId = session.user_id;
   const body: FriendReqInput = await readBody(event);
-  const recipientId = body.recipient;
+  const recipient = body.recipient;
 
   const env = useRuntimeConfig();
   const admin = getAdmin(env.serviceAccKey);
@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
   // Check 1 : Existence of recipient
   const userQueryRef = firestore
     .collection("users")
-    .where("", "==", recipientId);
+    .where("username", "==", recipient);
   const userQuerySnap = await userQueryRef.get();
   if (userQuerySnap.empty) {
     throw createError({
@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
 
   const data: FriendReqDocument = {
     sender: senderId,
-    recipient: recipientId,
+    recipient: recipientDoc.id,
     status: "pending",
     created_at: Date.now(),
     updated_at: Date.now(),
