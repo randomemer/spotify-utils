@@ -61,18 +61,22 @@
               </template>
               <template #title>{{ req.profile.display_name }}</template>
               <template #append>
-                <v-btn
-                  variant="tonal"
-                  color="success"
-                  icon="mdi-check"
-                  @click="acceptFriendReq(req)"
-                />
-                <v-btn
-                  variant="tonal"
-                  color="error"
-                  icon="mdi-close"
-                  @click="deleteFriendReq(req)"
-                />
+                <div class="req-btns">
+                  <v-btn
+                    variant="tonal"
+                    color="success"
+                    density="comfortable"
+                    icon="mdi-check"
+                    @click="acceptFriendReq(req)"
+                  />
+                  <v-btn
+                    variant="tonal"
+                    color="error"
+                    density="comfortable"
+                    icon="mdi-close"
+                    @click="deleteFriendReq(req)"
+                  />
+                </div>
               </template>
             </v-list-item>
           </template>
@@ -101,6 +105,7 @@
               <template #append>
                 <v-btn
                   variant="tonal"
+                  density="comfortable"
                   color="error"
                   icon="mdi-cancel"
                   @click="deleteFriendReq(req)"
@@ -162,7 +167,12 @@ definePageMeta({
 });
 useHead({ title: "Friends | Music Muse" });
 
-const { data: friends, error } = useAsyncData(async () => {
+const {
+  data: friends,
+  pending,
+  error,
+  refresh,
+} = useAsyncData(async () => {
   console.time("friends");
   const resp = await $api.get<FriendsListResponse>(`me/friends`);
   console.timeEnd("friends");
@@ -183,15 +193,14 @@ async function sendFriendReq() {
     const res = await $api.post<FriendReqDocument>(`/friend-requests`, {
       recipient: recipient.value,
     });
+    refresh();
   } catch (error) {
     console.error(error);
-    if (error instanceof AxiosError) {
-      const data = error.response?.data;
+    if (error instanceof AxiosError && error.response?.data) {
       $toast.show({
-        message: data.message,
+        message: error.response?.data.message,
         color: "error",
         icon: "mdi-alert-circle",
-        timeout: 20_000,
       });
     }
   }
@@ -203,9 +212,15 @@ async function acceptFriendReq(req: IncomingFriendReq) {
     await $api.patch(`friend-requests/${req.id}`, {
       action: "accept",
     });
+    refresh();
   } catch (error) {
     console.error(error);
-    if (error instanceof AxiosError) {
+    if (error instanceof AxiosError && error.response?.data) {
+      $toast.show({
+        message: error.response?.data.message,
+        color: "error",
+        icon: "mdi-alert-circle",
+      });
     }
   }
 }
@@ -213,14 +228,16 @@ async function acceptFriendReq(req: IncomingFriendReq) {
 async function deleteFriendReq(req: IncomingFriendReq | OutgoingFriendReq) {
   try {
     await $api.delete(`friend-requests/${req.id}`);
-    friends.value!.incoming = friends.value!.incoming.filter(
-      (r) => r.id !== req.id
-    );
-    friends.value!.outgoing = friends.value!.outgoing.filter(
-      (r) => r.id !== req.id
-    );
+    refresh();
   } catch (error) {
     console.error(error);
+    if (error instanceof AxiosError && error.response?.data) {
+      $toast.show({
+        message: error.response?.data.message,
+        color: "error",
+        icon: "mdi-alert-circle",
+      });
+    }
   }
 }
 </script>
@@ -243,5 +260,10 @@ async function deleteFriendReq(req: IncomingFriendReq | OutgoingFriendReq) {
   align-items: center;
   justify-content: center;
   height: 12.5rem;
+}
+
+.req-btns {
+  display: flex;
+  gap: 0.5rem;
 }
 </style>
