@@ -7,6 +7,7 @@ export interface FriendReqDocument {
 }
 
 export interface UserDocument {
+  id: string;
   username: string;
   display_name: string;
   friends: string[];

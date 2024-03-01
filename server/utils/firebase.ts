@@ -18,7 +18,7 @@ export async function createUser(
 
   try {
     const docRef = db.doc(`users/${profile.id}`);
-    const docData: UserDocument = {
+    const docData: Omit<UserDocument, "id"> = {
       username: profile.id,
       display_name: profile.display_name ?? "",
       friends: [],
@@ -50,4 +50,8 @@ export async function uploadObject(
   return `https://firebasestorage.googleapis.com/v0/b/${
     bucket.name
   }/o/${encodeURIComponent(path)}?alt=media`;
+}
+
+export function combineDataAndId<T>(doc: admin.firestore.DocumentSnapshot) {
+  return { id: doc.id, ...doc.data() } as T;
 }

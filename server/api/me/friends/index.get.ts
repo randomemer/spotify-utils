@@ -1,4 +1,4 @@
-import getAdmin from "~/server/utils/firebase";
+import getAdmin, { combineDataAndId } from "~/server/utils/firebase";
 import admin from "firebase-admin";
 
 export default defineEventHandler(async (event) => {
@@ -12,8 +12,8 @@ export default defineEventHandler(async (event) => {
     .collection("users")
     .where("friends", "array-contains", user_id);
   const friendsQuerySnap = await friendsQuery.get();
-  const friends = friendsQuerySnap.docs.map(
-    (doc) => doc.data() as UserDocument
+  const friends = friendsQuerySnap.docs.map((doc) =>
+    combineDataAndId<UserDocument>(doc)
   );
 
   // 2. Fetch incoming and outgoing requests
@@ -44,10 +44,9 @@ async function fetchFriendRequests(
       )
     );
   const reqsQuerySnap = await reqsQuery.get();
-  const reqs = reqsQuerySnap.docs.map((doc) => ({
-    id: doc.id,
-    ...(doc.data() as FriendReqDocument),
-  }));
+  const reqs = reqsQuerySnap.docs.map((doc) =>
+    combineDataAndId<FriendReqDocument>(doc)
+  );
 
   // Fetch profiles of requests
   const ids = new Set();
@@ -68,9 +67,9 @@ async function fetchFriendRequests(
       return {
         id: req.id,
         sender_id: req.sender,
-        profile: profilesSnap.docs
-          .find((doc) => doc.id === req.sender)
-          ?.data() as UserDocument,
+        profile: combineDataAndId<UserDocument>(
+          profilesSnap.docs.find((doc) => doc.id === req.sender)!
+        ),
         created_at: req.created_at,
         updated_at: req.updated_at,
       } as IncomingFriendReq;
@@ -82,9 +81,9 @@ async function fetchFriendRequests(
       return {
         id: req.id,
         recipient_id: req.recipient,
-        profile: profilesSnap.docs
-          .find((doc) => doc.id === req.recipient)
-          ?.data() as UserDocument,
+        profile: combineDataAndId<UserDocument>(
+          profilesSnap.docs.find((doc) => doc.id === req.recipient)!
+        ),
         created_at: req.created_at,
         updated_at: req.updated_at,
       } as OutgoingFriendReq;

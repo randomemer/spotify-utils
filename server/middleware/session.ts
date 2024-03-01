@@ -6,6 +6,7 @@ const PROTECTED_ROUTES: ProtectedRoute[] = [
   /^\/api\/playlist(\/)?[^/]+$/,
   "/api/me",
   "/api/me/friends",
+  /^\/api\/me\/friends(\/)?[^/]+$/,
   /^\/api\/friend-requests/,
 ];
 

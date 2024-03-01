@@ -16,5 +16,5 @@ export default defineEventHandler(async (event) => {
   const docRef = admin.firestore().doc(`users/${id}`);
   const doc = await docRef.get();
 
-  return doc.data() as UserDocument;
+  return combineDataAndId<UserDocument>(doc);
 });

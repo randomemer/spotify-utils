@@ -2,5 +2,6 @@
   "compilerOptions": {
     "typeRoots": ["../types"]
   },
-  "extends": "../.nuxt/tsconfig.server.json"
+  "extends": "../.nuxt/tsconfig.server.json",
+  "exclude": ["../functions/**"]
 }

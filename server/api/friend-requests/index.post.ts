@@ -25,7 +25,10 @@ export default defineEventHandler(async (event) => {
 
   // Check 2 : Already friended
   const recipientDoc = userQuerySnap.docs[0];
-  const recipientData = recipientDoc.data() as UserDocument;
+  const recipientData = {
+    id: recipientDoc.id,
+    ...recipientDoc.data(),
+  } as UserDocument;
   if (recipientData.friends.includes(senderId)) {
     throw createError({
       statusCode: 400,

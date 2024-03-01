@@ -30,10 +30,11 @@
               <template #title>{{ friend.display_name }}</template>
               <template #append>
                 <v-btn
-                  size="x-large"
                   variant="tonal"
+                  density="comfortable"
                   color="error"
                   icon="mdi-account-minus"
+                  @click="openUnfriendDialog(friend)"
                 />
               </template>
             </v-list-item>
@@ -139,13 +140,16 @@
         </v-window-item>
       </v-window>
 
-      <v-dialog v-model="isUnfriendOpen">
+      <v-dialog max-width="37.5rem" v-model="isUnfriendOpen">
         <v-card>
-          <v-card-title></v-card-title>
-          <v-card-text> </v-card-text>
+          <v-card-text>
+            Are you sure you want to unfriend
+            <strong>{{ unfriend?.display_name }}</strong
+            >?
+          </v-card-text>
           <v-card-actions class="justify-end pa-4">
             <v-btn @click="isUnfriendOpen = false">Cancel</v-btn>
-            <v-btn color="error">Unfriend</v-btn>
+            <v-btn color="error" @click="unfriendUser()">Unfriend</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -185,6 +189,7 @@ const isSendingReq = ref(false);
 const recipient = ref("");
 
 const isUnfriendOpen = ref(false);
+const unfriend = ref<UserDocument | null>(null);
 
 async function sendFriendReq() {
   if (isSendingReq.value) return;
@@ -239,6 +244,28 @@ async function deleteFriendReq(req: IncomingFriendReq | OutgoingFriendReq) {
       });
     }
   }
+}
+
+function openUnfriendDialog(user: UserDocument) {
+  unfriend.value = user;
+  isUnfriendOpen.value = true;
+}
+
+async function unfriendUser() {
+  try {
+    await $api.delete(`me/friends/${unfriend.value?.id}`);
+    refresh();
+  } catch (error) {
+    console.error(error);
+    if (error instanceof AxiosError && error.response?.data) {
+      $toast.show({
+        message: error.response?.data.message,
+        color: "error",
+        icon: "mdi-alert-circle",
+      });
+    }
+  }
+  isUnfriendOpen.value = false;
 }
 </script>
 

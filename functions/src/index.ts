@@ -7,6 +7,8 @@ import {
 import { FriendReqDocument, UserDocument } from "./types";
 import { removeFriend } from "./utils";
 
+admin.initializeApp();
+
 export const onFriendReqAccepted = onDocumentUpdated(
   "friend_requests/{id}",
   async (event) => {
@@ -30,7 +32,7 @@ export const onFriendReqAccepted = onDocumentUpdated(
     const recipientRef = firestore.doc(`users/${req.recipient}`);
     const recipientDoc = await recipientRef.get();
     const recipientFriends = (recipientDoc.data() as UserDocument).friends;
-    await senderRef.update({ friends: [...recipientFriends, req.sender] });
+    await recipientRef.update({ friends: [...recipientFriends, req.sender] });
 
     const elasped = Date.now() - start;
     logger.log(`Request : ${doc.id}, Elasped : ${elasped} ms`);

@@ -42,6 +42,7 @@ declare global {
 
   // Documents
   interface UserDocument {
+    id: string;
     username: string;
     display_name: string;
     friends: string[];
@@ -67,6 +68,7 @@ declare global {
   }
 
   interface FriendReqDocument {
+    id: string;
     sender: string;
     recipient: string;
     status: "pending" | "accepted";
