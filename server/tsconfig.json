@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "typeRoots": ["../types"]
+    "typeRoots": ["../types"],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false
   },
   "extends": "../.nuxt/tsconfig.server.json",
   "exclude": ["../functions/**"]

@@ -44,6 +44,12 @@ export default defineNuxtConfig({
     spotifyClientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     serviceAccKey: process.env.SERVICE_ACC_KEY,
     storageBucket: process.env.STORAGE_BUCKET,
+    dbUrl: process.env.DB_URL,
+    // dbHost: process.env.DB_HOST,
+    // dbUser: process.env.DB_USER,
+    // dbPassword: process.env.DB_PASSWORD,
+    // dbName: process.env.DB_NAME,
+    // dbPort: process.env.DB_PORT,
     public: {
       origin: process.env.ORIGIN,
     },
