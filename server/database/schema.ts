@@ -32,7 +32,7 @@ export const friendRequests = mysqlTable("friend_requests", {
     .notNull()
     .references(() => users.id),
   requestor: mysqlEnum("requestor", ["user1", "user2"]).notNull(),
-  createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
+  createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
 });
 
 export const userFriends = mysqlTable("user_friends", {
@@ -43,7 +43,7 @@ export const userFriends = mysqlTable("user_friends", {
   friendId: varchar("friend_id", { length: 256 })
     .notNull()
     .references(() => users.id),
-  createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
+  createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
 });
 
 export const playlists = mysqlTable(
