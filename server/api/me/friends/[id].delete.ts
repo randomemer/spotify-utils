@@ -1,44 +1,30 @@
-import getAdmin from "~/server/utils/firebase";
+import { and, eq, or } from "drizzle-orm";
+import { userFriends } from "~/server/database/schema";
 
 export default defineEventHandler(async (event) => {
-  const session: KVUserSession = event.context.session;
+  const { user_id }: KVUserSession = event.context.session;
+  const config = useRuntimeConfig();
+  const db = await useDrizzle(config);
 
-  const env = useRuntimeConfig();
-  const admin = getAdmin(env.serviceAccKey);
-  const firestore = admin.firestore();
-  const { Filter } = admin.firestore;
-
-  const id = event.context.params?.id;
-  if (!id) {
+  const friendId = event.context.params?.id;
+  if (!friendId) {
     throw createError({
       statusCode: 400,
-      statusMessage: "No user ID was provided",
+      statusMessage: "No user ID was provided.",
     });
   }
 
-  const query = firestore
-    .collection("friend_requests")
+  const result = await db
+    .delete(userFriends)
     .where(
-      Filter.and(
-        Filter.where("status", "==", "accepted"),
-        Filter.or(
-          Filter.and(
-            Filter.where("sender", "==", session.user_id),
-            Filter.where("recipient", "==", id)
-          ),
-          Filter.and(
-            Filter.where("sender", "==", id),
-            Filter.where("recipient", "==", session.user_id)
-          )
-        )
+      or(
+        and(
+          eq(userFriends.userId, user_id),
+          eq(userFriends.friendId, friendId)
+        ),
+        and(eq(userFriends.userId, friendId), eq(userFriends.friendId, user_id))
       )
     );
-  const snaps = await query.get();
-  if (snaps.empty) {
-    throw createError({ statusCode: 404, statusMessage: "Friend Not Found" });
-  }
 
-  const doc = snaps.docs[0];
-  console.log("Deleting request", doc.data());
-  await doc.ref.delete();
+  console.log("Deleted request", result);
 });

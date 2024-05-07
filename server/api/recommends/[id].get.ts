@@ -1,4 +1,3 @@
-import getAdmin from "~/server/utils/firebase";
 import { getFullRecommendsData } from "~/utils/services";
 
 export default defineEventHandler(async (event) => {
@@ -6,12 +5,20 @@ export default defineEventHandler(async (event) => {
     const params = event.context.params;
     const { spotifyClientId, spotifyClientSecret } = useRuntimeConfig(event);
 
-    // 1.Get the doc
-    const { serviceAccKey } = useRuntimeConfig(event);
-    const db = getAdmin(serviceAccKey).firestore();
+    // 1. Get the record
+    const config = useRuntimeConfig(event);
+    const db = await useDrizzle(config);
 
-    const docRef = await db.doc(`recommends/${params!.id}`).get();
-    const docData = docRef.data() as RecommendsDocumentSerialized;
+    const recommend = await db.query.recommends.findFirst({
+      where: (fields, { eq }) => eq(fields.id, params!.id),
+    });
+
+    if (!recommend) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: "Recommend not found",
+      });
+    }
 
     // 2. Get spotify client
     const spotifyApi = await apiClientPublic(
@@ -20,15 +27,9 @@ export default defineEventHandler(async (event) => {
     );
 
     // 3. Get recommends data
-    const data = await getFullRecommendsData(
-      spotifyApi,
-      JSON.parse(docData.data)
-    );
+    const data = await getFullRecommendsData(spotifyApi, recommend.data);
 
-    return {
-      id: docRef.id,
-      data,
-    };
+    return { id: recommend.id, data };
   } catch (error) {
     console.error(error);
   }

@@ -1,9 +1,11 @@
-import getAdmin from "~/server/utils/firebase";
+import { v4 } from "uuid";
+import { recommends } from "~/server/database/schema";
 import { apiClientPrivate } from "~/server/utils/spotify";
 import { getFullRecommendsData } from "~/utils/services";
 
 export default defineEventHandler(async (event) => {
   const token: string = event.context.token;
+  const { user_id }: KVUserSession = event.context.session;
   const query = event.path.split("?").at(-1);
 
   if (!query) {
@@ -21,18 +23,19 @@ export default defineEventHandler(async (event) => {
   );
 
   // 2. Save to db
-  const { serviceAccKey } = useRuntimeConfig(event);
-  const db = getAdmin(serviceAccKey).firestore();
+  const config = useRuntimeConfig(event);
+  const db = await useDrizzle(config);
 
-  const docRef = await db.collection("recommends").add({
-    data: JSON.stringify(feedResp.data),
+  const id = v4();
+  const result = await db.insert(recommends).values({
+    id,
+    userId: user_id,
+    data: feedResp.data,
   });
+  console.log("Saved recommend", result);
 
   // 3. Get complete data for recommends
   const data = await getFullRecommendsData(spotifyApi, feedResp.data);
 
-  return {
-    id: docRef.id,
-    data,
-  };
+  return { id, data };
 });

@@ -1,5 +1,6 @@
+import { and, eq } from "drizzle-orm";
 import _ from "lodash";
-import getAdmin from "~/server/utils/firebase";
+import { InsertPlaylist, playlists } from "~/server/database/schema";
 import { createPlaylistAnalysis } from "~/utils/helpers";
 import {
   getAllItems,
@@ -23,18 +24,16 @@ export default defineEventHandler(async (event) => {
 
   const env = useRuntimeConfig();
   const appConfig = useAppConfig(event);
-  const admin = getAdmin(env.serviceAccKey);
+  const db = await useDrizzle(env);
 
   // 1. Check existing analysis
-  const collection = admin.firestore().collection("playlists");
-  const docs = await collection
-    .where("snapshot_id", "==", snapshot_id ?? "")
-    .where("playlist_id", "==", id)
-    .get();
+  const condition = snapshot_id
+    ? and(eq(playlists.playlistId, id), eq(playlists.snapshotId, snapshot_id))
+    : eq(playlists.playlistId, id);
+  const playlistArr = await db.select().from(playlists).where(condition);
 
-  if (!docs.empty) {
-    const docSnapshot = docs.docs[0].data();
-    return docSnapshot;
+  if (playlistArr.length > 0) {
+    return playlistArr[0];
   }
 
   const spotifyApi = apiClientPrivate(token);
@@ -76,19 +75,16 @@ export default defineEventHandler(async (event) => {
     selectedFeatures: appConfig.audioFeatures,
   });
 
-  const resp: PlaylistDocument = {
-    playlist_id: id,
-    snapshot_id: playlistResp.data.snapshot_id,
+  const resp: InsertPlaylist = {
+    playlistId: id,
+    snapshotId: playlistResp.data.snapshot_id,
     analysis,
     artists: artists.map((artist) =>
       _.pick(artist, ["id", "name", "images", "genres"])
     ),
   };
-
-  // Save to firestore async
-  (async function () {
-    await collection.add(resp);
-  })();
+  // Save to database async
+  (async () => await db.insert(playlists).values(resp))();
 
   return resp;
 });

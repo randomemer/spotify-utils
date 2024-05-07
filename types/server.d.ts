@@ -1,4 +1,5 @@
 import { HTTPMethod } from "h3";
+import type { SelectUser } from "~/server/database/schema";
 
 declare global {
   // Auth
@@ -40,42 +41,6 @@ declare global {
     kv_data: KVUserSession;
   }
 
-  // Documents
-  interface UserDocument {
-    id: string;
-    username: string;
-    display_name: string;
-    friends: string[];
-    created_at: number;
-    picture: string | null;
-  }
-
-  interface RecommendsDocument {
-    user: string;
-    data: SpotifyApi.RecommendationsObject;
-  }
-
-  interface RecommendsDocumentSerialized {
-    user: string;
-    data: string;
-  }
-
-  interface PlaylistDocument {
-    playlist_id: string;
-    snapshot_id: string;
-    analysis: PlaylistAnalysis;
-    artists: ArtistItemData[];
-  }
-
-  interface FriendReqDocument {
-    id: string;
-    sender: string;
-    recipient: string;
-    status: "pending" | "accepted";
-    created_at: number;
-    updated_at: number;
-  }
-
   type PathLike = string | RegExp;
 
   interface ProtectedRouteObject {
@@ -105,24 +70,14 @@ declare global {
 
   interface IncomingFriendReq {
     id: string;
-    sender_id: string;
-    profile: UserDocument;
-    created_at: number;
-    updated_at: number;
+    sender: SelectUser;
+    createdAt: string;
   }
 
   interface OutgoingFriendReq {
     id: string;
-    recipient_id: string;
-    profile: UserDocument;
-    created_at: number;
-    updated_at: number;
-  }
-
-  interface FriendsListResponse {
-    friends: UserDocument[];
-    incoming: IncomingFriendReq[];
-    outgoing: OutgoingFriendReq[];
+    recipient: SelectUser;
+    createdAt: string;
   }
 }
 

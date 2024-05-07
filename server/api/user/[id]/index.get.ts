@@ -1,5 +1,3 @@
-import getAdmin from "~/server/utils/firebase";
-
 export default defineEventHandler(async (event) => {
   const id = event.context.params?.id;
 
@@ -11,10 +9,15 @@ export default defineEventHandler(async (event) => {
   }
 
   const env = useRuntimeConfig();
-  const admin = getAdmin(env.serviceAccKey);
+  const db = await useDrizzle(env);
 
-  const docRef = admin.firestore().doc(`users/${id}`);
-  const doc = await docRef.get();
+  const user = await db.query.users.findFirst({
+    where: (user, { eq }) => eq(user.id, id),
+  });
 
-  return combineDataAndId<UserDocument>(doc);
+  if (!user) {
+    throw createError({ statusCode: 404, statusMessage: "User not found." });
+  }
+
+  return user;
 });

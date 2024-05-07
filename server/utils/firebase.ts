@@ -51,7 +51,3 @@ export async function uploadObject(
     bucket.name
   }/o/${encodeURIComponent(path)}?alt=media`;
 }
-
-export function combineDataAndId<T>(doc: admin.firestore.DocumentSnapshot) {
-  return { id: doc.id, ...doc.data() } as T;
-}

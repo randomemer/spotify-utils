@@ -1,10 +1,11 @@
-import getAdmin from "~/server/utils/firebase";
+import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
+import { InsertUser, users } from "~/server/database/schema";
 
 export default defineEventHandler(async (event) => {
   const env = useRuntimeConfig();
-  const admin = getAdmin(env.serviceAccKey);
   const session: KVUserSession = event.context.session;
+  const db = await useDrizzle(env);
 
   try {
     const formData = await readMultipartFormData(event);
@@ -31,13 +32,14 @@ export default defineEventHandler(async (event) => {
 
     if (data.size === 0) return;
 
-    // Update firestore document
-    const json: Partial<PatchProfileResponse> = Object.fromEntries(
-      data.entries()
-    );
-    const docRef = admin.firestore().doc(`users/${session.user_id}`);
+    // Update database record
+    const json: Partial<InsertUser> = Object.fromEntries(data.entries());
+    const result = await db
+      .update(users)
+      .set(json)
+      .where(eq(users.id, session.user_id));
+    console.log("Updated user", result);
 
-    await docRef.update(json);
     return json;
   } catch (error) {
     console.error(error);
