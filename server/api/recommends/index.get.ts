@@ -1,4 +1,4 @@
-import { v4 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import { recommends } from "~/server/database/schema";
 import { apiClientPrivate } from "~/server/utils/spotify";
 import { getFullRecommendsData } from "~/utils/services";
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
   const db = await useDrizzle(config);
 
-  const id = v4();
+  const id = uuidv4();
   const result = await db.insert(recommends).values({
     id,
     userId: user_id,

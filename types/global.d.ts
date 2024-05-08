@@ -1,7 +1,9 @@
+import type { SelectUser } from "~/server/database/schema";
+
 declare global {
   interface UserState {
     session: UserSession | null;
-    profile: UserDocument | null;
+    profile: SelectUser | null;
   }
 
   type LoginResp =

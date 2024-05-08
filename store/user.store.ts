@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import type { AxiosInstance } from "axios";
 import _ from "lodash";
+import type { SelectUser } from "~/server/database/schema";
 
 const useUserStore = defineStore("auth", {
   state: () => {
@@ -18,12 +19,12 @@ const useUserStore = defineStore("auth", {
     setSession(session: Partial<UserSession>) {
       this.session = _.merge(this.session, session);
     },
-    setProfile(profile: Partial<UserDocument>) {
+    setProfile(profile: Partial<SelectUser>) {
       this.profile = _.merge(this.profile, profile);
     },
     async fetchProfile(api: AxiosInstance) {
       if (!this.session) throw new Error("No session in store");
-      const resp = await api.get<UserDocument>(
+      const resp = await api.get<SelectUser>(
         `user/${this.session.kv_data.user_id}`
       );
       this.profile = resp.data;

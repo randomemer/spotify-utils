@@ -8,6 +8,8 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  console.log("getting user", id);
+
   const env = useRuntimeConfig();
   const db = await useDrizzle(env);
 

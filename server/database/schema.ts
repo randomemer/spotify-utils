@@ -19,6 +19,7 @@ export const users = mysqlTable("users", {
   picture: varchar("picture", { length: 256 }),
   createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { mode: "string" })
+    .defaultNow()
     .onUpdateNow()
     .notNull(),
 });

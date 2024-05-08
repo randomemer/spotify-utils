@@ -104,9 +104,9 @@ const cropper = ref<VueCropperMethods | null>();
 const isUploadingPfp = ref(false);
 
 const pfp = computed(() => profile?.picture ?? undefined);
-const name = computed(() => profile?.display_name);
+const name = computed(() => profile?.displayName);
 const createdAt = computed(() =>
-  dayjs(profile?.created_at, { utc: true }).format("d MMM YYYY")
+  dayjs(profile?.createdAt, { utc: true }).format("d MMM YYYY")
 );
 
 async function saveUsername() {

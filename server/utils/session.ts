@@ -3,7 +3,8 @@ import axios from "axios";
 import { setCookie, type H3Event } from "h3";
 import type { RuntimeConfig } from "nuxt/schema";
 import type {} from "spotify-web-api-js";
-import { createUser } from "./firebase";
+import { users } from "~/server/database/schema";
+import { useDrizzle } from "./drizzle";
 
 export async function createSession(
   event: H3Event,
@@ -32,8 +33,16 @@ export async function createSession(
   console.log("kvRes", kvRes);
 
   // 3. Set account info (if not present)
-  const { serviceAccKey } = config;
-  createUser(serviceAccKey, profile);
+  // (async function () {
+  // })();
+  const db = await useDrizzle(config);
+  const result = await db.insert(users).values({
+    id: profile.id,
+    username: profile.id,
+    displayName: profile.display_name ?? "",
+    picture: profile.images?.at(-1)?.url ?? null,
+  });
+  console.log("Created user", result);
 
   // 4. Set cookie with session details
   setCookie(event, "session_id", userResp.data.id, {

@@ -17,17 +17,17 @@
       <v-window v-model="tab">
         <!-- All friends -->
         <v-window-item :value="0">
-          <template v-if="friends?.friends.length">
+          <template v-if="friends?.length">
             <v-list-item
               :key="i"
               class="list-item"
               variant="flat"
-              v-for="(friend, i) in friends.friends"
+              v-for="(friend, i) in friends"
             >
               <template #prepend>
                 <v-avatar size="large" :image="friend.picture ?? undefined" />
               </template>
-              <template #title>{{ friend.display_name }}</template>
+              <template #title>{{ friend.displayName }}</template>
               <template #append>
                 <v-btn
                   variant="tonal"
@@ -159,6 +159,7 @@
 
 <script setup lang="ts">
 import { AxiosError } from "axios";
+import type { SelectUser } from "~/server/database/schema";
 
 const { $api, $toast } = useNuxtApp();
 
@@ -178,7 +179,7 @@ const {
   refresh,
 } = useAsyncData(async () => {
   console.time("friends");
-  const resp = await $api.get<FriendsListResponse>(`me/friends`);
+  const resp = await $api.get<SelectUser[]>(`me/friends`);
   console.timeEnd("friends");
   console.log(resp.data);
   return resp.data;
@@ -189,7 +190,7 @@ const isSendingReq = ref(false);
 const recipient = ref("");
 
 const isUnfriendOpen = ref(false);
-const unfriend = ref<UserDocument | null>(null);
+const unfriend = ref<SelectUser | null>(null);
 
 async function sendFriendReq() {
   if (isSendingReq.value) return;
@@ -246,7 +247,7 @@ async function deleteFriendReq(req: IncomingFriendReq | OutgoingFriendReq) {
   }
 }
 
-function openUnfriendDialog(user: UserDocument) {
+function openUnfriendDialog(user: SelectUser) {
   unfriend.value = user;
   isUnfriendOpen.value = true;
 }
