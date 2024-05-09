@@ -1,5 +1,4 @@
-import { HTTPMethod } from "h3";
-import type { SelectUser } from "~/server/database/schema";
+import type { HTTPMethod } from "h3";
 
 declare global {
   // Auth
@@ -81,4 +80,17 @@ declare global {
   }
 }
 
-export {};
+// export {};
+
+export type {
+  SelectUser,
+  InsertUser,
+  SelectFriendRequest,
+  InsertFriendRequest,
+  SelectUserFriend,
+  InsertUserFriend,
+  SelectPlaylist,
+  InsertPlaylist,
+  SelectRecommend,
+  InsertRecommend,
+} from "~/server/database/schema";

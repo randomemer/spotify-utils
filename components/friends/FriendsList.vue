@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import { AxiosError } from "axios";
-import type { SelectUser } from "~/server/database/schema";
+import type { SelectUser } from "~/types/server";
 
 const { $api, $toast } = useNuxtApp();
 

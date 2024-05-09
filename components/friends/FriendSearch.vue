@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { AxiosError } from "axios";
-import type { InsertFriendRequest } from "~/server/database/schema";
+import type { InsertFriendRequest } from "~/types/server";
 
 const { $api, $toast } = useNuxtApp();
 

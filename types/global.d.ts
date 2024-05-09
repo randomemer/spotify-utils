@@ -1,4 +1,4 @@
-import type { SelectUser } from "~/server/database/schema";
+import type { SelectUser } from "./server";
 
 declare global {
   interface UserState {
