@@ -54,4 +54,15 @@ export default defineNuxtConfig({
       "dev:reload": () => require("sharp"),
     },
   },
+  vite: {
+    define: {
+      "process.env.DEBUG": false,
+      "window.global": {},
+    },
+    resolve: {
+      alias: {
+        "./runtimeConfig": "./runtimeConfig.browser", //fix production build
+      },
+    },
+  },
 });
