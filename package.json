@@ -40,6 +40,7 @@
     "drizzle-kit": "^0.20.17",
     "h3": "^1.8.1",
     "nuxt": "^3.10.2",
+    "rollup-plugin-node-polyfills": "^0.2.1",
     "sass": "^1.66.1",
     "tsx": "^4.9.1"
   }

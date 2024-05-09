@@ -19,17 +19,17 @@ export default defineEventHandler(async (event) => {
     const db = await useDrizzle(config);
 
     const requests = await db.query.friendRequests.findMany({
-      where: (fields, { eq, or, and }) =>
-        or(
-          and(
-            eq(fields.userOne, user_id),
-            eq(fields.requestor, direction === "incoming" ? "user2" : "user1")
-          ),
-          and(
-            eq(fields.userTwo, user_id),
-            eq(fields.requestor, direction === "incoming" ? "user1" : "user2")
-          )
-        ),
+      // where: (fields, { eq, or, and }) =>
+      //   or(
+      //     and(
+      //       eq(fields.userOne, user_id),
+      //       eq(fields.requestor, direction === "incoming" ? "user2" : "user1")
+      //     ),
+      //     and(
+      //       eq(fields.userTwo, user_id),
+      //       eq(fields.requestor, direction === "incoming" ? "user1" : "user2")
+      //     )
+      //   ),
       with: { userOneRecord: true, userTwoRecord: true },
       limit: 20,
     });

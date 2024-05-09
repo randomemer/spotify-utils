@@ -79,13 +79,18 @@ export const recommends = mysqlTable("recommends", {
 // *********************
 
 export const usersRelations = relations(users, ({ many }) => ({
-  friends: many(userFriends, { relationName: "friends" }),
-  friendRequests: many(friendRequests, { relationName: "friendRequests" }),
+  friends: many(userFriends, { relationName: "friends_friend" }),
+  friendRequests: many(friendRequests),
 }));
 
 export const userFriendsRelations = relations(userFriends, ({ one }) => ({
-  user: one(users, { fields: [userFriends.userId], references: [users.id] }),
+  user: one(users, {
+    relationName: "friends_user",
+    fields: [userFriends.userId],
+    references: [users.id],
+  }),
   friend: one(users, {
+    relationName: "friends_friend",
     fields: [userFriends.friendId],
     references: [users.id],
   }),
