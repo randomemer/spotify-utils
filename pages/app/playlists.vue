@@ -135,7 +135,6 @@ import duration from "dayjs/plugin/duration";
 import _ from "lodash";
 import GenresChart from "~/components/GenresChart.vue";
 import useUserStore from "~/store/user.store";
-import type { InsertPlaylist } from "~/types/server";
 
 definePageMeta({ name: "app:playlists", middleware: "auth" });
 
@@ -152,7 +151,7 @@ const inputMessage = ref("");
 const playlist = ref<SpotifyApi.PlaylistObjectFull | null>(null);
 
 const analysisStatus = ref("");
-const analysis = ref<InsertPlaylist | null>(null);
+const analysis = ref<InsertPlaylistModel | null>(null);
 
 const avgDuration = computed(() => {
   const ms = analysis.value?.analysis.avg_track_length;
@@ -212,7 +211,7 @@ async function getPlaylistAnalysis() {
       snapshot_id: list.snapshot_id,
     });
 
-    const resp = await $api.get<InsertPlaylist>(
+    const resp = await $api.get<InsertPlaylistModel>(
       `/playlist/${list.id}?${query}`,
       {
         headers: { Authorization: `Bearer ${authStore.accessToken}` },

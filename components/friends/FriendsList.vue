@@ -44,24 +44,19 @@
 
 <script setup lang="ts">
 import { AxiosError } from "axios";
-import type { SelectUser } from "~/types/server";
 
 const { $api, $toast } = useNuxtApp();
 
-const {
-  data: friends,
-  pending,
-  refresh,
-} = useAsyncData(async () => {
+const { data: friends, refresh } = useAsyncData(async () => {
   const resp = await $api.get("/me/friends");
   console.log("my friends", resp.data);
   return resp.data;
 });
 
 const isUnfriendOpen = ref(false);
-const unfriend = ref<SelectUser | null>(null);
+const unfriend = ref<UserModel | null>(null);
 
-function openUnfriendDialog(user: SelectUser) {
+function openUnfriendDialog(user: UserModel) {
   unfriend.value = user;
   isUnfriendOpen.value = true;
 }

@@ -78,19 +78,59 @@ declare global {
     recipient: SelectUser;
     createdAt: string;
   }
+
+  // Database models
+
+  interface UserModel {
+    id: string;
+    username: string;
+    displayName: string;
+    picture: string | null;
+    createdAt: string;
+    updatedAt: string;
+  }
+
+  interface FriendRequestModel {
+    id: string;
+    userOne: string;
+    userTwo: string;
+    requestor: "user1" | "user2";
+    createdAt: string;
+  }
+
+  interface UserFriendModel {
+    id: string;
+    userId: string;
+    friendId: string;
+    createdAt: string;
+  }
+
+  interface PlaylistModel {
+    playlistId: string;
+    snapshotId: string;
+    analysis: PlaylistAnalysis;
+    artists: ArtistItemData[];
+    createdAt: string;
+  }
+
+  interface RecommendModel {
+    id: string;
+    userId: string;
+    data: SpotifyApi.RecommendationsObject;
+    createdAt: string;
+  }
+
+  // Insert Models
+
+  type InsertUserModel = Omit<UserRecord, "createdAt" | "updatedAt">;
+
+  type InsertFriendRequestModel = Omit<FriendRequestModel, "createdAt">;
+
+  type InsertUserFriendModel = Omit<UserFriendModel, "createdAt">;
+
+  type InsertPlaylistModel = Omit<PlaylistModel, "createdAt">;
+
+  type InsertRecommendModel = Omit<RecommendModel, "createdAt">;
 }
 
-// export {};
-
-export type {
-  SelectUser,
-  InsertUser,
-  SelectFriendRequest,
-  InsertFriendRequest,
-  SelectUserFriend,
-  InsertUserFriend,
-  SelectPlaylist,
-  InsertPlaylist,
-  SelectRecommend,
-  InsertRecommend,
-} from "~/server/database/schema";
+export {};

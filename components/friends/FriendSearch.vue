@@ -14,7 +14,6 @@
 
 <script setup lang="ts">
 import { AxiosError } from "axios";
-import type { InsertFriendRequest } from "~/types/server";
 
 const { $api, $toast } = useNuxtApp();
 
@@ -25,7 +24,7 @@ async function sendFriendReq() {
   if (isSendingReq.value) return;
   isSendingReq.value = true;
   try {
-    const res = await $api.post<InsertFriendRequest>(`/friend-requests`, {
+    const res = await $api.post<InsertFriendRequestModel>(`/friend-requests`, {
       recipient: recipient.value,
     });
     // refresh();
