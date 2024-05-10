@@ -1,9 +1,7 @@
-import type { SelectUser } from "./server";
-
 declare global {
   interface UserState {
     session: UserSession | null;
-    profile: SelectUser | null;
+    profile: UserModel | null;
   }
 
   type LoginResp =
