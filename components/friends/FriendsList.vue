@@ -44,11 +44,12 @@
 
 <script setup lang="ts">
 import { AxiosError } from "axios";
+import type { UserModel } from "~/types/server";
 
 const { $api, $toast } = useNuxtApp();
 
 const { data: friends, refresh } = useAsyncData(async () => {
-  const resp = await $api.get("/me/friends");
+  const resp = await $api.get<UserModel[]>("/me/friends");
   console.log("my friends", resp.data);
   return resp.data;
 });

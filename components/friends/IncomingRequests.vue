@@ -7,9 +7,9 @@
       v-for="(req, i) in requests"
     >
       <template #prepend>
-        <v-avatar size="large" :image="req.profile.picture ?? undefined" />
+        <v-avatar size="large" :image="req.sender.picture ?? undefined" />
       </template>
-      <template #title>{{ req.profile.display_name }}</template>
+      <template #title>{{ req.sender.displayName }}</template>
       <template #append>
         <div class="req-btns">
           <v-btn
@@ -47,7 +47,7 @@ const {
   refresh,
 } = useAsyncData(async () => {
   const query = new URLSearchParams({ direction: "incoming" });
-  const resp = await $api.get(`/friend-requests?${query}`);
+  const resp = await $api.get<APIFriendRequest[]>(`/friend-requests?${query}`);
   console.log("incoming requests", resp.data);
   return resp.data;
 });
@@ -70,7 +70,7 @@ async function accept(req: any) {
   }
 }
 
-async function reject(req: IncomingFriendReq | OutgoingFriendReq) {
+async function reject(req: APIFriendRequest) {
   try {
     await $api.delete(`friend-requests/${req.id}`);
     refresh();

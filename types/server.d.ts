@@ -1,5 +1,18 @@
 import type { HTTPMethod } from "h3";
 
+import type {
+  UserModel,
+  InsertUserModel,
+  FriendRequestModel,
+  InsertFriendRequestModel,
+  UserFriendModel,
+  InsertUserFriendModel,
+  PlaylistModel,
+  InsertPlaylistModel,
+  RecommendModel,
+  InsertRecommendModel,
+} from "~/server/database/schema";
+
 declare global {
   // Auth
   interface AccessTokenResponse {
@@ -67,20 +80,17 @@ declare global {
     recipient: string;
   }
 
-  interface IncomingFriendReq {
+  interface APIFriendRequest {
     id: string;
-    sender: SelectUser;
     createdAt: string;
-  }
-
-  interface OutgoingFriendReq {
-    id: string;
-    recipient: SelectUser;
-    createdAt: string;
+    senderId: string;
+    recipientId: string;
+    sender: UserModel;
+    recipient: UserModel;
   }
 }
 
-export type {
+export {
   UserModel,
   InsertUserModel,
   FriendRequestModel,
@@ -91,4 +101,4 @@ export type {
   InsertPlaylistModel,
   RecommendModel,
   InsertRecommendModel,
-} from "~/server/database/schema";
+};

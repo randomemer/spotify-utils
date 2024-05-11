@@ -20,7 +20,7 @@
         </v-window-item>
 
         <v-window-item :value="1">
-          <FriendsIncomingRequests />
+          <IncomingRequests />
         </v-window-item>
 
         <v-window-item :value="2"><OutgoingRequests /> </v-window-item>
@@ -35,6 +35,11 @@
 </template>
 
 <script setup lang="ts">
+import FriendSearch from "~/components/friends/FriendSearch.vue";
+import FriendsList from "~/components/friends/FriendsList.vue";
+import IncomingRequests from "~/components/friends/IncomingRequests.vue";
+import OutgoingRequests from "~/components/friends/OutgoingRequests.vue";
+
 const { $toast } = useNuxtApp();
 
 console.log("toast", $toast);

@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { H3Error } from "h3";
-import { v4 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import { friendRequests, userFriends } from "~/server/database/schema";
 
 export default defineEventHandler(async (event) => {
@@ -31,8 +31,8 @@ export default defineEventHandler(async (event) => {
     await db.transaction(async (trx) => {
       const { userOne, userTwo } = request;
       await trx.insert(userFriends).values([
-        { id: v4(), userId: userOne, friendId: userTwo },
-        { id: v4(), userId: userTwo, friendId: userOne },
+        { id: uuidv4(), userId: userOne, friendId: userTwo },
+        { id: uuidv4(), userId: userTwo, friendId: userOne },
       ]);
       await trx.delete(friendRequests).where(eq(friendRequests.id, requestId));
     });

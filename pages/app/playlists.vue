@@ -135,6 +135,7 @@ import duration from "dayjs/plugin/duration";
 import _ from "lodash";
 import GenresChart from "~/components/GenresChart.vue";
 import useUserStore from "~/store/user.store";
+import type { InsertPlaylistModel } from "~/types/server";
 
 definePageMeta({ name: "app:playlists", middleware: "auth" });
 

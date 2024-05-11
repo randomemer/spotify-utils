@@ -7,9 +7,9 @@
       v-for="(req, i) in requests"
     >
       <template #prepend>
-        <v-avatar size="large" :image="req.profile.picture ?? undefined" />
+        <v-avatar size="large" :image="req.recipient.picture ?? undefined" />
       </template>
-      <template #title>{{ req.profile.display_name }}</template>
+      <template #title>{{ req.recipient.displayName }}</template>
       <template #append>
         <v-btn
           variant="tonal"
@@ -38,8 +38,7 @@ const {
   refresh,
 } = useAsyncData(async () => {
   const query = new URLSearchParams({ direction: "outgoing" });
-  const resp = await $api.get(`/friend-requests?${query}`);
-  console.log("outgoing reqs", query);
+  const resp = await $api.get<APIFriendRequest[]>(`/friend-requests?${query}`);
   return resp.data;
 });
 

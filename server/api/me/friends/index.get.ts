@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import { alias } from "drizzle-orm/mysql-core";
 import { userFriends, users } from "~/server/database/schema";
 
 export default defineEventHandler(async (event) => {
@@ -6,30 +7,14 @@ export default defineEventHandler(async (event) => {
   const env = useRuntimeConfig();
   const db = await useDrizzle(env);
 
-  // const result = await db.query.users.findFirst({
-  //   where: (fields, { eq }) => eq(fields.id, user_id),
-  //   with: {
-  //     friends: {
-  //       limit: 20,
-  //       with: {
-  //         friend: true,
-  //       },
-  //     },
-  //   },
-  // });
-
+  const friendsTable = alias(users, "friends");
   const result = await db
     .select()
     .from(userFriends)
-    .leftJoin(users, eq(userFriends.friendId, users.id))
+    .leftJoin(friendsTable, eq(userFriends.friendId, friendsTable.id))
     .where(eq(userFriends.id, user_id));
 
-  if (!result) {
-    throw createError({ statusCode: 404, statusMessage: "User not found!" });
-  }
+  const friends = result.map(({ friends, user_friends }) => friends!);
 
-  console.log("got friends", result);
-
-  // const friends = result.friends.map((friendship) => friendship.friend);
   return result;
 });

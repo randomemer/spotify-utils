@@ -5,6 +5,7 @@ import type { RuntimeConfig } from "nuxt/schema";
 import type {} from "spotify-web-api-js";
 import { users } from "~/server/database/schema";
 import { useDrizzle } from "./drizzle";
+import { DrizzleError } from "drizzle-orm";
 
 export async function createSession(
   event: H3Event,
@@ -34,12 +35,16 @@ export async function createSession(
 
   // 3. Set account info (if not present)
   const db = await useDrizzle(config);
-  const result = await db.insert(users).values({
-    id: profile.id,
-    username: profile.id,
-    displayName: profile.display_name ?? "",
-    picture: profile.images?.at(-1)?.url ?? null,
-  });
+  const result = await db
+    .insert(users)
+    .values({
+      id: profile.id,
+      username: profile.id,
+      displayName: profile.display_name ?? "",
+      picture: profile.images?.at(-1)?.url ?? null,
+    })
+    .onDuplicateKeyUpdate({ set: { id: profile.id } });
+
   console.log("Created user", result);
 
   // 4. Set cookie with session details

@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import type { AxiosInstance } from "axios";
 import _ from "lodash";
+import type { UserModel } from "~/types/server";
 
 const useUserStore = defineStore("auth", {
   state: () => {

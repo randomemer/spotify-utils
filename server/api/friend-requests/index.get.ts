@@ -1,4 +1,7 @@
+import { and, eq, or } from "drizzle-orm";
+import { alias } from "drizzle-orm/mysql-core";
 import { H3Error } from "h3";
+import { friendRequests, users } from "~/server/database/schema";
 
 type RequestDirection = "incoming" | "outgoing";
 
@@ -18,25 +21,47 @@ export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig();
     const db = await useDrizzle(config);
 
-    const requests = await db.query.friendRequests.findMany({
-      // where: (fields, { eq, or, and }) =>
-      //   or(
-      //     and(
-      //       eq(fields.userOne, user_id),
-      //       eq(fields.requestor, direction === "incoming" ? "user2" : "user1")
-      //     ),
-      //     and(
-      //       eq(fields.userTwo, user_id),
-      //       eq(fields.requestor, direction === "incoming" ? "user1" : "user2")
-      //     )
-      //   ),
-      with: { userOneRecord: true, userTwoRecord: true },
-      limit: 20,
-    });
+    const userOneModel = alias(users, "userOneModel");
+    const userTwoModel = alias(users, "userTwoModel");
+    const requests = await db
+      .select()
+      .from(friendRequests)
+      .leftJoin(userOneModel, eq(friendRequests.userOne, userOneModel.id))
+      .leftJoin(userTwoModel, eq(friendRequests.userTwo, userTwoModel.id))
+      .where(
+        or(
+          and(
+            eq(friendRequests.userOne, user_id),
+            eq(
+              friendRequests.requestor,
+              direction === "incoming" ? "user2" : "user1"
+            )
+          ),
+          and(
+            eq(friendRequests.userTwo, user_id),
+            eq(
+              friendRequests.requestor,
+              direction === "incoming" ? "user1" : "user2"
+            )
+          )
+        )
+      );
 
-    return transformRequests(requests, direction as RequestDirection);
+    const transformed = requests.map(
+      ({ friend_requests: req, userOneModel, userTwoModel }) => {
+        return {
+          id: req.id,
+          createdAt: req.createdAt,
+          senderId: req.requestor === "user1" ? req.userOne : req.userTwo,
+          recipientId: req.requestor === "user1" ? req.userTwo : req.userOne,
+          sender: req.requestor === "user1" ? userOneModel : userTwoModel,
+          recipient: req.requestor === "user1" ? userTwoModel : userOneModel,
+        };
+      }
+    );
+
+    return transformed;
   } catch (error) {
-    if (!(error instanceof Error)) return;
     if (error instanceof H3Error) throw error;
 
     console.error(error);
@@ -47,23 +72,3 @@ export default defineEventHandler(async (event) => {
     });
   }
 });
-
-function transformRequests(
-  requests: any[],
-  direction: RequestDirection
-): IncomingFriendReq[] | OutgoingFriendReq[] {
-  if (direction === "incoming") {
-    return requests.map((req) => ({
-      id: req.id,
-      createdAt: req.createdAt,
-      sender: req.requestor === "user1" ? req.userOneRecord : req.userTwoRecord,
-    }));
-  } else {
-    return requests.map((req) => ({
-      id: req.id,
-      createdAt: req.createdAt,
-      recipient:
-        req.requestor === "user2" ? req.userOneRecord : req.userTwoRecord,
-    }));
-  }
-}
