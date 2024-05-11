@@ -3,52 +3,30 @@
 </template>
 
 <script setup lang="ts">
-import axios from "axios";
 import { callWithNuxt } from "nuxt/app";
 import useUserStore from "~/store/user.store";
 
 const nuxtApp = useNuxtApp();
 const route = useRoute();
-const env = useRuntimeConfig();
 const authStore = useUserStore();
 const event = useRequestEvent();
 
 onServerPrefetch(async () => {
   try {
-    const { createSession } = await import("~/server/utils/session");
+    const code = route.query.code?.toString();
+    if (!code) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Code not provided in query parameters",
+      });
+    }
 
-    // 1. Fetch tokens
-    const encoded = Buffer.from(
-      `${env.spotifyClientId}:${env.spotifyClientSecret}`
-    ).toString("base64");
+    const query = new URLSearchParams({ code });
+    const resp = await nuxtApp.$api.get<UserSession>(`/auth/session?${query}`);
 
-    const formData = new URLSearchParams({
-      grant_type: "authorization_code",
-      code: `${route.query.code?.toString()}`,
-      redirect_uri: `${env.public.origin}/auth/callback`,
-    });
-
-    const tokenResp = await axios.post<AccessTokenResponse>(
-      `https://accounts.spotify.com/api/token`,
-      formData.toString(),
-      {
-        headers: {
-          Authorization: `Basic ${encoded}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }
-    );
-
-    // 2. Create a new session and save tokens to data store
-    const kvSession = await createSession(event!, env, tokenResp.data);
-    const expiry = Date.now() + tokenResp.data.expires_in * 1000;
-    authStore.setSession({
-      token: {
-        access_token: tokenResp.data.access_token,
-        expiry,
-      },
-      kv_data: kvSession,
-    });
+    // Forward set cookie headers from above post request
+    event?.node.res.setHeader("Set-Cookie", resp.headers["set-cookie"]!);
+    authStore.setSession(resp.data);
 
     await callWithNuxt(nuxtApp, navigateTo, [
       "/app/dashboard",
@@ -56,7 +34,11 @@ onServerPrefetch(async () => {
     ]);
   } catch (error) {
     console.error(error);
-    await callWithNuxt(nuxtApp, navigateTo, ["/500", { replace: true }]);
+    throw createError({
+      fatal: true,
+      statusCode: 500,
+      statusMessage: "Something went wrong :(",
+    });
   }
 });
 </script>

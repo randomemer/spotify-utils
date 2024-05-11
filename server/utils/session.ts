@@ -33,8 +33,6 @@ export async function createSession(
   console.log("kvRes", kvRes);
 
   // 3. Set account info (if not present)
-  // (async function () {
-  // })();
   const db = await useDrizzle(config);
   const result = await db.insert(users).values({
     id: profile.id,
@@ -55,7 +53,7 @@ export async function createSession(
 }
 
 export async function fetchSession(
-  config: Record<string, string>,
+  config: RuntimeConfig,
   sessionId: string
 ): Promise<UserSession> {
   if (!sessionId) {

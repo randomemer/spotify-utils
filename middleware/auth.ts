@@ -15,8 +15,10 @@ export default defineNuxtRouteMiddleware(async () => {
         const event = useRequestEvent();
         const cookie = getCookie(event!, "session_id");
 
+        console.log("session cookie", cookie);
+
         const { fetchSession } = await import("~/server/utils/session");
-        const session = await fetchSession($config as any, cookie!);
+        const session = await fetchSession($config, cookie!);
         userStore.setSession(session);
       } catch (error) {
         if (error instanceof H3Error && error.statusCode === 401) {

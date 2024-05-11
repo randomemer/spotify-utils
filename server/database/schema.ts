@@ -28,10 +28,10 @@ export const friendRequests = mysqlTable("friend_requests", {
   id: varchar("id", { length: 256 }).primaryKey(),
   userOne: varchar("user1", { length: 256 })
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
   userTwo: varchar("user2", { length: 256 })
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
   requestor: mysqlEnum("requestor", ["user1", "user2"]).notNull(),
   createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
 });
@@ -40,10 +40,10 @@ export const userFriends = mysqlTable("user_friends", {
   id: varchar("id", { length: 256 }).primaryKey(),
   userId: varchar("user_id", { length: 256 })
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
   friendId: varchar("friend_id", { length: 256 })
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
   createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
 });
 
@@ -69,7 +69,7 @@ export const recommends = mysqlTable("recommends", {
   id: varchar("id", { length: 256 }).primaryKey(),
   userId: varchar("user_id", { length: 256 })
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onUpdate: "cascade", onDelete: "cascade" }),
   data: json("data").$type<SpotifyApi.RecommendationsObject>().notNull(),
   createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
 });
@@ -111,17 +111,17 @@ export const friendRequestRelations = relations(friendRequests, ({ one }) => ({
 // ****** TYPES ********
 // *********************
 
-export type SelectUser = InferSelectModel<typeof users>;
-export type InsertUser = InferInsertModel<typeof users>;
+export type UserModel = InferSelectModel<typeof users>;
+export type InsertUserModel = InferInsertModel<typeof users>;
 
-export type SelectFriendRequest = InferSelectModel<typeof friendRequests>;
-export type InsertFriendRequest = InferInsertModel<typeof friendRequests>;
+export type FriendRequestModel = InferSelectModel<typeof friendRequests>;
+export type InsertFriendRequestModel = InferInsertModel<typeof friendRequests>;
 
-export type SelectUserFriend = InferSelectModel<typeof userFriends>;
-export type InsertUserFriend = InferInsertModel<typeof userFriends>;
+export type UserFriendModel = InferSelectModel<typeof userFriends>;
+export type InsertUserFriendModel = InferInsertModel<typeof userFriends>;
 
-export type SelectPlaylist = InferSelectModel<typeof playlists>;
-export type InsertPlaylist = InferInsertModel<typeof playlists>;
+export type PlaylistModel = InferSelectModel<typeof playlists>;
+export type InsertPlaylistModel = InferInsertModel<typeof playlists>;
 
-export type SelectRecommend = InferSelectModel<typeof recommends>;
-export type InsertRecommend = InferInsertModel<typeof recommends>;
+export type RecommendModel = InferSelectModel<typeof recommends>;
+export type InsertRecommendModel = InferInsertModel<typeof recommends>;

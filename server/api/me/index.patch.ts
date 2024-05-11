@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
-import { InsertUser, users } from "~/server/database/schema";
+import { InsertUserModel, users } from "~/server/database/schema";
 
 export default defineEventHandler(async (event) => {
   const env = useRuntimeConfig();
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
     if (data.size === 0) return;
 
     // Update database record
-    const json: Partial<InsertUser> = Object.fromEntries(data.entries());
+    const json: Partial<InsertUserModel> = Object.fromEntries(data.entries());
     const result = await db
       .update(users)
       .set(json)

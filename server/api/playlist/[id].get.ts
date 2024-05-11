@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import { and, eq } from "drizzle-orm";
 import _ from "lodash";
-import { InsertPlaylist, playlists } from "~/server/database/schema";
+import { InsertPlaylistModel, playlists } from "~/server/database/schema";
 import { createPlaylistAnalysis } from "~/utils/helpers";
 import {
   getAllItems,
@@ -77,7 +77,7 @@ export default defineEventHandler(async (event) => {
       selectedFeatures: appConfig.audioFeatures,
     });
 
-    const resp: InsertPlaylist = {
+    const resp: InsertPlaylistModel = {
       playlistId: id,
       snapshotId: playlistResp.data.snapshot_id,
       analysis,

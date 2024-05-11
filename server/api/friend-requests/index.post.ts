@@ -1,6 +1,9 @@
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
-import { InsertFriendRequest, friendRequests } from "~/server/database/schema";
+import {
+  InsertFriendRequestModel,
+  friendRequests,
+} from "~/server/database/schema";
 
 export default defineEventHandler(async (event) => {
   const session: KVUserSession = event.context.session;
@@ -48,7 +51,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const data: InsertFriendRequest = {
+  const data: InsertFriendRequestModel = {
     id: uuidv4(),
     userOne,
     userTwo,
