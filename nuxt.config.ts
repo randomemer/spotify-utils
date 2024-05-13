@@ -1,9 +1,13 @@
+import { createResolver } from "@nuxt/kit";
+
+const { resolve } = createResolver(import.meta.url);
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ["@pinia/nuxt"],
   css: ["@mdi/font/css/materialdesignicons.min.css"],
-  build: { transpile: ["vuetify", "vuetify-toast-plugin"] },
+  build: { transpile: ["vuetify"] },
   imports: {
     dirs: ["./store"],
   },
@@ -53,5 +57,8 @@ export default defineNuxtConfig({
     hooks: {
       "dev:reload": () => require("sharp"),
     },
+  },
+  features: {
+    inlineStyles: false,
   },
 });

@@ -1400,7 +1400,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mdi/font@npm:^7.2.96":
+"@mdi/font@npm:^7.4.47":
   version: 7.4.47
   resolution: "@mdi/font@npm:7.4.47"
   checksum: b45a2ef27c1cc5f80b8458a48591799d42dc01189b136f65f14eb3f9e81799a7c4a64bd008c8e735eb8852f0036bcbe43f97ddc7dbd9c2163709429a71109061
@@ -7584,7 +7584,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "nuxt-app@workspace:."
   dependencies:
-    "@mdi/font": ^7.2.96
+    "@mdi/font": ^7.4.47
     "@nuxt/devtools": latest
     "@pinia/nuxt": ^0.4.11
     "@types/lodash": ^4.14.199
@@ -7610,7 +7610,7 @@ __metadata:
     uuid: ^9.0.1
     vue-chartjs: ^5.2.0
     vue-cropperjs: ^5.0.0
-    vuetify: ^3.3.16
+    vuetify: ^3.6.5
     vuetify-toast-snackbar: ^0.6.1
   languageName: unknown
   linkType: soft
@@ -10437,15 +10437,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vuetify@npm:^3.3.16":
-  version: 3.5.4
-  resolution: "vuetify@npm:3.5.4"
+"vuetify@npm:^3.6.5":
+  version: 3.6.5
+  resolution: "vuetify@npm:3.6.5"
   peerDependencies:
     typescript: ">=4.7"
-    vite-plugin-vuetify: ">=1.0.0-alpha.12"
+    vite-plugin-vuetify: ">=1.0.0"
     vue: ^3.3.0
     vue-i18n: ^9.0.0
-    webpack-plugin-vuetify: ">=2.0.0-alpha.11"
+    webpack-plugin-vuetify: ">=2.0.0"
   peerDependenciesMeta:
     typescript:
       optional: true
@@ -10455,7 +10455,7 @@ __metadata:
       optional: true
     webpack-plugin-vuetify:
       optional: true
-  checksum: 7ef826c355e776c7fffbccedf2543d4a0906fdbdfb178fe661efbc2684f94769292e88c9a7d388e6aacba46cd46badf2721f235e114bae9e3b81d271e218b837
+  checksum: 799245bf424561e05dfc843ba12ffaa6e04ca0fd15854bc96eb12e651e51e1f7e3a80d144111653ae2447c8850878fa9683421c831193071259c4c55f93a257e
   languageName: node
   linkType: hard
 

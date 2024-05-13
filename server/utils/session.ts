@@ -5,7 +5,6 @@ import type { RuntimeConfig } from "nuxt/schema";
 import type {} from "spotify-web-api-js";
 import { users } from "~/server/database/schema";
 import { useDrizzle } from "./drizzle";
-import { DrizzleError } from "drizzle-orm";
 
 export async function createSession(
   event: H3Event,
