@@ -1,7 +1,7 @@
 declare global {
   interface UserState {
     session: UserSession | null;
-    profile: UserModel | null;
+    profile: APIGetUser | null;
   }
 
   type LoginResp =

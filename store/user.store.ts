@@ -24,7 +24,7 @@ const useUserStore = defineStore("auth", {
     },
     async fetchProfile(api: AxiosInstance) {
       if (!this.session) throw new Error("No session in store");
-      const resp = await api.get<UserModel>(
+      const resp = await api.get<APIGetUser>(
         `user/${this.session.kv_data.user_id}`
       );
       this.profile = resp.data;

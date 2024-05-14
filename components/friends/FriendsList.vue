@@ -1,5 +1,8 @@
 <template>
-  <template v-if="friends?.length">
+  <div v-if="pending" class="spinner-box">
+    <v-progress-circular indeterminate class="spinner" color="primary" />
+  </div>
+  <template v-else-if="friends?.length">
     <v-list-item
       :key="i"
       class="list-item"
@@ -48,7 +51,11 @@ import type { UserModel } from "~/types/server";
 
 const { $api, $toast } = useNuxtApp();
 
-const { data: friends, refresh } = useAsyncData(async () => {
+const {
+  data: friends,
+  pending,
+  refresh,
+} = useAsyncData(async () => {
   const resp = await $api.get<UserModel[]>("/me/friends");
   console.log("my friends", resp.data);
   return resp.data;

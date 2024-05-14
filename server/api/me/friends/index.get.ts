@@ -14,7 +14,6 @@ export default defineEventHandler(async (event) => {
     .leftJoin(friendsTable, eq(userFriends.friendId, friendsTable.id))
     .where(eq(userFriends.id, user_id));
 
-  const friends = result.map(({ friends, user_friends }) => friends!);
-
-  return result;
+  const friends = result.map(({ friends }) => friends!);
+  return friends;
 });

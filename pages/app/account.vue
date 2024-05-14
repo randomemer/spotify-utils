@@ -88,7 +88,7 @@ import useUserStore from "~/store/user.store";
 
 const { $api } = useNuxtApp();
 const userStore = useUserStore();
-const { profile, session } = userStore;
+const { profile } = userStore;
 
 definePageMeta({ name: "app:account", middleware: "auth" });
 useHead({ title: "Account | Music Muse" });
@@ -163,7 +163,6 @@ function onCropAndUpload() {
       // TODO: show error
     }
 
-    // TODO : Change state in the store
     isUploadingPfp.value = false;
     isCropperOpen.value = false;
   });

@@ -80,6 +80,10 @@ declare global {
     recipient: string;
   }
 
+  interface APIGetUser extends UserModel {
+    friends: number;
+  }
+
   interface APIFriendRequest {
     id: string;
     createdAt: string;

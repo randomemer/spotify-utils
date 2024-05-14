@@ -78,4 +78,15 @@ const tab = ref(0);
   display: flex;
   gap: 0.5rem;
 }
+
+.spinner-box {
+  width: 100%;
+  padding: 1rem 0;
+  display: flex;
+  justify-content: center;
+
+  .spinner {
+    margin: 0 auto;
+  }
+}
 </style>

@@ -7,5 +7,5 @@ export const tables = schema;
 
 export async function useDrizzle(config: RuntimeConfig) {
   const client = await mysql2.createConnection({ uri: config.dbUrl });
-  return drizzle(client, { schema, mode: "default" });
+  return drizzle(client, { schema, mode: "planetscale" });
 }

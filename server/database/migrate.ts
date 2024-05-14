@@ -6,7 +6,7 @@ import { drizzle } from "drizzle-orm/mysql2";
 
 async function main() {
   const connection = await mysql.createConnection(process.env.DB_URL!!);
-  const db = drizzle(connection, { schema, mode: "default" });
+  const db = drizzle(connection, { schema, mode: "planetscale" });
 
   await migrate(db, { migrationsFolder: "server/database/migrations" });
   await connection.end();

@@ -1,10 +1,13 @@
 <template>
-  <template v-if="requests?.length">
+  <div v-if="pending" class="spinner-box">
+    <v-progress-circular indeterminate class="spinner" color="primary" />
+  </div>
+  <template v-else-if="requests?.length">
     <v-list-item
+      v-for="(req, i) in requests"
       :key="i"
       class="list-item"
       variant="flat"
-      v-for="(req, i) in requests"
     >
       <template #prepend>
         <v-avatar size="large" :image="req.recipient.picture ?? undefined" />

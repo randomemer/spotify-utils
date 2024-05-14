@@ -1,5 +1,8 @@
 <template>
-  <template v-if="requests?.length">
+  <div v-if="pending" class="spinner-box">
+    <v-progress-circular indeterminate class="spinner" color="primary" />
+  </div>
+  <template v-else-if="requests?.length">
     <v-list-item
       :key="i"
       class="list-item"
@@ -54,9 +57,7 @@ const {
 
 async function accept(req: any) {
   try {
-    await $api.patch(`friend-requests/${req.id}`, {
-      action: "accept",
-    });
+    await $api.get(`/friend-requests/${req.id}/accept`);
     refresh();
   } catch (error) {
     console.error(error);
@@ -72,7 +73,7 @@ async function accept(req: any) {
 
 async function reject(req: APIFriendRequest) {
   try {
-    await $api.delete(`friend-requests/${req.id}`);
+    await $api.delete(`/friend-requests/${req.id}`);
     refresh();
   } catch (error) {
     console.error(error);
