@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     .select()
     .from(userFriends)
     .leftJoin(friendsTable, eq(userFriends.friendId, friendsTable.id))
-    .where(eq(userFriends.id, user_id));
+    .where(eq(userFriends.userId, user_id));
 
   const friends = result.map(({ friends }) => friends!);
   return friends;

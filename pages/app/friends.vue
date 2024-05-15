@@ -23,7 +23,9 @@
           <IncomingRequests />
         </v-window-item>
 
-        <v-window-item :value="2"><OutgoingRequests /> </v-window-item>
+        <v-window-item :value="2">
+          <OutgoingRequests />
+        </v-window-item>
 
         <!-- Send Request -->
         <v-window-item :value="3">
@@ -40,10 +42,6 @@ import FriendsList from "~/components/friends/FriendsList.vue";
 import IncomingRequests from "~/components/friends/IncomingRequests.vue";
 import OutgoingRequests from "~/components/friends/OutgoingRequests.vue";
 
-const { $toast } = useNuxtApp();
-
-console.log("toast", $toast);
-
 definePageMeta({
   name: "app:friends",
   layout: "dashboard",
@@ -52,6 +50,18 @@ definePageMeta({
 useHead({ title: "Friends | Music Muse" });
 
 const tab = ref(0);
+const route = useRoute();
+
+const QUERY_TABS = ["friends", "incoming", "outgoing", "add"];
+
+watchEffect(() => {
+  const tabQuery = route.query.tab;
+
+  if (typeof tabQuery === "string") {
+    const index = QUERY_TABS.indexOf(tabQuery);
+    if (index != -1) tab.value = index;
+  }
+});
 </script>
 
 <style lang="scss">
