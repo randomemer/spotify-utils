@@ -35,6 +35,8 @@ import {
   VWindow,
   VWindowItem,
   VDataTable,
+  VSpeedDial,
+  VFab,
 } from "vuetify/components";
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -93,6 +95,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       VWindow,
       VWindowItem,
       VDataTable,
+      VSpeedDial,
+      VFab,
     },
   });
 

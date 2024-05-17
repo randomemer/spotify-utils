@@ -1,53 +1,49 @@
 <template>
-  <div>
-    <NuxtLayout name="dashboard">
-      <v-table class="table rounded" :value="history?.items" :loading="pending">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Track</th>
-            <th>Popularity</th>
-            <th>Played At</th>
-          </tr>
-        </thead>
+  <v-table class="table rounded" :value="history?.items" :loading="pending">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Track</th>
+        <th>Popularity</th>
+        <th>Played At</th>
+      </tr>
+    </thead>
 
-        <tbody>
-          <tr v-for="(item, i) in tracks">
-            <td>{{ i + 1 }}</td>
-            <td>
-              <TrackItem :track="item.track" />
-            </td>
-            <td>
-              <PopularityIcon
-                class="pop-icon"
-                :value="item.track.popularity ?? 0"
-              />
-            </td>
-            <td>
-              <div class="timestamp">
-                <span>
-                  {{
-                    dayjs(item.played_at, { utc: true }).format("hh:mm:ss A")
-                  }}
-                </span>
-                <span>
-                  {{
-                    dayjs(item.played_at, { utc: true }).format("MM-DD-YYYY")
-                  }}
-                </span>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
-    </NuxtLayout>
-  </div>
+    <tbody>
+      <tr v-for="(item, i) in tracks">
+        <td>{{ i + 1 }}</td>
+        <td>
+          <TrackItem :track="item.track" />
+        </td>
+        <td>
+          <PopularityIcon
+            class="pop-icon"
+            :value="item.track.popularity ?? 0"
+          />
+        </td>
+        <td>
+          <div class="timestamp">
+            <span>
+              {{ dayjs(item.played_at, { utc: true }).format("hh:mm:ss A") }}
+            </span>
+            <span>
+              {{ dayjs(item.played_at, { utc: true }).format("MM-DD-YYYY") }}
+            </span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </v-table>
 </template>
 
 <script setup lang="ts">
 import dayjs from "dayjs";
 
-definePageMeta({ name: "app:history", middleware: "auth" });
+definePageMeta({
+  name: "app:history",
+  middleware: "auth",
+  layout: "dashboard",
+});
 
 useHead({ title: "History | Music Muse" });
 

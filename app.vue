@@ -1,6 +1,8 @@
 <template>
   <v-app>
-    <NuxtPage />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
     <ProvidersToastProvider />
   </v-app>
 </template>

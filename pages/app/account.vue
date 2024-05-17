@@ -1,82 +1,78 @@
 <template>
-  <div>
-    <NuxtLayout name="dashboard">
-      <v-card class="profile-card pa-6">
+  <v-card class="profile-card pa-6">
+    <v-btn
+      color="primary"
+      icon
+      width="128"
+      height="128"
+      v-on:mouseover="isHoveringPfp = true"
+      v-on:mouseout="isHoveringPfp = false"
+      @click="input?.click()"
+    >
+      <v-avatar size="128" :image="pfp" />
+      <v-icon
+        icon="mdi-pencil"
+        class="avatar-edit-icon"
+        v-show="isHoveringPfp"
+      />
+      <input
+        ref="input"
+        class="img-input"
+        type="file"
+        accept="image/*"
+        @change="onFileChange"
+      />
+    </v-btn>
+
+    <div class="right">
+      <h2>{{ name }}</h2>
+
+      <div class="created-at">
+        <v-icon icon="mdi-calendar-account" />
+        <span>Member since {{ createdAt }}</span>
+      </div>
+
+      <v-text-field
+        v-model="username"
+        type="text"
+        color="primary"
+        variant="solo-filled"
+        density="compact"
+        label="Username"
+        :disabled="isSavingUsername"
+        :loading="isSavingUsername"
+      >
+        <template #append-inner>
+          <v-btn
+            color="primary"
+            variant="text"
+            icon="mdi-content-save-edit"
+            :disabled="username === profile?.username"
+            @click="saveUsername()"
+          />
+        </template>
+      </v-text-field>
+    </div>
+  </v-card>
+
+  <v-dialog v-model="isCropperOpen" max-width="37.5rem">
+    <v-card>
+      <v-card-title>Crop Image</v-card-title>
+      <v-card-text>
+        <VueCropper ref="cropper" :src="selectedImage" :aspect-ratio="1" />
+      </v-card-text>
+      <v-card-actions class="justify-end pa-4">
+        <v-btn @click="isCropperOpen = false">Cancel</v-btn>
         <v-btn
           color="primary"
-          icon
-          width="128"
-          height="128"
-          v-on:mouseover="isHoveringPfp = true"
-          v-on:mouseout="isHoveringPfp = false"
-          @click="input?.click()"
+          :loading="isUploadingPfp"
+          @click="onCropAndUpload()"
         >
-          <v-avatar size="128" :image="pfp" />
-          <v-icon
-            icon="mdi-pencil"
-            class="avatar-edit-icon"
-            v-show="isHoveringPfp"
-          />
-          <input
-            ref="input"
-            class="img-input"
-            type="file"
-            accept="image/*"
-            @change="onFileChange"
-          />
+          Upload
         </v-btn>
-
-        <div class="right">
-          <h2>{{ name }}</h2>
-
-          <div class="created-at">
-            <v-icon icon="mdi-calendar-account" />
-            <span>Member since {{ createdAt }}</span>
-          </div>
-
-          <v-text-field
-            v-model="username"
-            type="text"
-            color="primary"
-            variant="solo-filled"
-            density="compact"
-            label="Username"
-            :disabled="isSavingUsername"
-            :loading="isSavingUsername"
-          >
-            <template #append-inner>
-              <v-btn
-                color="primary"
-                variant="text"
-                icon="mdi-content-save-edit"
-                :disabled="username === profile?.username"
-                @click="saveUsername()"
-              />
-            </template>
-          </v-text-field>
-        </div>
-      </v-card>
-
-      <v-dialog v-model="isCropperOpen" max-width="37.5rem">
-        <v-card>
-          <v-card-title>Crop Image</v-card-title>
-          <v-card-text>
-            <VueCropper ref="cropper" :src="selectedImage" :aspect-ratio="1" />
-          </v-card-text>
-          <v-card-actions class="justify-end pa-4">
-            <v-btn @click="isCropperOpen = false">Cancel</v-btn>
-            <v-btn
-              color="primary"
-              :loading="isUploadingPfp"
-              @click="onCropAndUpload()"
-            >
-              Upload
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </NuxtLayout>
-  </div>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -90,7 +86,11 @@ const { $api } = useNuxtApp();
 const userStore = useUserStore();
 const { profile } = userStore;
 
-definePageMeta({ name: "app:account", middleware: "auth" });
+definePageMeta({
+  name: "app:account",
+  middleware: "auth",
+  layout: "dashboard",
+});
 useHead({ title: "Account | Music Muse" });
 
 const username = ref(profile?.username);

@@ -1,39 +1,35 @@
 <template>
-  <div>
-    <NuxtLayout>
-      <v-chip-group mandatory v-model="tab" class="tabs" color="primary">
-        <v-chip size="large" :value="0" prepend-icon="mdi-account">All</v-chip>
-        <v-chip size="large" :value="1" prepend-icon="mdi-account-arrow-left">
-          Incoming
-        </v-chip>
-        <v-chip size="large" :value="2" prepend-icon="mdi-account-arrow-right">
-          Outgoing
-        </v-chip>
-        <v-chip size="large" :value="3" prepend-icon="mdi-account-plus">
-          Add Friend
-        </v-chip>
-      </v-chip-group>
+  <v-chip-group mandatory v-model="tab" class="tabs" color="primary">
+    <v-chip size="large" :value="0" prepend-icon="mdi-account">All</v-chip>
+    <v-chip size="large" :value="1" prepend-icon="mdi-account-arrow-left">
+      Incoming
+    </v-chip>
+    <v-chip size="large" :value="2" prepend-icon="mdi-account-arrow-right">
+      Outgoing
+    </v-chip>
+    <v-chip size="large" :value="3" prepend-icon="mdi-account-plus">
+      Add Friend
+    </v-chip>
+  </v-chip-group>
 
-      <v-window v-model="tab">
-        <v-window-item :value="0">
-          <FriendsList />
-        </v-window-item>
+  <v-window v-model="tab">
+    <v-window-item :value="0">
+      <FriendsList />
+    </v-window-item>
 
-        <v-window-item :value="1">
-          <IncomingRequests />
-        </v-window-item>
+    <v-window-item :value="1">
+      <IncomingRequests />
+    </v-window-item>
 
-        <v-window-item :value="2">
-          <OutgoingRequests />
-        </v-window-item>
+    <v-window-item :value="2">
+      <OutgoingRequests />
+    </v-window-item>
 
-        <!-- Send Request -->
-        <v-window-item :value="3">
-          <FriendSearch />
-        </v-window-item>
-      </v-window>
-    </NuxtLayout>
-  </div>
+    <!-- Send Request -->
+    <v-window-item :value="3">
+      <FriendSearch />
+    </v-window-item>
+  </v-window>
 </template>
 
 <script setup lang="ts">
@@ -50,18 +46,32 @@ definePageMeta({
 useHead({ title: "Friends | Music Muse" });
 
 const tab = ref(0);
-const route = useRoute();
+const router = useRouter();
 
 const QUERY_TABS = ["friends", "incoming", "outgoing", "add"];
 
-watchEffect(() => {
-  const tabQuery = route.query.tab;
+watch(
+  () => router.currentRoute.value,
+  (route) => {
+    const tabQuery = route.query.tab;
+    if (typeof tabQuery !== "string") return;
 
-  if (typeof tabQuery === "string") {
     const index = QUERY_TABS.indexOf(tabQuery);
-    if (index != -1) tab.value = index;
+    if (index !== -1) {
+      tab.value = index;
+      console.log("updated route ", index);
+    }
+  },
+  { immediate: true }
+);
+
+watch(
+  () => tab.value,
+  (newTab, oldTab) => {
+    if (newTab === oldTab) return;
+    router.push({ query: { tab: QUERY_TABS[newTab] } });
   }
-});
+);
 </script>
 
 <style lang="scss">

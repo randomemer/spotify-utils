@@ -1,15 +1,9 @@
 <template>
-  <!-- Extra div for fixing page transition errors bug -->
-  <!-- https://github.com/nuxt/nuxt/issues/13309 -->
-  <div>
-    <NuxtLayout>
-      <div class="cards-grid">
-        <DashboardTopGenres />
-        <DashboardAudioFeatures />
-        <DashboardTopTracks />
-        <DashboardTopArtists />
-      </div>
-    </NuxtLayout>
+  <div class="cards-grid">
+    <DashboardTopGenres />
+    <DashboardAudioFeatures />
+    <DashboardTopTracks />
+    <DashboardTopArtists />
   </div>
 </template>
 

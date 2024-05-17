@@ -1,97 +1,93 @@
 <template>
-  <div>
-    <NuxtLayout>
-      <div class="grid">
-        <div class="search-pane">
-          <form @submit="onSearch($event)">
-            <v-text-field
-              clearable
-              color="primary"
-              placeholder="Search"
-              density="comfortable"
-              variant="solo-filled"
-              prepend-inner-icon="mdi-magnify"
-              :loading="status === `pending`"
-              v-model="q"
-            />
-            <v-chip-group filter mandatory v-model="filter" class="chips">
-              <v-chip
-                v-for="item in SPOTIFY_SEARCH_FILTERS"
-                color="primary"
-                size="large"
-                :key="item.value"
-                :text="item.label"
-                :value="item.value"
-              />
-            </v-chip-group>
-          </form>
+  <div class="grid">
+    <div class="search-pane">
+      <form @submit="onSearch($event)">
+        <v-text-field
+          clearable
+          color="primary"
+          placeholder="Search"
+          density="comfortable"
+          variant="solo-filled"
+          prepend-inner-icon="mdi-magnify"
+          :loading="status === `pending`"
+          v-model="q"
+        />
+        <v-chip-group filter mandatory v-model="filter" class="chips">
+          <v-chip
+            v-for="item in SPOTIFY_SEARCH_FILTERS"
+            color="primary"
+            size="large"
+            :key="item.value"
+            :text="item.label"
+            :value="item.value"
+          />
+        </v-chip-group>
+      </form>
 
-          <template v-if="filter === `genre` || status === `success`">
-            <v-list
-              class="results-list"
-              bg-color="transparent"
-              v-if="results.length > 0"
-            >
-              <div :key="item.id" class="result-item" v-for="item in results">
-                <TrackItem v-if="item.type === `track`" :track="item" />
-                <ArtistItem v-else-if="item.type === `artist`" :artist="item" />
-                <GenreItem v-else-if="item.type === `genre`" :genre="item" />
+      <template v-if="filter === `genre` || status === `success`">
+        <v-list
+          class="results-list"
+          bg-color="transparent"
+          v-if="results.length > 0"
+        >
+          <div :key="item.id" class="result-item" v-for="item in results">
+            <TrackItem v-if="item.type === `track`" :track="item" />
+            <ArtistItem v-else-if="item.type === `artist`" :artist="item" />
+            <GenreItem v-else-if="item.type === `genre`" :genre="item" />
 
-                <v-btn
-                  density="comfortable"
-                  variant="tonal"
-                  icon="mdi-plus"
-                  color="primary"
-                  @click="addSeed(item)"
-                  :disabled="seeds.has(item.id) || seeds.size === 5"
-                />
-              </div>
-            </v-list>
-            <v-card v-else> Nothing :9 </v-card>
-          </template>
-        </div>
-
-        <v-card class="seeds-card">
-          <v-card-title>Selected Seeds</v-card-title>
-          <v-card-text>
-            <v-list class="results-list" v-if="seeds.size > 0">
-              <div
-                class="result-item"
-                :key="item.id"
-                v-for="item in seeds.values()"
-              >
-                <TrackItem v-if="item.type === `track`" :track="item" />
-                <ArtistItem v-else-if="item.type === `artist`" :artist="item" />
-                <GenreItem v-else-if="item.type === `genre`" :genre="item" />
-
-                <v-btn
-                  density="comfortable"
-                  variant="tonal"
-                  icon="mdi-minus"
-                  color="primary"
-                  @click="removeSeed(item.id)"
-                />
-              </div>
-            </v-list>
-            <div v-else class="empty-seeds">
-              <v-icon icon="mdi-music-note" />
-              <span>No seeds. Add upto 5 seeds</span>
-            </div>
-          </v-card-text>
-          <v-card-actions class="seeds-actions">
             <v-btn
-              :disabled="seeds.size === 0"
-              :loading="feedPending"
-              variant="elevated"
+              density="comfortable"
+              variant="tonal"
+              icon="mdi-plus"
               color="primary"
-              @click="generate()"
-            >
-              Generate
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </div>
-    </NuxtLayout>
+              @click="addSeed(item)"
+              :disabled="seeds.has(item.id) || seeds.size === 5"
+            />
+          </div>
+        </v-list>
+        <v-card v-else> Nothing :9 </v-card>
+      </template>
+    </div>
+
+    <v-card class="seeds-card">
+      <v-card-title>Selected Seeds</v-card-title>
+      <v-card-text>
+        <v-list class="results-list" v-if="seeds.size > 0">
+          <div
+            class="result-item"
+            :key="item.id"
+            v-for="item in seeds.values()"
+          >
+            <TrackItem v-if="item.type === `track`" :track="item" />
+            <ArtistItem v-else-if="item.type === `artist`" :artist="item" />
+            <GenreItem v-else-if="item.type === `genre`" :genre="item" />
+
+            <v-btn
+              density="comfortable"
+              variant="tonal"
+              icon="mdi-minus"
+              color="primary"
+              @click="removeSeed(item.id)"
+            />
+          </div>
+        </v-list>
+        <div v-else class="empty-seeds">
+          <v-icon icon="mdi-music-note" />
+          <span>No seeds. Add upto 5 seeds</span>
+        </div>
+      </v-card-text>
+      <v-card-actions class="seeds-actions">
+        <v-btn
+          :disabled="seeds.size === 0"
+          :loading="feedPending"
+          variant="elevated"
+          color="primary"
+          @click="generate()"
+        >
+          Generate
+        </v-btn>
+      </v-card-actions>
+    </v-card>
   </div>
 </template>
 
